@@ -13,7 +13,3 @@ server:
     username: admin
     groups:
     - system:masters
-  - roleARN: arn:aws:iam::${aws_account_id}:role/${power_role}
-    username: poweruser
-    groups:
-    - system:masters

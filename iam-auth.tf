@@ -28,6 +28,7 @@ resource "kubernetes_config_map" "aws_iam_authenticator" {
     namespace = "kube-system"
 
     labels = {
+      app                            = "aws-iam-authenticator"
       "app.kubernetes.io/name"       = "aws-iam-authenticator"
       "app.kubernetes.io/managed-by" = "Terraform"
     }
