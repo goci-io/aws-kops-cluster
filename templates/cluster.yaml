@@ -1,0 +1,138 @@
+apiVersion: kops/v1alpha2
+kind: Cluster
+metadata:
+  name: ${cluster_name}
+  labels:
+    kops.k8s.io/cluster: ${cluster_name}
+spec:
+  kubernetesVersion: 1.13.10
+  masterPublicName: api.${cluster_name}
+  networkCIDR: ${vpc_cidr}
+  networkID: ${vpc_id}
+  networking:
+    calico: {}
+  nonMasqueradeCIDR: ${vpc_cidr}
+  api:
+    loadBalancer:
+      type: Internal
+      sslCertificate: ${certificate_arn}
+      additionalSecurityGroups: [${security_groups}]
+      crossZoneLoadBalancing: true
+      useForInternalApi: true
+  kubeAPIServer:
+    disableBasicAuth: true
+    serviceNodePortRange: 10000-35000
+  kubelet:
+    kubeReserved:
+        cpu: 100m
+        memory: 100Mi
+        ephemeral-storage: 512Mi
+    systemReserved:
+        cpu: 100m
+        memory: 100Mi
+        ephemeral-storage: 1Gi
+    kubeReservedCgroup: "/kube-reserved"
+    systemReservedCgroup: "/system-reserved"
+    enforceNodeAllocatable: "pods,system-reserved,kube-reserved"
+  docker:
+    registryMirrors:
+    - registry.hub.docker.com
+    logDriver: json-file
+    logOpt:
+    - max-size=24m
+    - max-file=10
+  externalDns:
+    watchIngress: true
+  kubeControllerManager:
+    horizontalPodAutoscalerSyncPeriod: 30s
+    horizontalPodAutoscalerDownscaleDelay: 5m0s
+    horizontalPodAutoscalerUpscaleDelay: 3m0s
+    horizontalPodAutoscalerTolerance: 0.1
+    experimentalClusterSigningDuration: 8760h0m0s
+    clusterCIDR: ${cluster_cidr}
+  authentication:
+    aws: {}
+  authorization:
+    rbac: {}
+  iam:
+    allowContainerRegistry: true
+    legacy: false
+  channel: stable
+  cloudLabels:
+    Cluster: ${cluster_name}
+    Namespace: ${namespace}
+    Stage: ${stage}
+    Region: ${region}
+  cloudProvider: aws
+  configBase: s3://${kops_bucket_name}/${cluster_name}
+  etcdClusters:
+  - etcdMembers:
+    - encryptedVolume: true
+      instanceGroup: master-${aws_region}a
+      name: a
+    - encryptedVolume: true
+      instanceGroup: master-${aws_region}b
+      name: b
+    - encryptedVolume: true
+      instanceGroup: master-${aws_region}c
+      name: c
+    name: main
+    version: 3.0.17
+    enableEtcdTLS: true
+  - etcdMembers:
+    - encryptedVolume: true
+      instanceGroup: master-${aws_region}a
+      name: a
+    - encryptedVolume: true
+      instanceGroup: master-${aws_region}b
+      name: b
+    - encryptedVolume: true
+      instanceGroup: master-${aws_region}c
+      name: c
+    name: events
+    version: 3.0.17
+    enableEtcdTLS: true
+  subnets:
+  - id: ${public_subnet_id_a}
+    cidr: ${public_subnet_cidr_a}
+    name: utility-${aws_region}a
+    type: Utility
+    zone: ${aws_region}a
+  - id: ${public_subnet_id_b}
+    cidr: ${public_subnet_cidr_b}
+    name: utility-${aws_region}b
+    type: Utility
+    zone: ${aws_region}b
+  - id: ${public_subnet_id_c}
+    cidr: ${public_subnet_cidr_c}
+    name: utility-${aws_region}c
+    type: Utility
+    zone: ${aws_region}c
+  - id: ${private_subnet_id_a}
+    cidr: ${private_subnet_cidr_a}
+    name: private-${aws_region}a
+    type: Private
+    zone: ${aws_region}a
+    egress: ${private_nat_id_a}
+    publicIP: ${private_public_ip_a}
+  - id: ${private_subnet_id_b}
+    cidr: ${private_subnet_cidr_b}
+    name: private-${aws_region}b
+    type: Private
+    zone: ${aws_region}b
+    egress: ${private_nat_id_b}
+    publicIP: ${private_public_ip_b}
+  - id: ${private_subnet_id_c}
+    cidr: ${private_subnet_cidr_c}
+    name: private-${aws_region}c
+    type: Private
+    zone: ${aws_region}c
+    egress: ${private_nat_id_c}
+    publicIP: ${private_public_ip_c}
+  topology:
+    dns:
+      type: Private
+    masters: private
+    nodes: private
+    bastion:
+      bastionPublicName: bastion.${cluster_name}
