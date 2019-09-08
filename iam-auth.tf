@@ -13,13 +13,14 @@ resource "kubernetes_config_map" "aws_iam_authenticator" {
 
   data = {
     config.yaml = templatefile("${path.module}/templates/config.yaml", {
-      cluster_name = local.cluster_name
+      cluster_name   = local.cluster_name
+      aws_account_id = local.aws_account_id
     })
   }
 }
 
 resource "null_resource" "pdb" {
-  triggers {
+  triggers = {
     key = "${md5(file("${path.module}/templates/poddisruptionbudget.yaml"))}"
   }
 
@@ -31,7 +32,7 @@ resource "null_resource" "pdb" {
 resource "null_resource" "remove_pdb" {
   depends_on = ["null_resource.pdb"]
 
-  triggers {
+  triggers = {
     key = "${md5(file("${path.module}/templates/poddisruptionbudget.yaml"))}"
   }
 
