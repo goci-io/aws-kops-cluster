@@ -22,7 +22,7 @@ variable "tags" {
 }
 
 variable "root_domain" {
-  type = string
+  type        = string
   description = "Root domain to use to build the cluster name and dns zone"
 }
 
@@ -39,24 +39,27 @@ variable "acm_module_state" {
 }
 
 variable "tf_bucket" {
-  type = string
-  default = ""
+  type        = string
+  default     = ""
   description = "The Bucket name to load remote state from"
 }
 
 variable "instance_groups" {
   type = map(object({
-    type = string
-    name = string
-    image = string
-    count_min = number
-    count_max = number
-    storage_in_gb = number
+    type                       = string
+    name                       = string
+    image                      = string
+    count_min                  = number
+    count_max                  = number
+    autospotting               = bool
+    autospotting_min_on_demand = number
+    node_role                  = string
+    storage_in_gb              = number
   }))
 }
 
 variable "master_storage_in_gb" {
-  default = 56
+  default     = 56
   description = "Amount of storage for masters in GB"
 }
 
@@ -67,14 +70,14 @@ variable "ssh_keys" {
 }
 
 variable "vpc_id" {
-  type = string
-  default = ""
+  type        = string
+  default     = ""
   description = "The VPC ID to use if vpc_module_state is not set"
 }
 
 variable "vpc_cidr" {
-  type = string
-  default = ""
+  type        = string
+  default     = ""
   description = "The VPC CIDR to use if vpc_module_state is not set"
 }
 

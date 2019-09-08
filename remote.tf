@@ -20,8 +20,8 @@ data "terraform_remote_state" "acm" {
 }
 
 locals {
-  vpc_id = var.vpc_id == "" ? data.terraform_remote_state.vpc[0].outputs.vpc_id : var.vpc_id
-  vpc_cidr = var.vpc_cidr == "" ? data.terraform_remote_state.vpc[0].outputs.vpc_cidr : var.vpc_cidr
+  vpc_id          = var.vpc_id == "" ? data.terraform_remote_state.vpc[0].outputs.vpc_id : var.vpc_id
+  vpc_cidr        = var.vpc_cidr == "" ? data.terraform_remote_state.vpc[0].outputs.vpc_cidr : var.vpc_cidr
   certificate_arn = var.certificate_arn == "" ? data.terraform_remote_state.acm[0].certificate_arn : var.certificate_arn
 }
 

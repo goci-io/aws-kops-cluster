@@ -10,17 +10,16 @@ spec:
     Namespace: ${namespace}
     Stage: ${stage}
     Region: ${region}
-    AvailabilityZone: ${aws_availability_zone}
-    spot-enabled: "${node_autospotting_enabled}"
-    autospotting_min_on_demand_number: "${node_autospotting_min_on_demand_number}"
+    spot-enabled: "${autospotting_enabled}"
+    autospotting_min_on_demand_number: "${autospotting_min_on_demand}"
     kubernetes.io/cluster/${cluster_name}: owned
-    k8s.io/cluster-autoscaler/enabled: ""
+    k8s.io/cluster-autoscaler/${autoscaler}: ""
     k8s.io/cluster-autoscaler/node-template/label/instance_type: ${instance_type}
     k8s.io/cluster-autoscaler/node-template/label/kops.k8s.io/instancegroup: ${instance_type}-${aws_availability_zone}
-  image: ${machine_image}
-  machineType: ${node_instance_type}
-  maxSize: ${node_instance_max}
-  minSize: ${node_instance_min}
+  image: ${image}
+  machineType: ${instance_type}
+  maxSize: ${instance_max}
+  minSize: ${instance_min}
   nodeLabels:
     kops.k8s.io/instancegroup: ${instance_type}-${aws_availability_zone}
     instance_type: ${instance_type}

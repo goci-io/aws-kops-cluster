@@ -5,14 +5,14 @@ resource "kubernetes_config_map" "aws_iam_authenticator" {
     namespace = "kube-system"
 
     labels = {
-      k8s-app = "aws-iam-authenticator"
-      app.kubernetes.io/name = "aws-iam-authenticator"
-      app.kubernetes.io/managed-by = "terraform/kops"
+      k8s-app                        = "aws-iam-authenticator"
+      app.kubernetes.io / name       = "aws-iam-authenticator"
+      app.kubernetes.io / managed-by = "terraform/kops"
     }
   }
 
-  data {
-    "config.yaml" = templatefile("${path.module}/templates/config.yaml", {
+  data = {
+    config.yaml = templatefile("${path.module}/templates/config.yaml", {
       cluster_name = local.cluster_name
     })
   }
