@@ -7,7 +7,7 @@ module "s3_label" {
 resource "aws_s3_bucket" "kops_state" {
   bucket        = module.s3_label.id
   tags          = module.s3_label.tags
-  region        = var.aws_region
+  region        = local.aws_region
   acl           = "private"
   force_destroy = false
 

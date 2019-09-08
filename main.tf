@@ -16,6 +16,7 @@ data "aws_availability_zones" "available" {
 }
 
 locals {
+  attributes     = concat(var.attributes, [var.region])
   tags           = merge(var.tags, map("Cluster", local.cluster_name))
   cluster_name   = format("%s.%s.%s", var.stage, var.region, var.root_domain)
   cluster_dns    = var.cluster_dns == "" ? local.cluster_name : var.cluster_dns
@@ -28,6 +29,6 @@ module "label" {
   namespace  = var.namespace
   stage      = var.stage
   delimiter  = var.delimiter
-  attributes = var.attributes
+  attributes = local.attributes
   tags       = local.tags
 }

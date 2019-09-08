@@ -31,6 +31,8 @@ locals {
     private_subnet_id_c   = ""
     private_subnet_cidr_c = ""
   })
+
+  kops_cluster = format("%s\n%s", local.kops_cluster_config, join("\n", data.null_data_source.instance_groups.*.outputs.rendered))
 }
 
 data "null_data_source" "instance_groups" {
@@ -63,38 +65,25 @@ module "ssh_key_pair" {
   source              = "git::https://github.com/cloudposse/terraform-aws-key-pair.git?ref=tags/0.4.0"
   namespace           = var.namespace
   stage               = var.stage
-  attributes          = var.attributes
+  attributes          = local.attributes
   tags                = local.tags
   ssh_public_key_path = var.ssh_path
   generate_ssh_key    = "true"
   name                = "kops"
 }
 
-resource "null_resource" "cluster" {
+resource "null_resource" "kops_update_cluster" {
   provisioner "local-exec" {
     environment = local.kops_env_config
     command     = <<EOF
-      echo "${local.kops_cluster_config}" | kops replace --force -f -;
+      echo "${local.kops_cluster}" | kops replace --force -f -;
       kops create secret sshpublickey kops -i ${module.ssh_key_pair.public_key_filename};
       kops update cluster --yes
 EOF
   }
 
   triggers = {
-    hash = md5(local.kops_cluster_config)
-  }
-}
-
-resource "null_resource" "instance_groups" {
-  count = length(var.instance_groups) * var.max_availability_zones
-
-  provisioner "local-exec" {
-    environment = local.kops_env_config
-    command     = "kops update ig "
-  }
-
-  triggers = {
-    hash = md5(jsonencode(data.null_data_source.instance_groups.*.outputs.rendered))
+    hash = md5(local.kops_cluster)
   }
 }
 
