@@ -46,6 +46,8 @@ resource "kubernetes_config_map" "aws_iam_authenticator" {
 }
 
 resource "null_resource" "pdb" {
+  depends_on = [null_resource.export_kubecfg]
+
   triggers = {
     key = "${local.iam_auth_pdb_hash}"
   }
@@ -56,7 +58,7 @@ resource "null_resource" "pdb" {
 }
 
 resource "null_resource" "remove_pdb" {
-  depends_on = ["null_resource.pdb"]
+  depends_on = [null_resource.export_kubecfg]
 
   triggers = {
     key = "${local.iam_auth_pdb_hash}"
