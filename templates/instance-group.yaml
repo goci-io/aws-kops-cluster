@@ -10,6 +10,7 @@ spec:
     Namespace: ${namespace}
     Stage: ${stage}
     Region: ${region}
+    role: ${instance_name}
     kubernetes.io/cluster/${cluster_name}: owned
     k8s.io/cluster-autoscaler/${autoscaler}: ""
     k8s.io/cluster-autoscaler/node-template/label/instance_type: ${instance_name}
@@ -23,9 +24,9 @@ spec:
   rootVolumeType: ${storage_type}
   rootVolumeIops: ${storage_iops}
   nodeLabels:
-    spot: "${autospotting_enabled}"
     kops.k8s.io/instancegroup: ${instance_name}-${aws_availability_zone}
     instance_type: ${instance_name}
+    spot: "${autospotting_enabled}"
   role: ${node_role}
   subnets:
   - ${aws_availability_zone}
