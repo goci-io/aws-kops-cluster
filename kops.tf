@@ -111,7 +111,7 @@ resource "null_resource" "kops_update_cluster" {
   provisioner "local-exec" {
     environment = local.kops_env_config
     command     = <<EOF
-      echo "${local.kops_cluster}" | kops replace --force -f -;
+      echo "${local.kops_cluster}" | kops replace --force -f -;
       kops create secret sshpublickey kops -i ${module.ssh_key_pair.public_key_filename};
       kops update cluster --yes
 EOF
@@ -124,7 +124,7 @@ EOF
 
 resource "null_resource" "export_kubecfg" {
   depends_on = [null_resource.kops_update_cluster]
-  
+
   provisioner "local-exec" {
     command     = "kops export kubecfg"
     environment = local.kops_env_config
