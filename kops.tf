@@ -42,9 +42,9 @@ data "null_data_source" "instance_groups" {
       namespace              = var.namespace
       stage                  = var.stage
       region                 = var.region
-      aws_availability_zone  = data.aws_availability_zones.available[count.index].name
+      aws_availability_zone  = data.aws_availability_zones.available[count.index % var.max_availability_zones].name
+      image                  = lookup(var.instance_groups[count.index], "image", "kope.io/k8s-1.12-debian-stretch-amd64-hvm-ebs-2019-06-21")
       instance_type          = lookup(var.instance_groups[count.index], "instance_type")
-      image                  = lookup(var.instance_groups[count.index], "image")
       instance_max           = lookup(var.instance_groups[count.index], "count_max", 3)
       instance_min           = lookup(var.instance_groups[count.index], "count_min", 1)
       node_role              = lookup(var.instance_groups[count.index], "node_role", "Node")
