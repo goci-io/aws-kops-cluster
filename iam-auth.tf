@@ -2,10 +2,22 @@ locals {
   iam_auth_pdb_hash = md5(file("${path.module}/templates/iam-auth-pdb.yaml"))
 }
 
-module "role_label" {
-  source     = "git::https://github.com/cloudposse/terraform-null-label.git?ref=tags/0.15.0"
-  context    = module.label.context
-  name       = "k8s"
+module "ci_role_label" {
+  source  = "git::https://github.com/cloudposse/terraform-null-label.git?ref=tags/0.15.0"
+  context = module.label.context
+  name    = "ci"
+}
+
+module "admin_role_label" {
+  source  = "git::https://github.com/cloudposse/terraform-null-label.git?ref=tags/0.15.0"
+  context = module.label.context
+  name    = "admin"
+}
+
+module "readonly_role_label" {
+  source  = "git::https://github.com/cloudposse/terraform-null-label.git?ref=tags/0.15.0"
+  context = module.label.context
+  name    = "readonly"
 }
 
 resource "kubernetes_config_map" "aws_iam_authenticator" {
@@ -25,10 +37,9 @@ resource "kubernetes_config_map" "aws_iam_authenticator" {
     "config.yaml" = templatefile("${path.module}/templates/iam-auth.yaml", {
       cluster_name   = local.cluster_name
       aws_account_id = local.aws_account_id
-      ci_role        = format("%s%sci", module.role_label.id, var.delimiter)
-      admin_role     = format("%s%sadmin", module.role_label.id, var.delimiter)
-      readonly_role  = format("%s%sreadonly", module.role_label.id, var.delimiter)
-      power_role     = format("%s%spower", module.role_label.id, var.delimiter)
+      ci_role        = module.ci_role_label.id
+      admin_role     = module.admin_role_label.id
+      readonly_role  = module.readonly_role_label.id
     })
   }
 }

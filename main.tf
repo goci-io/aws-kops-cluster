@@ -30,5 +30,4 @@ module "label" {
   delimiter  = var.delimiter
   attributes = var.attributes
   tags       = local.tags
-  name       = "kops"
 }
