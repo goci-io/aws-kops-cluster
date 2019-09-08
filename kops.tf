@@ -32,7 +32,13 @@ locals {
     private_subnet_cidr_c = ""
   })
 
-  kops_cluster = format("%s\n%s", local.kops_cluster_config, join("\n", data.null_data_source.instance_groups.*.outputs.rendered))
+  kops_default_image = "kope.io/k8s-1.12-debian-stretch-amd64-hvm-ebs-2019-06-21"
+  kops_cluster       = format(
+    "%s\n%s\n%s", 
+    local.kops_cluster_config, 
+    join("\n", data.null_data_source.master_instance_groups.*.outputs.rendered), 
+    join("\n", data.null_data_source.instance_groups.*.outputs.rendered)
+  )
 }
 
 data "null_data_source" "instance_groups" {
@@ -44,19 +50,45 @@ data "null_data_source" "instance_groups" {
       namespace              = var.namespace
       stage                  = var.stage
       region                 = var.region
+      autoscaler             = "enabled"
+      node_role              = "Node"
       aws_availability_zone  = element(data.aws_availability_zones.available.names, count.index % var.max_availability_zones)
-      image                  = lookup(var.instance_groups[floor(count.index / 3)], "image", "kope.io/k8s-1.12-debian-stretch-amd64-hvm-ebs-2019-06-21")
+      image                  = lookup(var.instance_groups[floor(count.index / 3)], "image", local.kops_default_image)
       instance_name          = lookup(var.instance_groups[floor(count.index / 3)], "name")
       instance_type          = lookup(var.instance_groups[floor(count.index / 3)], "instance_type")
       instance_max           = lookup(var.instance_groups[floor(count.index / 3)], "count_max", 3)
       instance_min           = lookup(var.instance_groups[floor(count.index / 3)], "count_min", 1)
-      node_role              = lookup(var.instance_groups[floor(count.index / 3)], "node_role", "Node")
       storage_type           = lookup(var.instance_groups[floor(count.index / 3)], "storage_type", "gp2")
-      storage_iops           = lookup(var.instance_groups[floor(count.index / 3)], "storage_iops", 288)
-      storage_in_gb          = lookup(var.instance_groups[floor(count.index / 3)], "storage_in_gb", 96)
+      storage_iops           = lookup(var.instance_groups[floor(count.index / 3)], "storage_iops", 168)
+      storage_in_gb          = lookup(var.instance_groups[floor(count.index / 3)], "storage_in_gb", 56)
       autospotting_enabled   = lookup(var.instance_groups[floor(count.index / 3)], "autospotting", false)
       autospotting_max_price = lookup(var.instance_groups[floor(count.index / 3)], "autospotting_max_price", "0.01")
-      autoscaler             = lookup(var.instance_groups[floor(count.index / 3)], "node_role", "Node") == "Node" ? "enabled" : "off"
+    })
+  }
+}
+
+data "null_data_source" "master_instance_groups" {
+  count = var.max_availability_zones
+
+  inputs = {
+    rendered = templatefile("${path.module}/templates/instance-group.yaml", {
+      cluster_name           = local.cluster_name
+      namespace              = var.namespace
+      stage                  = var.stage
+      region                 = var.region
+      image                  = local.kops_default_image
+      aws_availability_zone  = element(data.aws_availability_zones.available.names, count.index)
+      autoscaler             = "off"
+      storage_type           = "io1"
+      storage_iops           = 400
+      storage_in_gb          = 128
+      autospotting_enabled   = false
+      autospotting_max_price = "0.001"
+      node_role              = "Master"
+      instance_name          = "master"
+      instance_type          = "t2.medium"
+      instance_max           = 1
+      instance_min           = 1
     })
   }
 }
