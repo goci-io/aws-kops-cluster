@@ -33,12 +33,12 @@ variable "root_domain" {
 }
 
 variable "region" {
-  type = string
+  type        = string
   description = "The own region identifier for this deployment"
 }
 
 variable "instance_groups" {
-  type = list
+  type        = list
   description = "Instance groups to create. The masters are included by default. You will need to configure at least one additional node group"
 }
 

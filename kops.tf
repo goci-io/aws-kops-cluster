@@ -42,18 +42,19 @@ data "null_data_source" "instance_groups" {
       namespace              = var.namespace
       stage                  = var.stage
       region                 = var.region
-      aws_availability_zone  = data.aws_availability_zones.available[count.index % var.max_availability_zones].name
-      image                  = lookup(var.instance_groups[count.index], "image", "kope.io/k8s-1.12-debian-stretch-amd64-hvm-ebs-2019-06-21")
-      instance_type          = lookup(var.instance_groups[count.index], "instance_type")
-      instance_max           = lookup(var.instance_groups[count.index], "count_max", 3)
-      instance_min           = lookup(var.instance_groups[count.index], "count_min", 1)
-      node_role              = lookup(var.instance_groups[count.index], "node_role", "Node")
-      storage_type           = lookup(var.instance_groups[count.index], "storage_type", "gp2")
-      storage_iops           = lookup(var.instance_groups[count.index], "storage_iops", 288)
-      storage_in_gb          = lookup(var.instance_groups[count.index], "storage_in_gb", 96)
-      autospotting_enabled   = lookup(var.instance_groups[count.index], "autospotting", lookup(var.instance_groups[count.index], "type") == "Node" ? true : false)
-      autospotting_max_price = lookup(var.instance_groups[count.index], "autospotting_max_price", "0.01")
-      autoscaler             = lookup(var.instance_groups[count.index], "type") == "Node" ? "enabled" : "off"
+      aws_availability_zone  = element(data.aws_availability_zones.available.names, count.index % var.max_availability_zones)
+      image                  = lookup(var.instance_groups[floor(count.index / 3)], "image", "kope.io/k8s-1.12-debian-stretch-amd64-hvm-ebs-2019-06-21")
+      instance_name          = lookup(var.instance_groups[floor(count.index / 3)], "name")
+      instance_type          = lookup(var.instance_groups[floor(count.index / 3)], "instance_type")
+      instance_max           = lookup(var.instance_groups[floor(count.index / 3)], "count_max", 3)
+      instance_min           = lookup(var.instance_groups[floor(count.index / 3)], "count_min", 1)
+      node_role              = lookup(var.instance_groups[floor(count.index / 3)], "node_role", "Node")
+      storage_type           = lookup(var.instance_groups[floor(count.index / 3)], "storage_type", "gp2")
+      storage_iops           = lookup(var.instance_groups[floor(count.index / 3)], "storage_iops", 288)
+      storage_in_gb          = lookup(var.instance_groups[floor(count.index / 3)], "storage_in_gb", 96)
+      autospotting_enabled   = lookup(var.instance_groups[floor(count.index / 3)], "autospotting", false)
+      autospotting_max_price = lookup(var.instance_groups[floor(count.index / 3)], "autospotting_max_price", "0.01")
+      autoscaler             = lookup(var.instance_groups[floor(count.index / 3)], "node_role", "Node") == "Node" ? "enabled" : "off"
     })
   }
 }

@@ -3,7 +3,7 @@ kind: InstanceGroup
 metadata:
   labels:
     kops.k8s.io/cluster: ${cluster_name}
-  name: ${instance_type}-${aws_availability_zone}
+  name: ${instance_name}-${aws_availability_zone}
 spec:
   cloudLabels:
     Cluster: ${cluster_name}
@@ -12,8 +12,8 @@ spec:
     Region: ${region}
     kubernetes.io/cluster/${cluster_name}: owned
     k8s.io/cluster-autoscaler/${autoscaler}: ""
-    k8s.io/cluster-autoscaler/node-template/label/instance_type: ${instance_type}
-    k8s.io/cluster-autoscaler/node-template/label/kops.k8s.io/instancegroup: ${instance_type}-${aws_availability_zone}
+    k8s.io/cluster-autoscaler/node-template/label/instance_type: ${instance_name}
+    k8s.io/cluster-autoscaler/node-template/label/kops.k8s.io/instancegroup: ${instance_name}-${aws_availability_zone}
   image: ${image}
   machineType: ${instance_type}
   maxSize: ${instance_max}
@@ -24,8 +24,8 @@ spec:
   rootVolumeIops: ${storage_iops}
   nodeLabels:
     spot: "${autospotting_enabled}"
-    kops.k8s.io/instancegroup: ${instance_type}-${aws_availability_zone}
-    instance_type: ${instance_type}
+    kops.k8s.io/instancegroup: ${instance_name}-${aws_availability_zone}
+    instance_type: ${instance_name}
   role: ${node_role}
   subnets:
   - ${aws_availability_zone}
