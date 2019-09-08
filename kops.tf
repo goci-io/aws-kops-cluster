@@ -6,30 +6,30 @@ locals {
   }
 
   kops_cluster_config = templatefile("${path.module}/templates/cluster.yaml", {
-    cluster_name     = local.cluster_name
-    cluster_dns      = local.cluster_dns
-    cluster_cidr     = "100.0.0.0/8"
-    namespace        = var.namespace
-    stage            = var.stage
-    region           = var.region
-    aws_region       = local.aws_region
-    kops_bucket_name = aws_s3_bucket.kops_state.id
-    vpc_id           = local.vpc_id
-    vpc_cidr         = local.vpc_cidr
-    certificate_arn  = local.certificate_arn
-    security_groups  = ""
-    public_subnet_id_a    = ""
-    public_subnet_cidr_a  = ""
-    public_subnet_id_b    = ""
-    public_subnet_cidr_b  = ""
-    public_subnet_id_c    = ""
-    public_subnet_cidr_c  = ""
-    private_subnet_id_a   = ""
-    private_subnet_cidr_a = ""
-    private_subnet_id_b   = ""
-    private_subnet_cidr_b = ""
-    private_subnet_id_c   = ""
-    private_subnet_cidr_c = ""
+    cluster_name          = local.cluster_name
+    cluster_dns           = local.cluster_dns
+    cluster_cidr          = "100.0.0.0/8"
+    namespace             = var.namespace
+    stage                 = var.stage
+    region                = var.region
+    aws_region            = local.aws_region
+    kops_bucket_name      = aws_s3_bucket.kops_state.id
+    vpc_id                = local.vpc_id
+    vpc_cidr              = local.vpc_cidr
+    certificate_arn       = local.certificate_arn
+    security_groups       = ""
+    public_subnet_id_a    = local.public_subnet_id_a
+    public_subnet_cidr_a  = local.public_subnet_cidr_a
+    public_subnet_id_b    = local.public_subnet_id_b
+    public_subnet_cidr_b  = local.public_subnet_cidr_b
+    public_subnet_id_c    = local.public_subnet_id_c
+    public_subnet_cidr_c  = local.public_subnet_cidr_c
+    private_subnet_id_a   = local.private_subnet_id_a
+    private_subnet_cidr_a = local.private_subnet_cidr_a
+    private_subnet_id_b   = local.private_subnet_id_b
+    private_subnet_cidr_b = local.private_subnet_cidr_b
+    private_subnet_id_c   = local.private_subnet_id_c
+    private_subnet_cidr_c = local.private_subnet_cidr_c
   })
 
   kops_default_image = "kope.io/k8s-1.12-debian-stretch-amd64-hvm-ebs-2019-06-21"

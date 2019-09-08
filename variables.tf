@@ -45,7 +45,7 @@ variable "instance_groups" {
 variable "max_availability_zones" {
   type        = number
   default     = 3
-  description = "Maximum availability zones to span with this cluster"
+  description = "Maximum availability zones to span with this cluster. We currently only support 3!!"
 }
 
 variable "ssh_path" {
