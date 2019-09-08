@@ -112,22 +112,16 @@ spec:
     name: private-${aws_region}a
     type: Private
     zone: ${aws_region}a
-    egress: ${private_nat_id_a}
-    publicIP: ${private_public_ip_a}
   - id: ${private_subnet_id_b}
     cidr: ${private_subnet_cidr_b}
     name: private-${aws_region}b
     type: Private
     zone: ${aws_region}b
-    egress: ${private_nat_id_b}
-    publicIP: ${private_public_ip_b}
   - id: ${private_subnet_id_c}
     cidr: ${private_subnet_cidr_c}
     name: private-${aws_region}c
     type: Private
     zone: ${aws_region}c
-    egress: ${private_nat_id_c}
-    publicIP: ${private_public_ip_c}
   topology:
     dns:
       type: Private

@@ -14,13 +14,27 @@ locals {
     region           = var.region
     aws_region       = local.aws_region
     kops_bucket_name = aws_s3_bucket.kops_state.id
+    vpc_id           = local.vpc_id
+    vpc_cidr         = local.vpc_cidr
     certificate_arn  = local.certificate_arn
     security_groups  = ""
+    public_subnet_id_a    = ""
+    public_subnet_cidr_a  = ""
+    public_subnet_id_b    = ""
+    public_subnet_cidr_b  = ""
+    public_subnet_id_c    = ""
+    public_subnet_cidr_c  = ""
+    private_subnet_id_a   = ""
+    private_subnet_cidr_a = ""
+    private_subnet_id_b   = ""
+    private_subnet_cidr_b = ""
+    private_subnet_id_c   = ""
+    private_subnet_cidr_c = ""
   })
 }
 
 data "null_data_source" "instance_groups" {
-  count = length(var.instance_groups)
+  count = length(var.instance_groups) * var.max_availability_zones
 
   inputs = {
     rendered = templatefile("${path.module}/templates/instance-group.yaml", {
@@ -28,17 +42,17 @@ data "null_data_source" "instance_groups" {
       namespace              = var.namespace
       stage                  = var.stage
       region                 = var.region
-      storage_type           = "gp2"
       aws_availability_zone  = data.aws_availability_zones.available[count.index].name
-      instance_type          = lookup(var.instance_groups[count.index], "type")
+      instance_type          = lookup(var.instance_groups[count.index], "instance_type")
       image                  = lookup(var.instance_groups[count.index], "image")
-      instance_max           = lookup(var.instance_groups[count.index], "count_max")
-      instance_min           = lookup(var.instance_groups[count.index], "count_min")
-      node_role              = lookup(var.instance_groups[count.index], "node_role")
-      storage_iops           = lookup(var.instance_groups[count.index], "storage_iops")
-      storage_in_gb          = lookup(var.instance_groups[count.index], "storage_in_gb")
-      autospotting_enabled   = lookup(var.instance_groups[count.index], "autospotting")
-      autospotting_max_price = lookup(var.instance_groups[count.index], "autospotting_max_price")
+      instance_max           = lookup(var.instance_groups[count.index], "count_max", 3)
+      instance_min           = lookup(var.instance_groups[count.index], "count_min", 1)
+      node_role              = lookup(var.instance_groups[count.index], "node_role", "Node")
+      storage_type           = lookup(var.instance_groups[count.index], "storage_type", "gp2")
+      storage_iops           = lookup(var.instance_groups[count.index], "storage_iops", 288)
+      storage_in_gb          = lookup(var.instance_groups[count.index], "storage_in_gb", 96)
+      autospotting_enabled   = lookup(var.instance_groups[count.index], "autospotting", lookup(var.instance_groups[count.index], "type") == "Node" ? true : false)
+      autospotting_max_price = lookup(var.instance_groups[count.index], "autospotting_max_price", "0.01")
       autoscaler             = lookup(var.instance_groups[count.index], "type") == "Node" ? "enabled" : "off"
     })
   }
@@ -71,7 +85,7 @@ EOF
 }
 
 resource "null_resource" "instance_groups" {
-  count = length(var.instance_groups)
+  count = length(var.instance_groups) * var.max_availability_zones
 
   provisioner "local-exec" {
     environment = local.kops_env_config

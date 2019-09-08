@@ -38,19 +38,14 @@ variable "region" {
 }
 
 variable "instance_groups" {
-  type = list(object({
-    type                   = string
-    name                   = string
-    image                  = string
-    count_min              = number
-    count_max              = number
-    autospotting           = bool
-    autospotting_max_price = number
-    node_role              = string
-    storage_iops           = number
-    storage_in_gb          = number
-  }))
+  type = list
   description = "Instance groups to create. The masters are included by default. You will need to configure at least one additional node group"
+}
+
+variable "max_availability_zones" {
+  type        = number
+  default     = 3
+  description = "Maximum availability zones to span with this cluster"
 }
 
 variable "ssh_path" {
