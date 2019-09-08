@@ -179,3 +179,9 @@ variable "aws_account_id" {
   default     = ""
   description = "AWS Account ID. Defaults to current Account ID"
 }
+
+variable "aws_assume_role_arn" {
+  type        = string
+  default     = ""
+  description = "The AWS Role ARN to assume to create resources"
+}
