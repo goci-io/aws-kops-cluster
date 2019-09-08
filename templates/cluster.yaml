@@ -9,6 +9,7 @@ spec:
   masterPublicName: api.${cluster_dns}
   networkCIDR: ${vpc_cidr}
   networkID: ${vpc_id}
+  nonMasqueradeCIDR: ${cluster_cidr}
   networking:
     calico: {}
   api:
@@ -42,6 +43,8 @@ spec:
     - max-file=10
   externalDns:
     watchIngress: true
+  kubeProxy:
+    clusterCIDR: ${cluster_cidr}
   kubeControllerManager:
     horizontalPodAutoscalerSyncPeriod: 30s
     horizontalPodAutoscalerDownscaleDelay: 5m0s
