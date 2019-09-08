@@ -21,7 +21,7 @@ module "readonly_role_label" {
 }
 
 resource "kubernetes_config_map" "aws_iam_authenticator" {
-  depends_on = [null_resource.kops_update_cluster]
+  depends_on = [null_resource.export_kubecfg]
 
   metadata {
     name      = "aws-iam-authenticator"

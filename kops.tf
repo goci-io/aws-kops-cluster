@@ -33,11 +33,14 @@ locals {
   })
 
   kops_default_image = "kope.io/k8s-1.12-debian-stretch-amd64-hvm-ebs-2019-06-21"
-  kops_cluster       = format(
-    "%s\n%s\n%s", 
-    local.kops_cluster_config, 
-    join("\n", data.null_data_source.master_instance_groups.*.outputs.rendered), 
-    join("\n", data.null_data_source.instance_groups.*.outputs.rendered)
+  yaml_new_doc       = "\n---\n"
+  kops_cluster = format(
+    "%s%s%s%s%s",
+    local.kops_cluster_config,
+    local.yaml_new_doc,
+    join(local.yaml_new_doc, data.null_data_source.master_instance_groups.*.outputs.rendered),
+    local.yaml_new_doc,
+    join(local.yaml_new_doc, data.null_data_source.instance_groups.*.outputs.rendered)
   )
 }
 
@@ -118,6 +121,21 @@ EOF
     hash = md5(local.kops_cluster)
   }
 }
+
+resource "null_resource" "export_kubecfg" {
+  depends_on = [null_resource.kops_update_cluster]
+  
+  provisioner "local-exec" {
+    command     = "kops export kubecfg"
+    environment = local.kops_env_config
+  }
+
+  # Always trigger export
+  triggers = {
+    hash = uuid()
+  }
+}
+
 
 resource "null_resource" "kops_delete_cluster" {
   provisioner "local-exec" {
