@@ -136,7 +136,6 @@ resource "null_resource" "export_kubecfg" {
   }
 }
 
-
 resource "null_resource" "kops_delete_cluster" {
   provisioner "local-exec" {
     when        = "destroy"
