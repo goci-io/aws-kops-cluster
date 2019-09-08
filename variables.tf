@@ -49,8 +49,8 @@ variable "max_availability_zones" {
 }
 
 variable "ssh_path" {
-  type = string
-  default = "/secrets/tf/ssh"
+  type        = string
+  default     = "/secrets/tf/ssh"
   description = "Path to put SSH keys into"
 }
 
@@ -73,8 +73,8 @@ variable "acm_module_state" {
 }
 
 variable "certificate_arn" {
-  type = string
-  default = ""
+  type        = string
+  default     = ""
   description = "The ACM Certificate ARN to use if acm_module_state is not set"
 }
 
@@ -96,9 +96,81 @@ variable "vpc_cidr" {
   description = "The VPC CIDR to use if vpc_module_state is not set"
 }
 
+variable "public_subnet_id_a" {
+  type        = string
+  default     = ""
+  description = "The ID of the first public subnet"
+}
+
+variable "public_subnet_cidr_a" {
+  type        = string
+  default     = ""
+  description = "The CIDR of the first public subnet"
+}
+
+variable "public_subnet_id_b" {
+  type        = string
+  default     = ""
+  description = "The ID of the second public subnet"
+}
+
+variable "public_subnet_cidr_b" {
+  type        = string
+  default     = ""
+  description = "The CIDR of the second public subnet"
+}
+
+variable "public_subnet_id_c" {
+  type        = string
+  default     = ""
+  description = "The ID of the third public subnet"
+}
+
+variable "public_subnet_cidr_c" {
+  type        = string
+  default     = ""
+  description = "The CIDR of the third public subnet"
+}
+
+variable "private_subnet_id_a" {
+  type        = string
+  default     = ""
+  description = "The ID of the first private subnet"
+}
+
+variable "private_subnet_cidr_a" {
+  type        = string
+  default     = ""
+  description = "The CIDR of the first private subnet"
+}
+
+variable "private_subnet_id_b" {
+  type        = string
+  default     = ""
+  description = "The ID of the second private subnet"
+}
+
+variable "private_subnet_cidr_b" {
+  type        = string
+  default     = ""
+  description = "The CIDR of the second private subnet"
+}
+
+variable "private_subnet_id_c" {
+  type        = string
+  default     = ""
+  description = "The ID of the third private subnet"
+}
+
+variable "private_subnet_cidr_c" {
+  type        = string
+  default     = ""
+  description = "The CIDR of the third private subnet"
+}
+
 variable "aws_region" {
-  type = string
-  default = ""
+  type        = string
+  default     = ""
   description = "The AWS region the cluster will be deployed into if the target is not the current region"
 }
 
