@@ -197,3 +197,11 @@ variable "aws_assume_role_arn" {
   default     = ""
   description = "The AWS Role ARN to assume to create resources"
 }
+
+# Workaround for https://github.com/terraform-providers/terraform-provider-aws/issues/8242
+variable "external_account" {
+  type = bool
+  default = false
+  description = "Whether kops is deployed into a different AWS account. Required to provide kops access to this account"
+}
+

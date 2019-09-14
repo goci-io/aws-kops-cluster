@@ -1,8 +1,10 @@
 
 locals {
   kops_env_config = {
-    KOPS_STATE_STORE  = "s3://${aws_s3_bucket.kops_state.id}"
-    KOPS_CLUSTER_NAME = local.cluster_name
+    KOPS_STATE_STORE      = "s3://${aws_s3_bucket.kops_state.id}"
+    KOPS_CLUSTER_NAME     = local.cluster_name
+    AWS_ACCESS_KEY_ID     = var.external_account ? join("", aws_iam_access_key.kops.*.id) : ""
+    AWS_SECRET_ACCESS_KEY = var.external_account ? join("", aws_iam_access_key.kops.*.secret) : ""
   }
 
   kops_cluster_config = templatefile("${path.module}/templates/cluster.yaml", {
@@ -46,92 +48,6 @@ locals {
   )
 }
 
-data "null_data_source" "instance_groups" {
-  count = length(var.instance_groups) * var.max_availability_zones
-
-  inputs = {
-    rendered = templatefile("${path.module}/templates/instance-group.yaml", {
-      cluster_name           = local.cluster_name
-      namespace              = var.namespace
-      stage                  = var.stage
-      region                 = var.region
-      autoscaler             = "enabled"
-      node_role              = "Node"
-      public_ip              = false
-      instance_group_name    = format(
-        "%s-%s", 
-        lookup(var.instance_groups[floor(count.index / 3)], "name"), 
-        element(data.aws_availability_zones.available.names, count.index % var.max_availability_zones)
-      )
-      aws_subnet_id          = format("\n  - %s", local.subnets[lookup(var.instance_groups[floor(count.index / 3)], "subnet", "private")][count.index % var.max_availability_zones])
-      image                  = lookup(var.instance_groups[floor(count.index / 3)], "image", local.kops_default_image)
-      instance_name          = lookup(var.instance_groups[floor(count.index / 3)], "name")
-      instance_type          = lookup(var.instance_groups[floor(count.index / 3)], "instance_type")
-      instance_max           = lookup(var.instance_groups[floor(count.index / 3)], "count_max", 3)
-      instance_min           = lookup(var.instance_groups[floor(count.index / 3)], "count_min", 1)
-      storage_type           = lookup(var.instance_groups[floor(count.index / 3)], "storage_type", "gp2")
-      storage_iops           = lookup(var.instance_groups[floor(count.index / 3)], "storage_iops", 168)
-      storage_in_gb          = lookup(var.instance_groups[floor(count.index / 3)], "storage_in_gb", 56)
-      autospotting_enabled   = lookup(var.instance_groups[floor(count.index / 3)], "autospotting", false)
-      autospotting_max_price = lookup(var.instance_groups[floor(count.index / 3)], "autospotting_max_price", "0.01")
-    })
-  }
-}
-
-data "null_data_source" "master_instance_groups" {
-  count = var.max_availability_zones
-
-  inputs = {
-    rendered = templatefile("${path.module}/templates/instance-group.yaml", {
-      cluster_name           = local.cluster_name
-      namespace              = var.namespace
-      stage                  = var.stage
-      region                 = var.region
-      public_ip              = false
-      image                  = local.kops_default_image
-      instance_group_name    = format("master-%s", data.aws_availability_zones.available.names[count.index])
-      aws_subnet_id          = format("\n  - %s", local.subnets.private[count.index])
-      autoscaler             = "off"
-      storage_type           = "io1"
-      storage_iops           = 480
-      storage_in_gb          = 156
-      autospotting_enabled   = false
-      autospotting_max_price = "0.0001"
-      node_role              = "Master"
-      instance_name          = "master"
-      instance_type          = var.master_machine_type
-      instance_max           = 1
-      instance_min           = 1
-    })
-  }
-}
-
-data "null_data_source" "bastion_instance_group" {
-  inputs = {
-    rendered = templatefile("${path.module}/templates/instance-group.yaml", {
-      cluster_name           = local.cluster_name
-      namespace              = var.namespace
-      stage                  = var.stage
-      region                 = var.region
-      public_ip              = true
-      image                  = local.kops_default_image
-      aws_subnet_id          = join("\n  - ", local.subnets.public)
-      autoscaler             = "off"
-      storage_type           = "gp2"
-      storage_iops           = 0
-      storage_in_gb          = 8
-      autospotting_enabled   = true
-      autospotting_max_price = "0.0025"
-      instance_group_name    = "bastion"
-      node_role              = "Bastion"
-      instance_name          = "bastion"
-      instance_type          = var.bastion_machine_type
-      instance_max           = 1
-      instance_min           = 1
-    })
-  }
-}
-
 module "ssh_key_pair" {
   source              = "git::https://github.com/cloudposse/terraform-aws-key-pair.git?ref=tags/0.4.0"
   namespace           = var.namespace
@@ -141,6 +57,42 @@ module "ssh_key_pair" {
   ssh_public_key_path = var.ssh_path
   generate_ssh_key    = "true"
   name                = "kops"
+}
+
+# Workaround for https://github.com/terraform-providers/terraform-provider-aws/issues/8242
+resource "aws_iam_user" "kops" {
+  count = var.external_account ? 1 : 0
+  name  = module.kops_label.id
+  tags  = module.kops_label.tags
+  path  = "/system/"
+}
+
+data "aws_iam_policy_document" "kops" {
+  count = var.external_account ? 1 : 0
+
+  statement {
+    effect    = "Allow"
+    resources = ["*"]
+    actions   = [
+      "AmazonRoute53FullAccess",
+      "AmazonEC2FullAccess",
+      "AmazonVPCFullAccess",
+      "AmazonS3FullAccess",
+      "IAMFullAccess",
+    ]
+  }
+}
+
+resource "aws_iam_user_policy" "kops" {
+  count  = var.external_account ? 1 : 0
+  name   = module.kops_label.id
+  user   = join("", aws_iam_user.kops.*.name)
+  policy = join("", data.aws_iam_policy_document.kops.*.json)
+}
+
+resource "aws_iam_access_key" "kops" {
+  count = var.external_account ? 1 : 0
+  user  = join("", aws_iam_user.kops.*.name)
 }
 
 resource "null_resource" "kops_update_cluster" {

@@ -45,4 +45,5 @@ spec:
     instance_type: ${instance_name}
     spot: "${autospotting_enabled}"
   role: ${node_role}
-  subnets: ${aws_subnet_id}
+  subnets: 
+  - ${aws_subnet_id}
