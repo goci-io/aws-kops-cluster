@@ -26,6 +26,7 @@ spec:
     disableBasicAuth: true
     serviceNodePortRange: 10000-35000
   kubelet:
+    anonymousAuth: false
     kubeReserved:
         cpu: 200m
         memory: 256Mi

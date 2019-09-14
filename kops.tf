@@ -34,6 +34,11 @@ locals {
     private_subnet_cidr_c = local.private_subnet_cidr_c
   })
 
+  kops_secret_config = templatefile("${path.module}/templates/secret.yaml", {
+    public_key   = module.ssh_key_pair.public_key
+    cluster_name = local.cluster_name
+  })
+
   kops_default_image = "kope.io/k8s-1.12-debian-stretch-amd64-hvm-ebs-2019-06-21"
   kops_configs       = concat(
     [local.kops_cluster_config, data.null_data_source.bastion_instance_group.outputs.rendered],
@@ -72,7 +77,7 @@ resource "null_resource" "kops_update_cluster" {
   provisioner "local-exec" {
     environment = local.kops_env_config
     command     = <<EOF
-      kops create secret sshpublickey kops -i ${module.ssh_key_pair.public_key_filename};
+      echo "${local.kops_secret_config}" | kops create -f -;
       kops update cluster --yes
 EOF
   }
