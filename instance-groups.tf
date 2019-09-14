@@ -22,7 +22,7 @@ data "null_data_source" "instance_groups" {
       storage_type           = lookup(var.instance_groups[floor(count.index / 3)], "storage_type", "gp2")
       storage_iops           = lookup(var.instance_groups[floor(count.index / 3)], "storage_iops", 168)
       storage_in_gb          = lookup(var.instance_groups[floor(count.index / 3)], "storage_in_gb", 56)
-      autospotting_instances = join("\n    - %s", lookup(var.instance_groups[floor(count.index / 3)], "autospotting_instances", [lookup(var.instance_groups[floor(count.index / 3)], "instance_type")]))
+      autospotting_instances = join("\n    - ", lookup(var.instance_groups[floor(count.index / 3)], "autospotting_instances", [lookup(var.instance_groups[floor(count.index / 3)], "instance_type")]))
       autospotting_max_price = lookup(var.instance_groups[floor(count.index / 3)], "autospotting", false) ? format(local.optional_max_price_format, lookup(var.instance_groups[floor(count.index / 3)], "autospotting_max_price", 0.03)) : ""
 
       instance_group_name = format(
@@ -75,13 +75,13 @@ data "null_data_source" "bastion_instance_group" {
       region                 = var.region
       public_ip              = true
       image                  = local.kops_default_image
-      aws_subnet_id          = join("\n  - utility-", data.aws_availability_zones.available.names)
       autoscaler             = "off"
       storage_type           = "gp2"
       storage_iops           = 0
       storage_in_gb          = 6
       autospotting_max_price = 0.005
-      autospotting_instances = join("\n    - %s", distinct([var.bastion_machine_type, "t2.small", "t2.medium", "t3.small"]))
+      autospotting_instances = join("\n    - ", distinct([var.bastion_machine_type, "t2.small", "t2.medium", "t3.small"]))
+      aws_subnet_id          = "utility-${join("\n  - utility-", data.aws_availability_zones.available.names)}"
       instance_group_name    = "bastion"
       node_role              = "Bastion"
       instance_name          = "bastion"
