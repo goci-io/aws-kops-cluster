@@ -77,7 +77,7 @@ data "null_data_source" "bastion_instance_group" {
       autoscaler             = "off"
       storage_type           = "gp2"
       storage_iops           = 0
-      storage_in_gb          = 8
+      storage_in_gb          = 6
       autospotting_enabled   = true
       autospotting_max_price = "maxPrice: 0.005"
       instance_group_name    = "bastion"
