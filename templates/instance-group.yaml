@@ -14,10 +14,10 @@ spec:
   #    
   cloudLabels:
     Cluster: "${cluster_name}"
-    Namespace: ${namespace}
-    Stage: ${stage}
+    Namespace: "${namespace}"
+    Stage: "${stage}"
     Region: "${region}"
-    Role: ${instance_name}
+    Role: "${instance_name}"
     kops.k8s.io/cluster: "${cluster_name}"
     kops.k8s.io/instancegroup: "${instance_group_name}"
     kubernetes.io/cluster/${cluster_name}: owned
@@ -34,13 +34,13 @@ spec:
   associatePublicIp: ${public_ip}
   nodeLabels:
     Cluster: "${cluster_name}"
-    Namespace: ${namespace}
-    Stage: ${stage}
+    Namespace: "${namespace}"
+    Stage: "${stage}"
     Region: "${region}"
-    Role: ${instance_name}
+    Role: "${instance_name}"
     kops.k8s.io/cluster: "${cluster_name}"
     kops.k8s.io/instancegroup: "${instance_group_name}"
-    instance_type: ${instance_name}
+    instance_type: "${instance_name}"
     spot: "false"
   role: ${node_role}
   subnets: 
