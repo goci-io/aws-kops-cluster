@@ -1,6 +1,5 @@
 namespace        = "goci"
 stage            = "prod"
-root_domain      = "goci.io"
 region           = "eu1"
 vpc_state_module = "vpc/eu1.tfstate"
 tf_bucket        = "goci-prod-terraform-state"

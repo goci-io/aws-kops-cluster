@@ -27,11 +27,6 @@ variable "delimiter" {
   description = "Delimiter to be used between `namespace`, `stage`, `name` and `attributes`"
 }
 
-variable "root_domain" {
-  type        = string
-  description = "Root domain to use to build the cluster name and dns zone"
-}
-
 variable "region" {
   type        = string
   description = "The own region identifier for this deployment"
