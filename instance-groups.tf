@@ -10,12 +10,6 @@ data "null_data_source" "instance_groups" {
       autoscaler             = "enabled"
       node_role              = "Node"
       public_ip              = false
-      instance_group_name    = format(
-        "%s-%s", 
-        lookup(var.instance_groups[floor(count.index / 3)], "name"), 
-        element(data.aws_availability_zones.available.names, count.index % var.max_availability_zones)
-      )
-      aws_subnet_id          = local.subnets[lookup(var.instance_groups[floor(count.index / 3)], "subnet", "private")][count.index % var.max_availability_zones]
       image                  = lookup(var.instance_groups[floor(count.index / 3)], "image", local.kops_default_image)
       instance_name          = lookup(var.instance_groups[floor(count.index / 3)], "name")
       instance_type          = lookup(var.instance_groups[floor(count.index / 3)], "instance_type")
@@ -25,7 +19,22 @@ data "null_data_source" "instance_groups" {
       storage_iops           = lookup(var.instance_groups[floor(count.index / 3)], "storage_iops", 168)
       storage_in_gb          = lookup(var.instance_groups[floor(count.index / 3)], "storage_in_gb", 56)
       autospotting_enabled   = lookup(var.instance_groups[floor(count.index / 3)], "autospotting", false)
-      autospotting_max_price = lookup(var.instance_groups[floor(count.index / 3)], "autospotting_max_price", "0.01")
+      autospotting_max_price = 
+        lookup(var.instance_groups[floor(count.index / 3)], "autospotting", false)
+        ? format("maxPrice: %d", lookup(var.instance_groups[floor(count.index / 3)], "autospotting_max_price", "0.03"))
+        : ""
+
+      instance_group_name = format(
+        "%s-%s", 
+        lookup(var.instance_groups[floor(count.index / 3)], "name"), 
+        element(data.aws_availability_zones.available.names, count.index % var.max_availability_zones)
+      )
+
+      aws_subnet_id = format(
+        "%s-%s", 
+        lookup(var.instance_groups[floor(count.index / 3)], "subnet", "private"), 
+        element(data.aws_availability_zones.available.names, count.index % var.max_availability_zones)
+      )
     })
   }
 }
@@ -42,13 +51,13 @@ data "null_data_source" "master_instance_groups" {
       public_ip              = false
       image                  = local.kops_default_image
       instance_group_name    = format("master-%s", data.aws_availability_zones.available.names[count.index])
-      aws_subnet_id          = local.subnets.private[count.index]
+      aws_subnet_id          = format("private-%s", data.aws_availability_zones.available.names[count.index])
       autoscaler             = "off"
       storage_type           = "io1"
       storage_iops           = 480
       storage_in_gb          = 156
       autospotting_enabled   = false
-      autospotting_max_price = "0.0001"
+      autospotting_max_price = ""
       node_role              = "Master"
       instance_name          = "master"
       instance_type          = var.master_machine_type
@@ -67,13 +76,13 @@ data "null_data_source" "bastion_instance_group" {
       region                 = var.region
       public_ip              = true
       image                  = local.kops_default_image
-      aws_subnet_id          = join("\n  - ", local.subnets.public)
+      aws_subnet_id          = join("\n  - utility-", data.aws_availability_zones.available.names)
       autoscaler             = "off"
       storage_type           = "gp2"
       storage_iops           = 0
       storage_in_gb          = 8
       autospotting_enabled   = true
-      autospotting_max_price = "0.005"
+      autospotting_max_price = "maxPrice: 0.005"
       instance_group_name    = "bastion"
       node_role              = "Bastion"
       instance_name          = "bastion"

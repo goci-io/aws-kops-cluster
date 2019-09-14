@@ -15,6 +15,7 @@ spec:
   networking:
     calico: {}
   api:
+    dns: {}
     loadBalancer:
       type: Internal
       sslCertificate: ${certificate_arn}
