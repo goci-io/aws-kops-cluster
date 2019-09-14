@@ -13,13 +13,13 @@ spec:
   #    #!/bin/sh
   #    
   cloudLabels:
-    Cluster: ${cluster_name}
+    Cluster: "${cluster_name}"
     Namespace: ${namespace}
     Stage: ${stage}
     Region: ${region}
     Role: ${instance_name}
-    kops.k8s.io/cluster: ${cluster_name}
-    kops.k8s.io/instancegroup: ${instance_group_name}
+    kops.k8s.io/cluster: "${cluster_name}"
+    kops.k8s.io/instancegroup: "${instance_group_name}"
     kubernetes.io/cluster/${cluster_name}: owned
     k8s.io/cluster-autoscaler/${autoscaler}: ""
     k8s.io/cluster-autoscaler/node-template/label/instance_type: ${instance_name}
@@ -28,7 +28,7 @@ spec:
   machineType: ${instance_type}
   maxSize: ${instance_max}
   minSize: ${instance_min}
-  maxPrice: ${autospotting_max_price}
+  maxPrice: "${autospotting_max_price}"
   rootVolumeSize: ${storage_in_gb}
   rootVolumeType: ${storage_type}
   rootVolumeIops: ${storage_iops}
@@ -38,13 +38,13 @@ spec:
     instances:
     - ${autospotting_instances}
   nodeLabels:
-    Cluster: ${cluster_name}
+    Cluster: "${cluster_name}"
     Namespace: ${namespace}
     Stage: ${stage}
     Region: ${region}
     Role: ${instance_name}
-    kops.k8s.io/cluster: ${cluster_name}
-    kops.k8s.io/instancegroup: ${instance_group_name}
+    kops.k8s.io/cluster: "${cluster_name}"
+    kops.k8s.io/instancegroup: "${instance_group_name}"
     instance_type: ${instance_name}
     spot: "true"
   role: ${node_role}
