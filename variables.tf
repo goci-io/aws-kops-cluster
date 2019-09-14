@@ -42,6 +42,12 @@ variable "instance_groups" {
   description = "Instance groups to create. The masters are included by default. You will need to configure at least one additional node group"
 }
 
+variable "master_machine_type" {
+  type = string
+  default = "m5.large"
+  description = "The AWS instance type to use for the masters"
+}
+
 variable "max_availability_zones" {
   type        = number
   default     = 3
