@@ -59,42 +59,6 @@ module "ssh_key_pair" {
   name                = "kops"
 }
 
-# Workaround for https://github.com/terraform-providers/terraform-provider-aws/issues/8242
-resource "aws_iam_user" "kops" {
-  count = var.external_account ? 1 : 0
-  name  = module.kops_label.id
-  tags  = module.kops_label.tags
-  path  = "/system/"
-}
-
-data "aws_iam_policy_document" "kops" {
-  count = var.external_account ? 1 : 0
-
-  statement {
-    effect    = "Allow"
-    resources = ["*"]
-    actions   = [
-      "AmazonRoute53FullAccess",
-      "AmazonEC2FullAccess",
-      "AmazonVPCFullAccess",
-      "AmazonS3FullAccess",
-      "IAMFullAccess",
-    ]
-  }
-}
-
-resource "aws_iam_user_policy" "kops" {
-  count  = var.external_account ? 1 : 0
-  name   = module.kops_label.id
-  user   = join("", aws_iam_user.kops.*.name)
-  policy = join("", data.aws_iam_policy_document.kops.*.json)
-}
-
-resource "aws_iam_access_key" "kops" {
-  count = var.external_account ? 1 : 0
-  user  = join("", aws_iam_user.kops.*.name)
-}
-
 resource "null_resource" "kops_update_cluster" {
   provisioner "local-exec" {
     environment = local.kops_env_config
