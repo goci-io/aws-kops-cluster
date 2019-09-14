@@ -42,7 +42,7 @@ locals {
     local.yaml_new_doc,
     join(local.yaml_new_doc, data.null_data_source.instance_groups.*.outputs.rendered),
     local.yaml_new_doc,
-    data.null_data_source.bastion_instance_group.rendered
+    data.null_data_source.bastion_instance_group.outputs.rendered
   )
 }
 
