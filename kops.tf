@@ -35,17 +35,12 @@ locals {
   })
 
   kops_default_image = "kope.io/k8s-1.12-debian-stretch-amd64-hvm-ebs-2019-06-21"
-  yaml_new_doc       = "---\n"
-  kops_cluster = format(
-    "%s%s%s%s%s%s%s",
+  kops_configs       = [
     local.kops_cluster_config,
-    local.yaml_new_doc,
-    join(local.yaml_new_doc, data.null_data_source.master_instance_groups.*.outputs.rendered),
-    local.yaml_new_doc,
-    join(local.yaml_new_doc, data.null_data_source.instance_groups.*.outputs.rendered),
-    local.yaml_new_doc,
-    data.null_data_source.bastion_instance_group.outputs.rendered
-  )
+    data.null_data_source.master_instance_groups.*.outputs.rendered,
+    data.null_data_source.bastion_instance_group.outputs.rendered,
+    data.null_data_source.master_instance_groups.*.outputs.rendered
+  ]
 }
 
 module "ssh_key_pair" {
@@ -59,18 +54,32 @@ module "ssh_key_pair" {
   name                = "kops"
 }
 
+resource "null_resource" "replace_config" {
+  count = length(local.kops_configs)
+  
+  provisioner "local-exec" {
+    environment = local.kops_env_config
+    command     = "echo \"${local.kops_configs[count.index]}\" | kops replace --force -f -"
+  }
+
+  triggers = {
+    hash = md5(local.kops_configs[count.index])
+  }
+}
+
 resource "null_resource" "kops_update_cluster" {
+  depends_on = [null_resource.replace_config]
+
   provisioner "local-exec" {
     environment = local.kops_env_config
     command     = <<EOF
-      echo "${local.kops_cluster}" | kops replace --force -f -;
       kops create secret sshpublickey kops -i ${module.ssh_key_pair.public_key_filename};
       kops update cluster --yes
 EOF
   }
 
   triggers = {
-    hash = md5(local.kops_cluster)
+    hash = md5(jsonencode(local.kops_configs))
   }
 }
 
