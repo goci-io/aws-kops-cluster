@@ -63,7 +63,7 @@ data "null_data_source" "instance_groups" {
         lookup(var.instance_groups[floor(count.index / 3)], "name"), 
         element(data.aws_availability_zones.available.names, count.index % var.max_availability_zones)
       )
-      aws_subnet_id          = format("\n  - ", local.subnets[lookup(var.instance_groups[floor(count.index / 3)], "subnet", "private")][count.index % var.max_availability_zones])
+      aws_subnet_id          = format("\n  - %s", local.subnets[lookup(var.instance_groups[floor(count.index / 3)], "subnet", "private")][count.index % var.max_availability_zones])
       image                  = lookup(var.instance_groups[floor(count.index / 3)], "image", local.kops_default_image)
       instance_name          = lookup(var.instance_groups[floor(count.index / 3)], "name")
       instance_type          = lookup(var.instance_groups[floor(count.index / 3)], "instance_type")
@@ -90,7 +90,7 @@ data "null_data_source" "master_instance_groups" {
       public_ip              = false
       image                  = local.kops_default_image
       instance_group_name    = format("master-%s", data.aws_availability_zones.available.names[count.index])
-      aws_subnet_id          = format("\n  - ", local.subnets.private[count.index])
+      aws_subnet_id          = format("\n  - %s", local.subnets.private[count.index])
       autoscaler             = "off"
       storage_type           = "io1"
       storage_iops           = 480
