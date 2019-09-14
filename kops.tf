@@ -35,12 +35,14 @@ locals {
   kops_default_image = "kope.io/k8s-1.12-debian-stretch-amd64-hvm-ebs-2019-06-21"
   yaml_new_doc       = "---\n"
   kops_cluster = format(
-    "%s%s%s%s%s",
+    "%s%s%s%s%s%s%s",
     local.kops_cluster_config,
     local.yaml_new_doc,
     join(local.yaml_new_doc, data.null_data_source.master_instance_groups.*.outputs.rendered),
     local.yaml_new_doc,
-    join(local.yaml_new_doc, data.null_data_source.instance_groups.*.outputs.rendered)
+    join(local.yaml_new_doc, data.null_data_source.instance_groups.*.outputs.rendered),
+    local.yaml_new_doc,
+    data.null_data_source.bastion_instance_group.rendered
   )
 }
 
@@ -56,7 +58,11 @@ data "null_data_source" "instance_groups" {
       autoscaler             = "enabled"
       node_role              = "Node"
       public_ip              = false
-      aws_availability_zone  = element(data.aws_availability_zones.available.names, count.index % var.max_availability_zones)
+      instance_group_name    = format(
+        "%s-%s", 
+        lookup(var.instance_groups[floor(count.index / 3)], "name"), 
+        element(data.aws_availability_zones.available.names, count.index % var.max_availability_zones)
+      )
       aws_subnet_id          = format("\n  - ", local.subnets[lookup(var.instance_groups[floor(count.index / 3)], "subnet", "private")][count.index % var.max_availability_zones])
       image                  = lookup(var.instance_groups[floor(count.index / 3)], "image", local.kops_default_image)
       instance_name          = lookup(var.instance_groups[floor(count.index / 3)], "name")
@@ -83,7 +89,7 @@ data "null_data_source" "master_instance_groups" {
       region                 = var.region
       public_ip              = false
       image                  = local.kops_default_image
-      aws_availability_zone  = data.aws_availability_zones.available.names[count.index]
+      instance_group_name    = format("master-%s", data.aws_availability_zones.available.names[count.index])
       aws_subnet_id          = format("\n  - ", local.subnets.private[count.index])
       autoscaler             = "off"
       storage_type           = "io1"
@@ -100,7 +106,7 @@ data "null_data_source" "master_instance_groups" {
   }
 }
 
-data "null_data_source" "bastion_instance_groups" {
+data "null_data_source" "bastion_instance_group" {
   inputs = {
     rendered = templatefile("${path.module}/templates/instance-group.yaml", {
       cluster_name           = local.cluster_name
@@ -109,14 +115,14 @@ data "null_data_source" "bastion_instance_groups" {
       region                 = var.region
       public_ip              = true
       image                  = local.kops_default_image
-      aws_availability_zone  = data.aws_availability_zones.available.names[count.index]
       aws_subnet_id          = join("\n  - ", local.subnets.public)
       autoscaler             = "off"
       storage_type           = "gp2"
       storage_iops           = 0
-      storage_in_gb          = 16
+      storage_in_gb          = 8
       autospotting_enabled   = true
       autospotting_max_price = "0.0025"
+      instance_group_name    = "bastion"
       node_role              = "Bastion"
       instance_name          = "bastion"
       instance_type          = var.bastion_machine_type

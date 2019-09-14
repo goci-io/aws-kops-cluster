@@ -1,10 +1,10 @@
 apiVersion: kops/v1alpha2
 kind: InstanceGroup
 metadata:
-  name: ${instance_name}-${aws_availability_zone}
+  name: ${instance_group_name}
   labels:
     kops.k8s.io/cluster: ${cluster_name}
-    kops.k8s.io/instancegroup: ${instance_name}-${aws_availability_zone}
+    kops.k8s.io/instancegroup: ${instance_group_name}
 spec:
   #additionalUserData:
   #- name: reserved-resources.sh
@@ -19,11 +19,11 @@ spec:
     Region: ${region}
     Role: ${instance_name}
     kops.k8s.io/cluster: ${cluster_name}
-    kops.k8s.io/instancegroup: ${instance_name}-${aws_availability_zone}
+    kops.k8s.io/instancegroup: ${instance_group_name}
     kubernetes.io/cluster/${cluster_name}: owned
     k8s.io/cluster-autoscaler/${autoscaler}: ""
     k8s.io/cluster-autoscaler/node-template/label/instance_type: ${instance_name}
-    k8s.io/cluster-autoscaler/node-template/label/kops.k8s.io/instancegroup: ${instance_name}-${aws_availability_zone}
+    k8s.io/cluster-autoscaler/node-template/label/kops.k8s.io/instancegroup: ${instance_group_name}
   image: ${image}
   machineType: ${instance_type}
   maxSize: ${instance_max}
@@ -40,7 +40,7 @@ spec:
     Region: ${region}
     Role: ${instance_name}
     kops.k8s.io/cluster: ${cluster_name}
-    kops.k8s.io/instancegroup: ${instance_name}-${aws_availability_zone}
+    kops.k8s.io/instancegroup: ${instance_group_name}
     original_machine_type: ${instance_type}
     instance_type: ${instance_name}
     spot: "${autospotting_enabled}"
