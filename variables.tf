@@ -48,6 +48,12 @@ variable "master_machine_type" {
   description = "The AWS instance type to use for the masters"
 }
 
+variable "bastion_machine_type" {
+  type = string
+  default = "t2.micro"
+  description = "The AWS instance type to use for the bastions"
+}
+
 variable "max_availability_zones" {
   type        = number
   default     = 3

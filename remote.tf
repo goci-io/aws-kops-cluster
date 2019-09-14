@@ -41,4 +41,9 @@ locals {
 
   private_subnet_id_c   = var.private_subnet_id_c == "" ? data.terraform_remote_state.vpc[0].outputs.private_subnet_ids[2] : var.private_subnet_id_c
   private_subnet_cidr_c = var.private_subnet_cidr_c == "" ? data.terraform_remote_state.vpc[0].outputs.private_subnet_cidrs[2] : var.private_subnet_cidr_b
+
+  subnets = {
+    private = [local.private_subnet_id_a, local.private_subnet_id_b, local.private_subnet_id_c],
+    public  = [local.public_subnet_id_a, local.public_subnet_id_b, local.public_subnet_id_c]
+  }
 }
