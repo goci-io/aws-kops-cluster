@@ -36,7 +36,7 @@ spec:
   mixedInstancesPolicy:
     onDemandAboveBase: 0
     instances:
-    - ${spot_instances}
+    - ${autospotting_instances}
   nodeLabels:
     Cluster: ${cluster_name}
     Namespace: ${namespace}
