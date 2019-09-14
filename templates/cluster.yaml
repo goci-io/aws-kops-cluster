@@ -94,7 +94,7 @@ spec:
       instanceGroup: master-${aws_region}c
       name: c
     name: events
-    version: 3.0.17
+    version: 3.3.15
     enableEtcdTLS: true
   subnets:
   - id: ${public_subnet_id_a}
