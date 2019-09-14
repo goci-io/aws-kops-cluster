@@ -13,15 +13,15 @@ spec:
   #    #!/bin/sh
   #    
   cloudLabels:
-    Cluster: "${cluster_name}"
-    Namespace: "${namespace}"
-    Stage: "${stage}"
-    Region: "${region}"
-    Role: "${instance_name}"
-    kops.k8s.io/cluster: "${cluster_name}"
-    kops.k8s.io/instancegroup: "${instance_group_name}"
+    Cluster: ${cluster_name}
+    Namespace: ${namespace}
+    Stage: ${stage}
+    Region: ${region}
+    Role: ${instance_name}
+    kops.k8s.io/cluster: ${cluster_name}
+    kops.k8s.io/instancegroup: ${instance_group_name}
     kubernetes.io/cluster/${cluster_name}: owned
-    k8s.io/cluster-autoscaler/${autoscaler}: ""
+    k8s.io/cluster-autoscaler/${autoscaler}: \"\"
     k8s.io/cluster-autoscaler/node-template/label/instance_type: ${instance_name}
     k8s.io/cluster-autoscaler/node-template/label/kops.k8s.io/instancegroup: ${instance_group_name}
   image: ${image}
@@ -33,15 +33,15 @@ spec:
   rootVolumeIops: ${storage_iops}
   associatePublicIp: ${public_ip}
   nodeLabels:
-    Cluster: "${cluster_name}"
-    Namespace: "${namespace}"
-    Stage: "${stage}"
-    Region: "${region}"
-    Role: "${instance_name}"
-    kops.k8s.io/cluster: "${cluster_name}"
-    kops.k8s.io/instancegroup: "${instance_group_name}"
-    instance_type: "${instance_name}"
-    spot: "false"
+    Cluster: ${cluster_name}
+    Namespace: ${namespace}
+    Stage: ${stage}
+    Region: ${region}
+    Role: ${instance_name}
+    kops.k8s.io/cluster: ${cluster_name}
+    kops.k8s.io/instancegroup: ${instance_group_name}
+    instance_type: ${instance_name}
+    spot: \"false\"
   role: ${node_role}
   subnets: 
   - ${aws_subnet_id}
