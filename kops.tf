@@ -10,6 +10,7 @@ locals {
   kops_cluster_config = templatefile("${path.module}/templates/cluster.yaml", {
     cluster_name          = local.cluster_name
     cluster_dns           = local.cluster_dns
+    cluster_public_dns    = local.cluster_public_dns
     cluster_cidr          = "100.0.0.0/8"
     namespace             = var.namespace
     stage                 = var.stage

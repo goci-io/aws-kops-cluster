@@ -6,12 +6,13 @@ data "aws_availability_zones" "available" {
 }
 
 locals {
-  attributes     = concat(var.attributes, [var.region])
-  tags           = merge(var.tags, map("Cluster", local.cluster_name))
-  cluster_name   = format("%s.%s.%s", var.stage, var.region, var.namespace)
-  cluster_dns    = var.cluster_dns == "" ? local.cluster_name : var.cluster_dns
-  aws_region     = var.aws_region == "" ? data.aws_region.current.name : var.aws_region
-  aws_account_id = var.aws_account_id == "" ? data.aws_caller_identity.current.account_id : var.aws_account_id
+  attributes         = concat(var.attributes, [var.region])
+  tags               = merge(var.tags, map("Cluster", local.cluster_name))
+  cluster_name       = format("%s.%s.%s", var.stage, var.region, var.namespace)
+  cluster_dns        = var.cluster_dns == "" ? local.cluster_name : var.cluster_dns
+  cluster_public_dns = var.cluster_public_dns == "" ? local.cluster_dns : var.cluster_public_dns
+  aws_region         = var.aws_region == "" ? data.aws_region.current.name : var.aws_region
+  aws_account_id     = var.aws_account_id == "" ? data.aws_caller_identity.current.account_id : var.aws_account_id
 }
 
 module "label" {
