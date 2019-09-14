@@ -16,7 +16,7 @@ spec:
     Cluster: "${cluster_name}"
     Namespace: ${namespace}
     Stage: ${stage}
-    Region: ${region}
+    Region: "${region}"
     Role: ${instance_name}
     kops.k8s.io/cluster: "${cluster_name}"
     kops.k8s.io/instancegroup: "${instance_group_name}"
@@ -41,7 +41,7 @@ spec:
     Cluster: "${cluster_name}"
     Namespace: ${namespace}
     Stage: ${stage}
-    Region: ${region}
+    Region: "${region}"
     Role: ${instance_name}
     kops.k8s.io/cluster: "${cluster_name}"
     kops.k8s.io/instancegroup: "${instance_group_name}"
