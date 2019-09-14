@@ -19,7 +19,7 @@ data "null_data_source" "instance_groups" {
       storage_iops           = lookup(var.instance_groups[floor(count.index / 3)], "storage_iops", 168)
       storage_in_gb          = lookup(var.instance_groups[floor(count.index / 3)], "storage_in_gb", 56)
       autospotting_enabled   = lookup(var.instance_groups[floor(count.index / 3)], "autospotting", false)
-      autospotting_max_price = lookup(var.instance_groups[floor(count.index / 3)], "autospotting", false) ? format("maxPrice: %d", lookup(var.instance_groups[floor(count.index / 3)], "autospotting_max_price", "0.03")) : ""
+      autospotting_max_price = lookup(var.instance_groups[floor(count.index / 3)], "autospotting", false) ? format("maxPrice: \"%d\"", lookup(var.instance_groups[floor(count.index / 3)], "autospotting_max_price", "0.03")) : ""
 
       instance_group_name = format(
         "%s-%s", 
@@ -79,7 +79,7 @@ data "null_data_source" "bastion_instance_group" {
       storage_iops           = 0
       storage_in_gb          = 6
       autospotting_enabled   = true
-      autospotting_max_price = "maxPrice: 0.005"
+      autospotting_max_price = "maxPrice: \"0.005\""
       instance_group_name    = "bastion"
       node_role              = "Bastion"
       instance_name          = "bastion"
