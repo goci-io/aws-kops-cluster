@@ -46,7 +46,7 @@ spec:
     kops.k8s.io/cluster: ${cluster_name}
     kops.k8s.io/instancegroup: ${instance_group_name}
     instance_type: ${instance_name}
-    spot: ${autospotting_enabled}
+    spot: true
   role: ${node_role}
   subnets: 
   - ${aws_subnet_id}
