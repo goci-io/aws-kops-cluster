@@ -9,6 +9,8 @@ spec:
   masterPublicName: api.${cluster_dns}
   networkCIDR: ${vpc_cidr}
   networkID: ${vpc_id}
+  awsRegion: ${aws_region}
+  dnsZone: ${cluster_dns}
   nonMasqueradeCIDR: ${cluster_cidr}
   networking:
     calico: {}
