@@ -24,12 +24,12 @@ spec:
     serviceNodePortRange: 10000-35000
   kubelet:
     kubeReserved:
-        cpu: 100m
-        memory: 128Mi
+        cpu: 200m
+        memory: 256Mi
         ephemeral-storage: 1Gi
     systemReserved:
-        cpu: 100m
-        memory: 100Mi
+        cpu: 50m
+        memory: 112Mi
         ephemeral-storage: 1Gi
     kubeReservedCgroup: "/kube-reserved"
     systemReservedCgroup: "/system-reserved"
@@ -64,6 +64,7 @@ spec:
     Namespace: ${namespace}
     Stage: ${stage}
     Region: ${region}
+    kops.k8s.io/cluster: ${cluster_name}
   cloudProvider: aws
   configBase: s3://${kops_bucket_name}/${cluster_name}
   etcdClusters:

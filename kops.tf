@@ -33,7 +33,7 @@ locals {
   })
 
   kops_default_image = "kope.io/k8s-1.12-debian-stretch-amd64-hvm-ebs-2019-06-21"
-  yaml_new_doc       = "\n---\n"
+  yaml_new_doc       = "---\n"
   kops_cluster = format(
     "%s%s%s%s%s",
     local.kops_cluster_config,
@@ -55,7 +55,9 @@ data "null_data_source" "instance_groups" {
       region                 = var.region
       autoscaler             = "enabled"
       node_role              = "Node"
+      public_ip              = false
       aws_availability_zone  = element(data.aws_availability_zones.available.names, count.index % var.max_availability_zones)
+      aws_subnet_id          = format("private-%s", element(data.aws_availability_zones.available.names, count.index % var.max_availability_zones))
       image                  = lookup(var.instance_groups[floor(count.index / 3)], "image", local.kops_default_image)
       instance_name          = lookup(var.instance_groups[floor(count.index / 3)], "name")
       instance_type          = lookup(var.instance_groups[floor(count.index / 3)], "instance_type")
@@ -79,17 +81,45 @@ data "null_data_source" "master_instance_groups" {
       namespace              = var.namespace
       stage                  = var.stage
       region                 = var.region
+      public_ip              = false
       image                  = local.kops_default_image
-      aws_availability_zone  = element(data.aws_availability_zones.available.names, count.index)
+      aws_availability_zone  = data.aws_availability_zones.available.names[count.index]
+      aws_subnet_id          = format("private-%s", data.aws_availability_zones.available.names[count.index])
       autoscaler             = "off"
       storage_type           = "io1"
-      storage_iops           = 400
-      storage_in_gb          = 128
+      storage_iops           = 480
+      storage_in_gb          = 156
       autospotting_enabled   = false
       autospotting_max_price = "0.001"
       node_role              = "Master"
       instance_name          = "master"
-      instance_type          = "t2.medium"
+      instance_type          = var.master_machine_type
+      instance_max           = 1
+      instance_min           = 1
+    })
+  }
+}
+
+data "null_data_source" "bastion_instance_groups" {
+  inputs = {
+    rendered = templatefile("${path.module}/templates/instance-group.yaml", {
+      cluster_name           = local.cluster_name
+      namespace              = var.namespace
+      stage                  = var.stage
+      region                 = var.region
+      public_ip              = true
+      image                  = local.kops_default_image
+      aws_availability_zone  = data.aws_availability_zones.available.names[count.index]
+      aws_subnet_id          = format("utility-%s", data.aws_availability_zones.available.names[count.index])
+      autoscaler             = "off"
+      storage_type           = "io1"
+      storage_iops           = 480
+      storage_in_gb          = 156
+      autospotting_enabled   = false
+      autospotting_max_price = "0.001"
+      node_role              = "Master"
+      instance_name          = "master"
+      instance_type          = var.master_machine_type
       instance_max           = 1
       instance_min           = 1
     })
