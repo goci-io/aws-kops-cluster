@@ -81,6 +81,7 @@ data "null_data_source" "bastion_instance_group" {
       storage_iops           = 0
       storage_in_gb          = 6
       autospotting_max_price = 0.005
+      autospotting_instances = distinct([var.bastion_machine_type, "t2.small", "t2.medium", "t3.small"])
       instance_group_name    = "bastion"
       node_role              = "Bastion"
       instance_name          = "bastion"
