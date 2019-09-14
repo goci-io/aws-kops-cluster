@@ -81,7 +81,7 @@ spec:
       instanceGroup: master-${aws_region}c
       name: c
     name: main
-    version: 3.3.15
+    version: 3.3.13
     enableEtcdTLS: true
   - etcdMembers:
     - encryptedVolume: true
@@ -94,7 +94,7 @@ spec:
       instanceGroup: master-${aws_region}c
       name: c
     name: events
-    version: 3.3.15
+    version: 3.3.13
     enableEtcdTLS: true
   subnets:
   - id: ${public_subnet_id_a}
