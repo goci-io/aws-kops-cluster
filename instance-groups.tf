@@ -78,7 +78,7 @@ data "null_data_source" "bastion_instance_group" {
       autoscaler             = "off"
       storage_type           = "gp2"
       storage_iops           = 0
-      storage_in_gb          = 6
+      storage_in_gb          = 8
       autospotting_max_price = 0.005
       autospotting_instances = join("\n    - ", distinct([var.bastion_machine_type, "t2.small", "t2.medium", "t3.small"]))
       aws_subnet_id          = "utility-${join("\n  - utility-", data.aws_availability_zones.available.names)}"
