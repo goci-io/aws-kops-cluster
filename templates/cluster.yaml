@@ -135,4 +135,4 @@ spec:
     masters: private
     nodes: private
     bastion:
-      bastionPublicName: bastion.${cluster_public_dns}
+      bastionPublicName: bastion.${cluster_dns}

@@ -67,12 +67,6 @@ variable "cluster_dns" {
   description = "The DNS zone to use for the cluster if it differs from cluster name"
 }
 
-variable "cluster_public_dns" {
-  type = string
-  default = ""
-  description = "Public DNS zone name to use if not equal to cluster_dns"
-}
-
 variable "tf_bucket" {
   type        = string
   default     = ""
@@ -83,6 +77,12 @@ variable "acm_module_state" {
   type        = string
   default     = ""
   description = "The key or path to the state where a VPC module was installed. It must expose a certificate_arn"
+}
+
+variable "dns_module_state" {
+  type        = string
+  default     = ""
+  description = "The key or path to the state where a DNS module was installed. It must expose a domain_name. If acm_module_state and certificate_arn are not set we try to get the certificate_arn from this module"
 }
 
 variable "certificate_arn" {
