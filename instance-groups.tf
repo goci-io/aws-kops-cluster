@@ -6,7 +6,7 @@ data "null_data_source" "instance_groups" {
   count = length(var.instance_groups) * var.max_availability_zones
 
   inputs = {
-    rendered = templatefile("${path.module}/templates/instance-group${lookup(var.instance_groups[floor(count.index / 3)], "autospotting", false) ? "-spot" : ""}.yaml", {
+    rendered = templatefile("${path.module}/templates/instance-group${lookup(var.instance_groups[floor(count.index / 3)], "autospotting", true) ? "-spot" : ""}.yaml", {
       cluster_name           = local.cluster_name
       namespace              = var.namespace
       stage                  = var.stage
@@ -23,7 +23,7 @@ data "null_data_source" "instance_groups" {
       storage_iops           = lookup(var.instance_groups[floor(count.index / 3)], "storage_iops", 168)
       storage_in_gb          = lookup(var.instance_groups[floor(count.index / 3)], "storage_in_gb", 56)
       autospotting_instances = join("\n    - ", lookup(var.instance_groups[floor(count.index / 3)], "autospotting_instances", [lookup(var.instance_groups[floor(count.index / 3)], "instance_type")]))
-      autospotting_max_price = lookup(var.instance_groups[floor(count.index / 3)], "autospotting", false) ? format(local.optional_max_price_format, lookup(var.instance_groups[floor(count.index / 3)], "autospotting_max_price", 0.03)) : ""
+      autospotting_max_price = lookup(var.instance_groups[floor(count.index / 3)], "autospotting", true) ? format(local.optional_max_price_format, lookup(var.instance_groups[floor(count.index / 3)], "autospotting_max_price", 0.03)) : ""
 
       instance_group_name = format(
         "%s-%s", 
@@ -73,13 +73,12 @@ data "null_data_source" "bastion_instance_group" {
       namespace              = var.namespace
       stage                  = var.stage
       region                 = var.region
-      public_ip              = true
       image                  = local.kops_default_image
       autoscaler             = "off"
       storage_type           = "gp2"
       storage_iops           = 0
       storage_in_gb          = 8
-      autospotting_max_price = 0.005
+      autospotting_max_price = 0.008
       autospotting_instances = join("\n    - ", distinct([var.bastion_machine_type, "t2.small", "t2.medium", "t3.small"]))
       aws_subnet_id          = "utility-${join("\n  - utility-", data.aws_availability_zones.available.names)}"
       instance_group_name    = "bastion"
@@ -88,6 +87,9 @@ data "null_data_source" "bastion_instance_group" {
       instance_type          = var.bastion_machine_type
       instance_max           = 1
       instance_min           = 1
+
+      # Bastion requires VPN connection to be accessed
+      public_ip              = false
     })
   }
 }
