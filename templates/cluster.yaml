@@ -25,7 +25,6 @@ spec:
       sslCertificate: ${certificate_arn}
       additionalSecurityGroups: [${lb_security_groups}]
       crossZoneLoadBalancing: true
-      useForInternalApi: true
   kubeAPIServer:
     targetRamMb: 1536
     disableBasicAuth: true
