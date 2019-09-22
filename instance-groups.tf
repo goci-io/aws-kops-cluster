@@ -58,8 +58,8 @@ data "null_data_source" "master_instance_groups" {
       instance_group_name    = format("master-%s", data.aws_availability_zones.available.names[count.index])
       aws_subnet_id          = format("private-%s", data.aws_availability_zones.available.names[count.index])
       autoscaler             = "off"
-      storage_type           = "gp2"
-      storage_iops           = 0
+      storage_type           = "io1"
+      storage_iops           = 468
       storage_in_gb          = 156
       node_role              = "Master"
       instance_name          = "master"
