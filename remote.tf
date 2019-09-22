@@ -32,7 +32,7 @@ data "terraform_remote_state" "dns" {
 data "aws_route53_zone" "cluster_zone" {
   count        = var.cluster_dns == "" ? 0 : 1
   name         = format("%s.", var.cluster_dns)
-  private_zone = true
+  private_zone = var.cluster_dns_type == "Private"
 }
 
 locals {

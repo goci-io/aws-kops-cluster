@@ -135,7 +135,7 @@ spec:
     zone: ${aws_region}c
   topology:
     dns:
-      type: Private
+      type: ${dns_type}
     masters: private
     nodes: private
     bastion:

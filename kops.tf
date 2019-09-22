@@ -12,6 +12,7 @@ locals {
     cluster_name          = local.cluster_name
     cluster_dns           = local.cluster_dns
     cluster_zone_id       = local.cluster_zone_id
+    dns_type              = var.cluster_dns_type
     cluster_cidr          = "100.0.0.0/8"
     namespace             = var.namespace
     stage                 = var.stage

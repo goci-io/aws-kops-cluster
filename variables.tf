@@ -67,6 +67,12 @@ variable "cluster_dns" {
   description = "The DNS zone to use for the cluster if it differs from cluster name"
 }
 
+variable "cluster_dns_type" {
+  type        = string
+  default     = "Private"
+  description = "The topology for the cluster dns zone (Private or Public)"
+}
+
 variable "tf_bucket" {
   type        = string
   default     = ""
