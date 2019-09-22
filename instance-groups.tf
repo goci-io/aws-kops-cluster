@@ -3,6 +3,7 @@ data "null_data_source" "instance_groups" {
   count = length(var.instance_groups) * var.max_availability_zones
 
   inputs = {
+    name     = lookup(var.instance_groups[floor(count.index / 3)], "name")
     rendered = templatefile("${path.module}/templates/instance-group${lookup(var.instance_groups[floor(count.index / 3)], "autospotting", true) ? "-spot" : ""}.yaml", {
       cluster_name           = local.cluster_name
       namespace              = var.namespace
@@ -41,6 +42,7 @@ data "null_data_source" "master_instance_groups" {
   count = var.max_availability_zones
 
   inputs = {
+    name     = "masters"
     rendered = templatefile("${path.module}/templates/instance-group.yaml", {
       cluster_name           = local.cluster_name
       namespace              = var.namespace
@@ -65,6 +67,7 @@ data "null_data_source" "master_instance_groups" {
 
 data "null_data_source" "bastion_instance_group" {
   inputs = {
+    name     = "bastions"
     rendered = templatefile("${path.module}/templates/instance-group-spot.yaml", {
       cluster_name           = local.cluster_name
       namespace              = var.namespace
