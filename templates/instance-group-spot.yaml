@@ -28,7 +28,7 @@ spec:
   machineType: ${instance_type}
   maxSize: ${instance_max}
   minSize: ${instance_min}
-  maxPrice: ${autospotting_max_price}
+  maxPrice: \"${autospotting_max_price}\"
   rootVolumeSize: ${storage_in_gb}
   rootVolumeType: ${storage_type}
   rootVolumeIops: ${storage_iops}
