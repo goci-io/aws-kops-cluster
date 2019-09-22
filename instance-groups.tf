@@ -1,5 +1,5 @@
 locals {
-  optional_max_price_format = "\n  maxPrice: \"%d\"\n"
+  optional_max_price_format = "\n  maxPrice: \"%g\"\n"
 }
 
 data "null_data_source" "instance_groups" {
