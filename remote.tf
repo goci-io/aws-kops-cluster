@@ -29,6 +29,12 @@ data "terraform_remote_state" "dns" {
   }
 }
 
+data "aws_route53_zone" "cluster_zone" {
+  count        = var.cluster_dns == "" ? 0 : 1
+  name         = format("%s.", var.cluster_dns)
+  private_zone = true
+}
+
 locals {
   acm_module_state = var.acm_module_state == "" && var.dns_module_state != "" && var.certificate_arn == "" ? var.dns_module_state : var.acm_module_state
 
@@ -36,6 +42,7 @@ locals {
   vpc_cidr        = var.vpc_cidr == "" ? data.terraform_remote_state.vpc[0].outputs.vpc_cidr : var.vpc_cidr
   certificate_arn = var.certificate_arn == "" ? data.terraform_remote_state.acm[0].outputs.certificate_arn : var.certificate_arn
   cluster_dns     = var.cluster_dns == "" ? data.terraform_remote_state.dns[0].outputs.domain_name : var.cluster_dns
+  cluster_zone_id = var.cluster_dns == "" ? data.terraform_remote_state.dns[0].outputs.zone_id : join("", data.aws_route53_zone.cluster_zone.*.zone_id)
 
   public_subnet_id_a   = var.public_subnet_id_a == "" ? data.terraform_remote_state.vpc[0].outputs.public_subnet_ids[0] : var.public_subnet_id_a
   public_subnet_cidr_a = var.public_subnet_cidr_a == "" ? data.terraform_remote_state.vpc[0].outputs.public_subnet_cidrs[0] : var.public_subnet_cidr_a
