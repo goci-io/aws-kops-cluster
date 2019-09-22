@@ -35,7 +35,8 @@ spec:
   associatePublicIp: ${public_ip}
   mixedInstancesPolicy:
     onDemandAboveBase: 0
-    spotAllocationStrategy: diversified
+    # https://github.com/kubernetes/kops/issues/7405
+    # spotAllocationStrategy: diversified
     instances:
     - ${autospotting_instances}
   nodeLabels:
