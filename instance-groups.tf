@@ -1,6 +1,3 @@
-locals {
-  optional_max_price_format = "\n  maxPrice: \"%g\"\n"
-}
 
 data "null_data_source" "instance_groups" {
   count = length(var.instance_groups) * var.max_availability_zones
@@ -22,8 +19,8 @@ data "null_data_source" "instance_groups" {
       storage_type           = lookup(var.instance_groups[floor(count.index / 3)], "storage_type", "gp2")
       storage_iops           = lookup(var.instance_groups[floor(count.index / 3)], "storage_iops", 168)
       storage_in_gb          = lookup(var.instance_groups[floor(count.index / 3)], "storage_in_gb", 56)
+      autospotting_max_price = lookup(var.instance_groups[floor(count.index / 3)], "autospotting_max_price", 0.03)
       autospotting_instances = join("\n    - ", lookup(var.instance_groups[floor(count.index / 3)], "autospotting_instances", [lookup(var.instance_groups[floor(count.index / 3)], "instance_type")]))
-      autospotting_max_price = lookup(var.instance_groups[floor(count.index / 3)], "autospotting", true) ? format(local.optional_max_price_format, lookup(var.instance_groups[floor(count.index / 3)], "autospotting_max_price", 0.03)) : ""
 
       instance_group_name = format(
         "%s-%s", 
@@ -54,8 +51,8 @@ data "null_data_source" "master_instance_groups" {
       instance_group_name    = format("master-%s", data.aws_availability_zones.available.names[count.index])
       aws_subnet_id          = format("private-%s", data.aws_availability_zones.available.names[count.index])
       autoscaler             = "off"
-      storage_type           = "io1"
-      storage_iops           = 480
+      storage_type           = "gp2"
+      storage_iops           = 0
       storage_in_gb          = 156
       node_role              = "Master"
       instance_name          = "master"
