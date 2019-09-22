@@ -12,6 +12,10 @@ spec:
   awsRegion: ${aws_region}
   dnsZone: ${cluster_zone_id}
   nonMasqueradeCIDR: ${cluster_cidr}
+  kubernetesApiAccess:
+  - ${vpc_cidr}
+  sshAccess:
+  - ${vpc_cidr}
   networking:
     calico: {}
   api:
@@ -19,7 +23,7 @@ spec:
     loadBalancer:
       type: Internal
       sslCertificate: ${certificate_arn}
-      additionalSecurityGroups: [${security_groups}]
+      additionalSecurityGroups: [${lb_security_groups}]
       crossZoneLoadBalancing: true
       useForInternalApi: true
   kubeAPIServer:

@@ -21,7 +21,7 @@ locals {
     vpc_id                = local.vpc_id
     vpc_cidr              = local.vpc_cidr
     certificate_arn       = local.certificate_arn
-    security_groups       = ""
+    lb_security_groups    = ""
     public_subnet_id_a    = local.public_subnet_id_a
     public_subnet_cidr_a  = local.public_subnet_cidr_a
     public_subnet_id_b    = local.public_subnet_id_b
