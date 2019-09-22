@@ -35,7 +35,7 @@ spec:
   associatePublicIp: ${public_ip}
   mixedInstancesPolicy:
     onDemandAboveBase: 0
-    spotAllocationStrategy: lowest-price
+    spotAllocationStrategy: diversified
     instances:
     - ${autospotting_instances}
   nodeLabels:
