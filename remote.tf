@@ -72,7 +72,5 @@ locals {
   private_subnet_id_c   = var.private_subnet_id_c == "" ? data.terraform_remote_state.vpc[0].outputs.private_subnet_ids[2] : var.private_subnet_id_c
   private_subnet_cidr_c = var.private_subnet_cidr_c == "" ? data.terraform_remote_state.vpc[0].outputs.private_subnet_cidrs[2] : var.private_subnet_cidr_b
 
-  external_lb_name_masters = var.master_loadbalancer_name == "" && length(data.terraform_remote_state.loadbalancer) > 0 
-    ? data.terraform_remote_state.loadbalancer.outputs.loadbalancer_name 
-    : var.master_loadbalancer_name
+  external_lb_name_masters = var.master_loadbalancer_name == "" && length(data.terraform_remote_state.loadbalancer) > 0 ? data.terraform_remote_state.loadbalancer.outputs.loadbalancer_name : var.master_loadbalancer_name
 }
