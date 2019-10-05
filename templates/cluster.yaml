@@ -32,13 +32,13 @@ spec:
   kubelet:
     anonymousAuth: false
     kubeReserved:
-        cpu: 200m
-        memory: 256Mi
-        ephemeral-storage: 1Gi
+      cpu: 200m
+      memory: 256Mi
+      ephemeral-storage: 1Gi
     systemReserved:
-        cpu: 50m
-        memory: 112Mi
-        ephemeral-storage: 1Gi
+      cpu: 50m
+      memory: 112Mi
+      ephemeral-storage: 1Gi
     kubeReservedCgroup: "/kube-reserved"
     systemReservedCgroup: "/system-reserved"
     enforceNodeAllocatable: "pods,system-reserved,kube-reserved"
