@@ -38,7 +38,9 @@ spec:
     # https://github.com/kubernetes/kops/issues/7405
     # spotAllocationStrategy: diversified
     instances:
-    - ${autospotting_instances}
+    %{ for instance in autospotting_instances ~}
+    - ${instance}
+    %{ endfor ~}  
   nodeLabels:
     Cluster: ${cluster_name}
     Namespace: ${namespace}
@@ -51,4 +53,6 @@ spec:
     spot: \"true\"
   role: ${node_role}
   subnets: 
-  - ${aws_subnet_id}
+  %{ for subnet in subnets ~}
+  - ${subnet_type}-${subnet}
+  %{ endfor ~}  

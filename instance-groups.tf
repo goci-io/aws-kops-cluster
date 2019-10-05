@@ -25,27 +25,22 @@ data "null_data_source" "instance_groups" {
       storage_type           = lookup(var.instance_groups[floor(count.index / 3)], "storage_type", "gp2")
       storage_iops           = lookup(var.instance_groups[floor(count.index / 3)], "storage_iops", 168)
       storage_in_gb          = lookup(var.instance_groups[floor(count.index / 3)], "storage_in_gb", 56)
+      subnet_type            = lookup(var.instance_groups[floor(count.index / 3)], "subnet", "private")
+      subnet_ids             = [element(data.aws_availability_zones.available.names, count.index % var.max_availability_zones)]
       autospotting_max_price = lookup(var.instance_groups[floor(count.index / 3)], "autospotting_max_price", 0.03)
-      autospotting_instances = join("\n    - ", lookup(var.instance_groups[floor(count.index / 3)], "autospotting_instances", [lookup(var.instance_groups[floor(count.index / 3)], "instance_type")]))
+      autospotting_instances = lookup(var.instance_groups[floor(count.index / 3)], "autospotting_instances", [lookup(var.instance_groups[floor(count.index / 3)], "instance_type")])
 
       instance_group_name = format(
         "%s-%s", 
         lookup(var.instance_groups[floor(count.index / 3)], "name"), 
         element(data.aws_availability_zones.available.names, count.index % var.max_availability_zones)
       )
-
-      aws_subnet_id = format(
-        "%s-%s", 
-        lookup(var.instance_groups[floor(count.index / 3)], "subnet", "private"), 
-        element(data.aws_availability_zones.available.names, count.index % var.max_availability_zones)
-      )
     })
   }
 }
 
-data "null_data_source" "master_instance_groups" {
-  count = var.max_availability_zones
-
+# Evaluate spot for masters
+data "null_data_source" "master_instance_group" {
   inputs = {
     name     = format("master-%s", data.aws_availability_zones.available.names[count.index])
     rendered = templatefile("${path.module}/templates/instance-group.yaml", {
@@ -55,8 +50,9 @@ data "null_data_source" "master_instance_groups" {
       region                 = var.region
       public_ip              = false
       image                  = local.kops_default_image
-      instance_group_name    = format("master-%s", data.aws_availability_zones.available.names[count.index])
-      aws_subnet_id          = format("private-%s", data.aws_availability_zones.available.names[count.index])
+      subnet_ids             = data.aws_availability_zones.available.names
+      subnet_type            = "private"
+      instance_group_name    = "masters"
       autoscaler             = "off"
       storage_type           = "io1"
       storage_iops           = 468
@@ -64,8 +60,8 @@ data "null_data_source" "master_instance_groups" {
       node_role              = "Master"
       instance_name          = "master"
       instance_type          = var.master_machine_type
-      instance_max           = 1
-      instance_min           = 1
+      instance_max           = 5
+      instance_min           = 5
     })
   }
 }
@@ -84,8 +80,9 @@ data "null_data_source" "bastion_instance_group" {
       storage_iops           = 0
       storage_in_gb          = 8
       autospotting_max_price = 0.008
-      autospotting_instances = join("\n    - ", distinct([var.bastion_machine_type, "t2.small", "t2.medium", "t3.small"]))
-      aws_subnet_id          = "utility-${join("\n  - utility-", data.aws_availability_zones.available.names)}"
+      autospotting_instances = distinct([var.bastion_machine_type, "t2.small", "t2.medium", "t3.small", "t3.medium"])
+      subnet_ids             = data.aws_availability_zones.available.names
+      subnet_type            = "utility"
       instance_group_name    = "bastion"
       node_role              = "Bastion"
       instance_name          = "bastion"

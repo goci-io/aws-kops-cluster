@@ -44,4 +44,6 @@ spec:
     spot: \"false\"
   role: ${node_role}
   subnets: 
-  - ${aws_subnet_id}
+  %{ for subnet in subnets ~}
+  - ${subnet_type}-${subnet}
+  %{ endfor ~}  
