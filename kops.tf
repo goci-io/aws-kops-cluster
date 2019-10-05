@@ -41,9 +41,9 @@ locals {
   kops_configs       = concat(
     [
       { name = "cluster", rendered = local.kops_cluster_config },
+      data.null_data_source.master_instance_group.outputs,
       data.null_data_source.bastion_instance_group.outputs,
     ],
-    data.null_data_source.master_instance_groups.*.outputs,
     data.null_data_source.instance_groups.*.outputs,
   )
 }

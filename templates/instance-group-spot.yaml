@@ -33,6 +33,10 @@ spec:
   rootVolumeType: ${storage_type}
   rootVolumeIops: ${storage_iops}
   associatePublicIp: ${public_ip}
+  %{ if external_lb_name != "" }
+  externalLoadBalancers:
+  - loadBalancerName: ${external_lb_name}
+  %{ endif }
   mixedInstancesPolicy:
     onDemandAboveBase: 0
     # https://github.com/kubernetes/kops/issues/7405

@@ -1,4 +1,6 @@
 
+# Deploy seperate IGs per AWS Availability Zone
+# This usually helps the cluster autoscaler 
 data "null_data_source" "instance_groups" {
   count = length(var.instance_groups) * var.max_availability_zones
 
@@ -22,8 +24,9 @@ data "null_data_source" "instance_groups" {
       instance_type          = lookup(var.instance_groups[floor(count.index / 3)], "instance_type")
       instance_max           = lookup(var.instance_groups[floor(count.index / 3)], "count_max", 5)
       instance_min           = lookup(var.instance_groups[floor(count.index / 3)], "count_min", 1)
+      external_lb_name       = lookup(var.instance_groups[floor(count.index / 3)], "loadbalancer_name", "")
       storage_type           = lookup(var.instance_groups[floor(count.index / 3)], "storage_type", "gp2")
-      storage_iops           = lookup(var.instance_groups[floor(count.index / 3)], "storage_iops", 168)
+      storage_iops           = lookup(var.instance_groups[floor(count.index / 3)], "storage_iops", 0)
       storage_in_gb          = lookup(var.instance_groups[floor(count.index / 3)], "storage_in_gb", 56)
       subnet_type            = lookup(var.instance_groups[floor(count.index / 3)], "subnet", "private")
       subnet_ids             = [element(data.aws_availability_zones.available.names, count.index % var.max_availability_zones)]
@@ -50,6 +53,7 @@ data "null_data_source" "master_instance_group" {
       region                 = var.region
       public_ip              = false
       image                  = local.kops_default_image
+      external_lb_name       = local.external_lb_name_masters
       subnet_ids             = data.aws_availability_zones.available.names
       subnet_type            = "private"
       instance_group_name    = "masters"
@@ -75,6 +79,7 @@ data "null_data_source" "bastion_instance_group" {
       stage                  = var.stage
       region                 = var.region
       image                  = local.kops_default_image
+      external_lb_name       = ""
       autoscaler             = "off"
       storage_type           = "gp2"
       storage_iops           = 0

@@ -79,6 +79,12 @@ variable "tf_bucket" {
   description = "The Bucket name to load remote state from"
 }
 
+variable "loadbalancer_module_state" {
+  type        = string
+  default     = ""
+  description = "The key or path to the state where a LoadBalancer was installed. It must expose a loadbalancer_name"
+}
+
 variable "acm_module_state" {
   type        = string
   default     = ""

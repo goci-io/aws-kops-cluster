@@ -29,6 +29,16 @@ data "terraform_remote_state" "dns" {
   }
 }
 
+data "terraform_remote_state" "loadbalancer" {
+  count   = var.loadbalancer_module_state == "" ? 0 : 1
+  backend = "s3"
+
+  config = {
+    bucket = var.tf_bucket
+    key    = var.loadbalancer_module_state
+  }
+}
+
 data "aws_route53_zone" "cluster_zone" {
   count        = var.cluster_dns == "" ? 0 : 1
   name         = format("%s.", var.cluster_dns)
@@ -61,4 +71,8 @@ locals {
 
   private_subnet_id_c   = var.private_subnet_id_c == "" ? data.terraform_remote_state.vpc[0].outputs.private_subnet_ids[2] : var.private_subnet_id_c
   private_subnet_cidr_c = var.private_subnet_cidr_c == "" ? data.terraform_remote_state.vpc[0].outputs.private_subnet_cidrs[2] : var.private_subnet_cidr_b
+
+  external_lb_name_masters = var.master_loadbalancer_name == "" && length(data.terraform_remote_state.loadbalancer) > 0 
+    ? data.terraform_remote_state.loadbalancer.outputs.loadbalancer_name 
+    : var.master_loadbalancer_name
 }
