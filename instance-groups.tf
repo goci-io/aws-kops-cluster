@@ -6,8 +6,8 @@ data "null_data_source" "instance_groups" {
 
   inputs = {
     name = format(
-      "%s-%s", 
-      lookup(var.instance_groups[floor(count.index / 3)], "name"), 
+      "%s-%s",
+      lookup(var.instance_groups[floor(count.index / 3)], "name"),
       element(data.aws_availability_zones.available.names, count.index % var.max_availability_zones)
     )
 
@@ -34,8 +34,8 @@ data "null_data_source" "instance_groups" {
       autospotting_instances = lookup(var.instance_groups[floor(count.index / 3)], "autospotting_instances", [lookup(var.instance_groups[floor(count.index / 3)], "instance_type")])
 
       instance_group_name = format(
-        "%s-%s", 
-        lookup(var.instance_groups[floor(count.index / 3)], "name"), 
+        "%s-%s",
+        lookup(var.instance_groups[floor(count.index / 3)], "name"),
         element(data.aws_availability_zones.available.names, count.index % var.max_availability_zones)
       )
     })
@@ -45,34 +45,34 @@ data "null_data_source" "instance_groups" {
 # Evaluate spot for masters
 data "null_data_source" "master_instance_group" {
   inputs = {
-    name     = format("master-%s", data.aws_availability_zones.available.names[count.index])
+    name = "masters"
     rendered = templatefile("${path.module}/templates/instance-group.yaml", {
-      cluster_name           = local.cluster_name
-      namespace              = var.namespace
-      stage                  = var.stage
-      region                 = var.region
-      public_ip              = false
-      image                  = local.kops_default_image
-      external_lb_name       = local.external_lb_name_masters
-      subnet_ids             = data.aws_availability_zones.available.names
-      subnet_type            = "private"
-      instance_group_name    = "masters"
-      autoscaler             = "off"
-      storage_type           = "io1"
-      storage_iops           = 468
-      storage_in_gb          = 156
-      node_role              = "Master"
-      instance_name          = "master"
-      instance_type          = var.master_machine_type
-      instance_max           = 5
-      instance_min           = 5
+      cluster_name        = local.cluster_name
+      namespace           = var.namespace
+      stage               = var.stage
+      region              = var.region
+      public_ip           = false
+      image               = local.kops_default_image
+      external_lb_name    = local.external_lb_name_masters
+      subnet_ids          = data.aws_availability_zones.available.names
+      subnet_type         = "private"
+      instance_group_name = "masters"
+      autoscaler          = "off"
+      storage_type        = "io1"
+      storage_iops        = 468
+      storage_in_gb       = 156
+      node_role           = "Master"
+      instance_name       = "master"
+      instance_type       = var.master_machine_type
+      instance_max        = 5
+      instance_min        = 5
     })
   }
 }
 
 data "null_data_source" "bastion_instance_group" {
   inputs = {
-    name     = "bastions"
+    name = "bastions"
     rendered = templatefile("${path.module}/templates/instance-group-spot.yaml", {
       cluster_name           = local.cluster_name
       namespace              = var.namespace
@@ -96,7 +96,7 @@ data "null_data_source" "bastion_instance_group" {
       instance_min           = 1
 
       # Bastion requires VPN connection to be accessed
-      public_ip              = false
+      public_ip = false
     })
   }
 }

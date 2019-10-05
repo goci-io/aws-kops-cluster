@@ -38,7 +38,7 @@ locals {
   })
 
   kops_default_image = "kope.io/k8s-1.12-debian-stretch-amd64-hvm-ebs-2019-06-21"
-  kops_configs       = concat(
+  kops_configs = concat(
     [
       { name = "cluster", rendered = local.kops_cluster_config },
       data.null_data_source.master_instance_group.outputs,
@@ -61,7 +61,7 @@ module "ssh_key_pair" {
 
 resource "null_resource" "replace_config" {
   count = length(local.kops_configs)
-  
+
   provisioner "local-exec" {
     environment = local.kops_env_config
     command     = "echo \"${local.kops_configs[count.index].rendered}\" | kops replace --force -f -"

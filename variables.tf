@@ -38,14 +38,14 @@ variable "instance_groups" {
 }
 
 variable "master_machine_type" {
-  type = string
-  default = "m5.large"
+  type        = string
+  default     = "m5.large"
   description = "The AWS instance type to use for the masters"
 }
 
 variable "bastion_machine_type" {
-  type = string
-  default = "t2.micro"
+  type        = string
+  default     = "t2.micro"
   description = "The AWS instance type to use for the bastions"
 }
 
@@ -219,8 +219,8 @@ variable "aws_assume_role_arn" {
 
 # Workaround for https://github.com/terraform-providers/terraform-provider-aws/issues/8242
 variable "external_account" {
-  type = bool
-  default = false
+  type        = bool
+  default     = false
   description = "Whether kops is deployed into a different AWS account. Required to provide kops access to this account"
 }
 
