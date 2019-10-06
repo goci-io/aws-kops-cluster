@@ -88,13 +88,19 @@ variable "tf_bucket" {
 variable "loadbalancer_module_state" {
   type        = string
   default     = ""
-  description = "The key or path to the state where a LoadBalancer was installed. It must expose a loadbalancer_name"
+  description = "The key or path to the state where a LoadBalancer was installed. It must expose a loadbalancer_name OR loadbalancer_target_arn"
 }
 
 variable "master_loadbalancer_name" {
   type        = string
   default     = ""
   description = "The name of an existing load balancer to use for the kubernetes API if loadbalancer_module_state is not set"
+}
+
+variable "master_loadbalancer_target_arn" {
+  type        = string
+  default     = ""
+  description = "The ARN of an existing target group to use for the kubernetes API if loadbalancer_module_state is not set"
 }
 
 variable "acm_module_state" {
