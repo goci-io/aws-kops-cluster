@@ -33,9 +33,12 @@ spec:
   rootVolumeType: ${storage_type}
   rootVolumeIops: ${storage_iops}
   associatePublicIp: ${public_ip}
-  %{ if external_lb_name != "" }
+  %{ if external_lb_name != "" || external_target_arn != "" }
   externalLoadBalancers:
+  %{ if external_lb_name != "" }
   - loadBalancerName: ${external_lb_name}
+  %{ else }
+  - targetGroupArn: ${external_target_arn}
   %{ endif }
   mixedInstancesPolicy:
     onDemandAboveBase: 0

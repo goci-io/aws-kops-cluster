@@ -43,6 +43,12 @@ variable "master_machine_type" {
   description = "The AWS instance type to use for the masters"
 }
 
+variable "master_instance_count" {
+  type        = number
+  default     = 5
+  description = "The count of master nodes to create. Suggested are at least 3, to support failover of 2 instances you will need at least 5"
+}
+
 variable "bastion_machine_type" {
   type        = string
   default     = "t2.micro"
