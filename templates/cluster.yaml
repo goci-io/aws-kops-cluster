@@ -18,6 +18,7 @@ spec:
   - ${vpc_cidr}
   networking:
     calico: {}
+  %{ if create_api_lb }
   api:
     dns: {}
     loadBalancer:
@@ -25,8 +26,9 @@ spec:
       sslCertificate: ${certificate_arn}
       additionalSecurityGroups: [${lb_security_groups}]
       crossZoneLoadBalancing: true
+  %{ endif }
   kubeAPIServer:
-    targetRamMb: 1536
+    targetRamMb: 1664
     disableBasicAuth: true
     serviceNodePortRange: 10000-35000
   kubelet:
