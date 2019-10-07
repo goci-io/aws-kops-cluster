@@ -30,9 +30,6 @@ spec:
   machineType: ${instance_type}
   maxSize: ${instance_max}
   minSize: ${instance_min}
-  %{ if autospotting_enabled }
-  maxPrice: \"${autospotting_max_price}\"
-  %{ endif }
   rootVolumeSize: ${storage_in_gb}
   rootVolumeType: ${storage_type}
   rootVolumeIops: ${storage_iops}
@@ -45,6 +42,8 @@ spec:
   - targetGroupArn: ${external_target_arn}
   %{ endif }
   %{ endif }
+  %{ if autospotting_enabled }
+  maxPrice: \"${autospotting_max_price}\"
   mixedInstancesPolicy:
     onDemandAboveBase: 0
     # https://github.com/kubernetes/kops/issues/7405
@@ -53,6 +52,7 @@ spec:
     %{ for instance in autospotting_instances ~}
     - ${instance}
     %{ endfor ~}  
+  %{ endif }
   nodeLabels:
     Cluster: ${cluster_name}
     Namespace: ${namespace}
