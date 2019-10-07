@@ -90,20 +90,6 @@ EOF
   }
 }
 
-resource "null_resource" "export_kubecfg" {
-  depends_on = [null_resource.kops_update_cluster]
-
-  provisioner "local-exec" {
-    command     = "kops export kubecfg"
-    environment = local.kops_env_config
-  }
-
-  # Always trigger export
-  triggers = {
-    hash = uuid()
-  }
-}
-
 resource "null_resource" "kops_delete_cluster" {
   provisioner "local-exec" {
     when        = "destroy"
