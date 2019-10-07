@@ -67,6 +67,6 @@ spec:
     %{ endif }
   role: ${node_role}
   subnets: 
-  %{ for subnet in subnets ~}
+  %{ for subnet in subnet_ids ~}
   - ${subnet_type}-${subnet}
   %{ endfor ~}  
