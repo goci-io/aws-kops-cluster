@@ -92,6 +92,8 @@ data "null_data_source" "bastion_instance_group" {
       autospotting_max_price = 0.008
       autospotting_instances = distinct([var.bastion_machine_type, "t2.small", "t2.medium", "t3.small", "t3.medium"])
       subnet_ids             = data.aws_availability_zones.available.names
+      external_target_arn    = ""
+      external_lb_name       = ""
       subnet_type            = "utility"
       instance_group_name    = "bastion"
       node_role              = "Bastion"
