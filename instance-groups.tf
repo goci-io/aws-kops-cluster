@@ -45,7 +45,9 @@ data "null_data_source" "instance_groups" {
 }
 
 # @TODO Evaluate spot for masters
-data "null_data_source" "master_instance_group" {
+data "null_data_source" "master_instance_groups" {
+  count = var.max_availability_zones
+
   inputs = {
     name = "masters"
     rendered = templatefile("${path.module}/templates/instance-group.yaml", {
@@ -58,17 +60,17 @@ data "null_data_source" "master_instance_group" {
       image                  = local.kops_default_image
       external_lb_name       = local.external_lb_name_masters
       external_target_arn    = local.external_lb_target_arn
-      subnet_ids             = data.aws_availability_zones.available.names
+      instance_group_name    = format("masters-%s", element(data.aws_availability_zones.available.names, count.index))
+      subnet_ids             = [element(data.aws_availability_zones.available.names, count.index)]
       subnet_type            = "private"
-      instance_group_name    = "masters"
       storage_type           = "io1"
       storage_iops           = 468
       storage_in_gb          = 156
       node_role              = "Master"
       instance_name          = "master"
       instance_type          = var.master_machine_type
-      instance_max           = var.master_instance_count
-      instance_min           = var.master_instance_count
+      instance_max           = lookup(var.masters_instance_count, element(data.aws_availability_zones.available.names, count.index), 1)
+      instance_min           = lookup(var.masters_instance_count, element(data.aws_availability_zones.available.names, count.index), 1)
       autospotting_enabled   = false
       autospotting_max_price = 0
       autospotting_instances = []

@@ -42,9 +42,9 @@ locals {
   kops_configs = concat(
     [
       { name = "cluster", rendered = local.kops_cluster_config },
-      data.null_data_source.master_instance_group.outputs,
       data.null_data_source.bastion_instance_group.outputs,
     ],
+    data.null_data_source.master_instance_groups.*.outputs,
     data.null_data_source.instance_groups.*.outputs,
   )
 }
@@ -75,7 +75,10 @@ resource "null_resource" "replace_config" {
 }
 
 resource "null_resource" "kops_update_cluster" {
-  depends_on = [null_resource.replace_config]
+  depends_on = [
+    null_resource.replace_config,
+    null_resource.export_kubecfg,
+  ]
 
   provisioner "local-exec" {
     environment = local.kops_env_config
@@ -83,6 +86,17 @@ resource "null_resource" "kops_update_cluster" {
       kops create secret sshpublickey admin -i ${module.ssh_key_pair.public_key_filename};
       kops update cluster --yes
 EOF
+  }
+
+  triggers = {
+    hash = md5(jsonencode(local.kops_configs))
+  }
+}
+
+resource "null_resource" "export_kubecfg" {
+  provisioner "local-exec" {
+    command     = "kops export kubecfg"
+    environment = local.kops_env_config
   }
 
   triggers = {

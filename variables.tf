@@ -43,10 +43,14 @@ variable "master_machine_type" {
   description = "The AWS instance type to use for the masters"
 }
 
-variable "master_instance_count" {
-  type        = number
-  default     = 5
-  description = "The count of master nodes to create. Suggested are at least 3, to support failover of 2 instances you will need at least 5"
+variable "masters_instance_count" {
+  type        = map(string)
+  default     = {
+    eu-central-1a = 2
+    eu-central-1b = 2
+    eu-central-1c = 1
+  }
+  description = "The count of master nodes to create. Suggested are at least 3, to support failover of 2 instances you will need at least 5. You need to provide the count per AZ"
 }
 
 variable "bastion_machine_type" {
