@@ -7,6 +7,7 @@ metadata:
 spec:
   kubernetesVersion: 1.13.10
   masterPublicName: api.${cluster_dns}
+  masterInternalName: api.${cluster_dns}
   networkCIDR: ${vpc_cidr}
   networkID: ${vpc_id}
   awsRegion: ${aws_region}
@@ -26,6 +27,8 @@ spec:
       sslCertificate: ${certificate_arn}
       additionalSecurityGroups: [${lb_security_groups}]
       crossZoneLoadBalancing: true
+%{ else ~}
+  api: {}
 %{ endif ~}
   kubeAPIServer:
     targetRamMb: 2048
