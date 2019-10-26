@@ -15,11 +15,11 @@ spec:
     kops.k8s.io/cluster: ${cluster_name}
     kops.k8s.io/instancegroup: ${instance_group_name}
     kubernetes.io/cluster/${cluster_name}: owned
-    %{ if autoscaler ~}
+%{ if autoscaler }
     k8s.io/cluster-autoscaler/enabled: \"\"
     k8s.io/cluster-autoscaler/node-template/label/instance_type: ${instance_name}
     k8s.io/cluster-autoscaler/node-template/label/kops.k8s.io/instancegroup: ${instance_group_name}
-    %{ endif }
+%{ endif }
   image: ${image}
   machineType: ${instance_type}
   maxSize: ${instance_max}
@@ -28,15 +28,15 @@ spec:
   rootVolumeType: ${storage_type}
   rootVolumeIops: ${storage_iops}
   associatePublicIp: ${public_ip}
-  %{ if external_lb_name != "" || external_target_arn != "" ~}
+%{ if external_lb_name != "" || external_target_arn != "" }
   externalLoadBalancers:
-  %{ if external_lb_name != "" && external_target_arn == "" ~}
+  %{ if external_lb_name != "" && external_target_arn == "" }
   - loadBalancerName: ${external_lb_name}
   %{ else ~}
   - targetGroupArn: ${external_target_arn}
   %{ endif }
-  %{ endif }
-  %{ if autospotting_enabled ~}
+%{ endif }
+%{ if autospotting_enabled }
   maxPrice: \"${autospotting_max_price}\"
   mixedInstancesPolicy:
     onDemandAboveBase: 0
@@ -45,8 +45,8 @@ spec:
     instances:
     %{ for instance in autospotting_instances ~}
     - ${instance}
-    %{ endfor ~}
-  %{ endif }
+    %{ endfor }
+%{ endif }
   nodeLabels:
     Cluster: ${cluster_name}
     Namespace: ${namespace}
@@ -56,9 +56,9 @@ spec:
     kops.k8s.io/cluster: ${cluster_name}
     kops.k8s.io/instancegroup: ${instance_group_name}
     instance_type: ${instance_name}
-    %{ if autospotting_enabled ~}
+%{ if autospotting_enabled }
     spot: \"true\"
-    %{ endif }
+%{ endif }
   role: ${node_role}
   subnets: 
   %{ for subnet in subnet_ids ~}

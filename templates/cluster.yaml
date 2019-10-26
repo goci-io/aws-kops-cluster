@@ -18,7 +18,7 @@ spec:
   - ${vpc_cidr}
   networking:
     calico: {}
-  %{ if create_api_lb }
+%{ if create_api_lb }
   api:
     dns: {}
     loadBalancer:
@@ -26,7 +26,7 @@ spec:
       sslCertificate: ${certificate_arn}
       additionalSecurityGroups: [${lb_security_groups}]
       crossZoneLoadBalancing: true
-  %{ endif }
+%{ endif }
   kubeAPIServer:
     targetRamMb: 2048
     disableBasicAuth: true
@@ -81,25 +81,25 @@ spec:
   configBase: s3://${kops_bucket_name}/${cluster_name}
   etcdClusters:
   - etcdMembers:
-  %{ for index, member in etcd_members ~}
+%{ for index, member in etcd_members }
     - encryptedVolume: true
       instanceGroup: ${member}
       name: master-${index}
       volumeType: gp2
       volumeSize: 96
-  %{ endfor }
+%{ endfor }
     name: main
     version: 3.3.13
     enableEtcdTLS: true
   - etcdMembers:
-  %{ for index, member in etcd_members ~}
+%{ for index, member in etcd_members }
     - encryptedVolume: true
       instanceGroup: ${member}
       name: master-${index}
       volumeType: io1
       volumeIops: 180
       volumeSize: 56
-  %{ endfor }
+%{ endfor }
     name: events
     version: 3.3.13
     cpuRequest: 300m
