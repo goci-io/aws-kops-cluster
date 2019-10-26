@@ -81,7 +81,7 @@ spec:
     Region: ${region}
     kops.k8s.io/cluster: ${cluster_name}
   cloudProvider: aws
-  configBase: s3://${kops_bucket_name}/${cluster_name}
+  configBase: s3://${kops_bucket_name}/${cluster_dns}
   etcdClusters:
   - etcdMembers:
 %{ for index, member in etcd_members }
