@@ -23,7 +23,7 @@ locals {
     vpc_cidr              = local.vpc_cidr
     certificate_arn       = local.certificate_arn
     lb_security_groups    = ""
-    create_api_lb         = local.external_lb_name_masters == ""
+    create_api_lb         = local.external_lb_enabled
     public_subnet_id_a    = local.public_subnet_id_a
     public_subnet_cidr_a  = local.public_subnet_cidr_a
     public_subnet_id_b    = local.public_subnet_id_b
