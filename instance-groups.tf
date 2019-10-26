@@ -28,7 +28,7 @@ data "null_data_source" "instance_groups" {
       external_target_arn    = lookup(var.instance_groups[floor(count.index / 3)], "loadbalancer_target_arn", "")
       storage_type           = lookup(var.instance_groups[floor(count.index / 3)], "storage_type", "gp2")
       storage_iops           = lookup(var.instance_groups[floor(count.index / 3)], "storage_iops", 0)
-      storage_in_gb          = lookup(var.instance_groups[floor(count.index / 3)], "storage_in_gb", 56)
+      storage_in_gb          = lookup(var.instance_groups[floor(count.index / 3)], "storage_in_gb", 28)
       subnet_type            = lookup(var.instance_groups[floor(count.index / 3)], "subnet", "private")
       subnet_ids             = [element(data.aws_availability_zones.available.names, count.index % var.max_availability_zones)]
       autospotting_enabled   = lookup(var.instance_groups[floor(count.index / 3)], "autospotting_enabled", true)
