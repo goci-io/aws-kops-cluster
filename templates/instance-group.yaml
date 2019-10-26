@@ -6,12 +6,6 @@ metadata:
     kops.k8s.io/cluster: ${cluster_name}
     kops.k8s.io/instancegroup: ${instance_group_name}
 spec:
-  #additionalUserData:
-  #- name: reserved-resources.sh
-  #  type: text/x-shellscript
-  #  content: |
-  #    #!/bin/sh
-  #    
   cloudLabels:
     Cluster: ${cluster_name}
     Namespace: ${namespace}
@@ -25,7 +19,7 @@ spec:
     k8s.io/cluster-autoscaler/enabled: \"\"
     k8s.io/cluster-autoscaler/node-template/label/instance_type: ${instance_name}
     k8s.io/cluster-autoscaler/node-template/label/kops.k8s.io/instancegroup: ${instance_group_name}
-    %{ endif ~}
+    %{ endif }
   image: ${image}
   machineType: ${instance_type}
   maxSize: ${instance_max}
@@ -40,8 +34,8 @@ spec:
   - loadBalancerName: ${external_lb_name}
   %{ else ~}
   - targetGroupArn: ${external_target_arn}
-  %{ endif ~}
-  %{ endif ~}
+  %{ endif }
+  %{ endif }
   %{ if autospotting_enabled ~}
   maxPrice: \"${autospotting_max_price}\"
   mixedInstancesPolicy:
@@ -52,7 +46,7 @@ spec:
     %{ for instance in autospotting_instances ~}
     - ${instance}
     %{ endfor ~}
-  %{ endif ~}
+  %{ endif }
   nodeLabels:
     Cluster: ${cluster_name}
     Namespace: ${namespace}
@@ -64,9 +58,9 @@ spec:
     instance_type: ${instance_name}
     %{ if autospotting_enabled ~}
     spot: \"true\"
-    %{ endif ~}
+    %{ endif }
   role: ${node_role}
   subnets: 
   %{ for subnet in subnet_ids ~}
   - ${subnet_type}-${subnet}
-  %{ endfor ~}  
+  %{ endfor }  
