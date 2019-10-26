@@ -48,6 +48,11 @@ locals {
     data.null_data_source.master_instance_groups.*.outputs,
     data.null_data_source.instance_groups.*.outputs,
   )
+
+  kops_triggers = {
+    cluster_hash = md5(jsonencode(local.kops_cluster_config))
+    igs_hash     = md5(jsonencode(local.kops_configs))
+  }
 }
 
 module "ssh_key_pair" {
@@ -67,10 +72,7 @@ resource "null_resource" "replace_cluster" {
     command     = "echo \"${local.kops_cluster_config}\" | kops replace --force -f -"
   }
 
-  triggers = {
-    cluster_hash = md5(jsonencode(local.kops_cluster_config))
-    ig_hash      = md5(jsonencode(local.kops_configs))
-  }
+  triggers = local.kops_triggers
 }
 
 resource "null_resource" "replace_config" {
@@ -102,9 +104,7 @@ resource "null_resource" "kops_update_cluster" {
 EOF
   }
 
-  triggers = {
-    hash = md5(jsonencode(local.kops_configs))
-  }
+  triggers = local.kops_triggers
 }
 
 resource "null_resource" "kops_delete_cluster" {
