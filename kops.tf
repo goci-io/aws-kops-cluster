@@ -36,6 +36,9 @@ locals {
     private_subnet_cidr_b = local.private_subnet_cidr_b
     private_subnet_id_c   = local.private_subnet_id_c
     private_subnet_cidr_c = local.private_subnet_cidr_c
+
+    max_requests_in_flight          = var.max_requests_in_flight
+    max_mutating_requests_in_flight = var.max_mutating_requests_in_flight
   })
 
   kops_default_image = "kope.io/k8s-1.12-debian-stretch-amd64-hvm-ebs-2019-06-21"

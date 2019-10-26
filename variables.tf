@@ -65,6 +65,18 @@ variable "max_availability_zones" {
   description = "Maximum availability zones to span with this cluster. We currently only support 3!!"
 }
 
+variable "max_mutating_requests_in_flight" {
+  type        = number
+  default     = 800
+  description = "Max requests in flight mutating API objects. Depends on the machine type and count for masters, as well as IOPS of etcd volumes"
+}
+
+variable "max_requests_in_flight" {
+  type        = number
+  default     = 2000
+  description = "Max requests in flight reading API objects. Depends on the machine type and count for masters, as well as IOPS of etcd volumes"
+}
+
 variable "ssh_path" {
   type        = string
   default     = "/secrets/tf/ssh"
