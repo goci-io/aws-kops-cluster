@@ -70,7 +70,7 @@ data "null_data_source" "master_instance_groups" {
       external_lb_name       = local.external_lb_name_masters
       external_target_arn    = local.external_lb_target_arn
       instance_group_name    = element(data.null_data_source.master_info.*.outputs.name, count.index)
-      instance_group_name    = [element(data.null_data_source.master_info.*.outputs.subnet_id, count.index)]
+      subnet_ids             = [element(data.null_data_source.master_info.*.outputs.subnet_id, count.index)]
       subnet_type            = "private"
       storage_type           = "gp2"
       storage_iops           = 0
