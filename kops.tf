@@ -75,10 +75,7 @@ resource "null_resource" "replace_config" {
 }
 
 resource "null_resource" "kops_update_cluster" {
-  depends_on = [
-    null_resource.replace_config,
-    null_resource.export_kubecfg,
-  ]
+  depends_on = [null_resource.replace_config]
 
   provisioner "local-exec" {
     environment = local.kops_env_config
@@ -92,7 +89,7 @@ EOF
     hash = md5(jsonencode(local.kops_configs))
   }
 }
-
+/*
 resource "null_resource" "export_kubecfg" {
   provisioner "local-exec" {
     command     = "kops export kubecfg"
@@ -103,7 +100,7 @@ resource "null_resource" "export_kubecfg" {
     hash = md5(jsonencode(local.kops_configs))
   }
 }
-
+*/
 resource "null_resource" "kops_delete_cluster" {
   provisioner "local-exec" {
     when        = "destroy"
