@@ -1,8 +1,8 @@
 
 locals {
   kops_env_config = {
+    KOPS_CLUSTER_NAME     = local.cluster_dns
     KOPS_STATE_STORE      = "s3://${aws_s3_bucket.kops_state.id}"
-    KOPS_CLUSTER_NAME     = local.cluster_name
     AWS_ACCESS_KEY_ID     = var.external_account ? join("", aws_iam_access_key.kops.*.id) : ""
     AWS_SECRET_ACCESS_KEY = var.external_account ? join("", aws_iam_access_key.kops.*.secret) : ""
     AWS_DEFAULT_REGION    = local.aws_region
