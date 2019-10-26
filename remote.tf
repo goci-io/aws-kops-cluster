@@ -54,6 +54,7 @@ locals {
   cluster_dns     = var.cluster_dns == "" ? data.terraform_remote_state.dns[0].outputs.domain_name : var.cluster_dns
   cluster_zone_id = var.cluster_dns == "" ? data.terraform_remote_state.dns[0].outputs.zone_id : join("", data.aws_route53_zone.cluster_zone.*.zone_id)
 
+  # TODO optimize with dynamic lists
   public_subnet_id_a   = var.public_subnet_id_a == "" ? data.terraform_remote_state.vpc[0].outputs.public_subnet_ids[0] : var.public_subnet_id_a
   public_subnet_cidr_a = var.public_subnet_cidr_a == "" ? data.terraform_remote_state.vpc[0].outputs.public_subnet_cidrs[0] : var.public_subnet_cidr_a
 
