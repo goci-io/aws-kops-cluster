@@ -84,25 +84,25 @@ spec:
   configBase: s3://${kops_bucket_name}/${cluster_dns}
   etcdClusters:
   - etcdMembers:
-%{ for index, member in etcd_members }
+%{ for index, member in etcd_members ~}
     - encryptedVolume: true
       instanceGroup: ${member}
       name: master-${index}
       volumeType: gp2
       volumeSize: 96
-%{ endfor }
+%{ endfor ~}
     name: main
     version: 3.3.13
     enableEtcdTLS: true
   - etcdMembers:
-%{ for index, member in etcd_members }
+%{ for index, member in etcd_members ~}
     - encryptedVolume: true
       instanceGroup: ${member}
       name: master-${index}
       volumeType: io1
       volumeIops: 180
       volumeSize: 56
-%{ endfor }
+%{ endfor ~}
     name: events
     version: 3.3.13
     cpuRequest: 300m
