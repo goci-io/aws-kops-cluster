@@ -48,8 +48,8 @@ data "null_data_source" "master_info" {
   count = var.masters_instance_count
 
   inputs = {
-    name       = format("masters-%d-%s", count.index, element(data.aws_availability_zones.available.names, count.index % var.max_availability_zones))
-    subnet_ids = [element(data.aws_availability_zones.available.names, count.index % var.max_availability_zones)]
+    name      = format("masters-%d-%s", count.index, element(data.aws_availability_zones.available.names, count.index % var.max_availability_zones))
+    subnet_id = element(data.aws_availability_zones.available.names, count.index % var.max_availability_zones)
   }
 }
 
@@ -70,7 +70,7 @@ data "null_data_source" "master_instance_groups" {
       external_lb_name       = local.external_lb_name_masters
       external_target_arn    = local.external_lb_target_arn
       instance_group_name    = element(data.null_data_source.master_info.*.outputs.name, count.index)
-      instance_group_name    = element(data.null_data_source.master_info.*.outputs.subnet_ids, count.index)
+      instance_group_name    = [element(data.null_data_source.master_info.*.outputs.subnet_id, count.index)]
       subnet_type            = "private"
       storage_type           = "gp2"
       storage_iops           = 0
