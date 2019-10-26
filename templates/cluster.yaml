@@ -3,7 +3,7 @@ kind: Cluster
 metadata:
   name: ${cluster_dns}
   labels:
-    kops.k8s.io/cluster: ${cluster_name}
+    kops.k8s.io/cluster: ${cluster_dns}
 spec:
   kubernetesVersion: 1.13.10
   masterPublicName: api.${cluster_dns}
@@ -79,7 +79,7 @@ spec:
     Namespace: ${namespace}
     Stage: ${stage}
     Region: ${region}
-    kops.k8s.io/cluster: ${cluster_name}
+    kops.k8s.io/cluster: ${cluster_dns}
   cloudProvider: aws
   configBase: s3://${kops_bucket_name}/${cluster_dns}
   etcdClusters:

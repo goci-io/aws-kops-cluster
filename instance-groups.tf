@@ -13,6 +13,7 @@ data "null_data_source" "instance_groups" {
 
     rendered = templatefile("${path.module}/templates/instance-group.yaml", {
       cluster_name           = local.cluster_name
+      cluster_dns            = local.cluster_dns
       namespace              = var.namespace
       stage                  = var.stage
       region                 = var.region
@@ -61,6 +62,7 @@ data "null_data_source" "master_instance_groups" {
     name = "masters"
     rendered = templatefile("${path.module}/templates/instance-group.yaml", {
       cluster_name           = local.cluster_name
+      cluster_dns            = local.cluster_dns
       namespace              = var.namespace
       stage                  = var.stage
       region                 = var.region
@@ -92,6 +94,7 @@ data "null_data_source" "bastion_instance_group" {
     name = "bastions"
     rendered = templatefile("${path.module}/templates/instance-group.yaml", {
       cluster_name           = local.cluster_name
+      cluster_dns            = local.cluster_dns
       namespace              = var.namespace
       stage                  = var.stage
       region                 = var.region
