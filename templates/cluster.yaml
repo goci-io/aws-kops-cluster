@@ -80,26 +80,26 @@ spec:
   etcdClusters:
   - etcdMembers:
     - encryptedVolume: true
-      instanceGroup: master-${aws_region}a
+      instanceGroup: masters-${aws_region}a
       name: a
     - encryptedVolume: true
-      instanceGroup: master-${aws_region}b
+      instanceGroup: masters-${aws_region}b
       name: b
     - encryptedVolume: true
-      instanceGroup: master-${aws_region}c
+      instanceGroup: masters-${aws_region}c
       name: c
     name: main
     version: 3.3.13
     enableEtcdTLS: true
   - etcdMembers:
     - encryptedVolume: true
-      instanceGroup: master-${aws_region}a
+      instanceGroup: masters-${aws_region}a
       name: a
     - encryptedVolume: true
-      instanceGroup: master-${aws_region}b
+      instanceGroup: masters-${aws_region}b
       name: b
     - encryptedVolume: true
-      instanceGroup: master-${aws_region}c
+      instanceGroup: masters-${aws_region}c
       name: c
     name: events
     version: 3.3.13
