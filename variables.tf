@@ -44,13 +44,9 @@ variable "master_machine_type" {
 }
 
 variable "masters_instance_count" {
-  type        = map(string)
-  default     = {
-    eu-central-1a = 2
-    eu-central-1b = 2
-    eu-central-1c = 1
-  }
-  description = "The count of master nodes to create. Suggested are at least 3, to support failover of 2 instances you will need at least 5. You need to provide the count per AZ"
+  type        = number
+  default     = 5
+  description = "Number of master nodes to create. Suggesting at least 5 to support failover of 2 masters"
 }
 
 variable "bastion_machine_type" {

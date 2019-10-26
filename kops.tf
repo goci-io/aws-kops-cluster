@@ -36,6 +36,7 @@ locals {
     private_subnet_cidr_b = local.private_subnet_cidr_b
     private_subnet_id_c   = local.private_subnet_id_c
     private_subnet_cidr_c = local.private_subnet_cidr_c
+    etcd_members          = data.null_data_source.master_info.outputs.*.name
 
     max_requests_in_flight          = var.max_requests_in_flight
     max_mutating_requests_in_flight = var.max_mutating_requests_in_flight

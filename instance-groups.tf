@@ -44,9 +44,18 @@ data "null_data_source" "instance_groups" {
   }
 }
 
+data "null_data_source" "master_info" {
+  count = var.masters_instance_count
+
+  inputs = {
+    name       = format("masters-%d-%s", count.index, element(data.aws_availability_zones.available.names, count.index % var.max_availability_zones))
+    subnet_ids = [element(data.aws_availability_zones.available.names, count.index % var.max_availability_zones)]
+  }
+}
+
 # @TODO Evaluate spot for masters
 data "null_data_source" "master_instance_groups" {
-  count = var.max_availability_zones
+  count = var.masters_instance_count
 
   inputs = {
     name = "masters"
@@ -60,17 +69,17 @@ data "null_data_source" "master_instance_groups" {
       image                  = local.kops_default_image
       external_lb_name       = local.external_lb_name_masters
       external_target_arn    = local.external_lb_target_arn
-      instance_group_name    = format("masters-%s", element(data.aws_availability_zones.available.names, count.index))
-      subnet_ids             = [element(data.aws_availability_zones.available.names, count.index)]
+      instance_group_name    = element(data.null_data_source.master_info.*.outputs.name, count.index)
+      instance_group_name    = element(data.null_data_source.master_info.*.outputs.subnet_ids, count.index)
       subnet_type            = "private"
-      storage_type           = "io1"
-      storage_iops           = 468
-      storage_in_gb          = 156
+      storage_type           = "gp2"
+      storage_iops           = 0
+      storage_in_gb          = 32
       node_role              = "Master"
       instance_name          = "master"
       instance_type          = var.master_machine_type
-      instance_max           = lookup(var.masters_instance_count, element(data.aws_availability_zones.available.names, count.index), 1)
-      instance_min           = lookup(var.masters_instance_count, element(data.aws_availability_zones.available.names, count.index), 1)
+      instance_max           = 1
+      instance_min           = 1
       autospotting_enabled   = false
       autospotting_max_price = 0
       autospotting_instances = []
