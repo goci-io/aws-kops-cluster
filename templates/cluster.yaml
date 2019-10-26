@@ -50,8 +50,6 @@ spec:
     systemReservedCgroup: "/system-reserved"
     enforceNodeAllocatable: "pods,system-reserved,kube-reserved"
   docker:
-    registryMirrors:
-    - https://registry.hub.docker.com
     logDriver: json-file
     logOpt:
     - max-size=24m
