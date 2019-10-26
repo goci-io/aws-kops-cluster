@@ -51,7 +51,7 @@ spec:
     enforceNodeAllocatable: "pods,system-reserved,kube-reserved"
   docker:
     registryMirrors:
-    - registry.hub.docker.com
+    - https://registry.hub.docker.com
     logDriver: json-file
     logOpt:
     - max-size=24m
