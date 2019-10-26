@@ -68,7 +68,7 @@ resource "null_resource" "replace_cluster" {
   }
 
   triggers = {
-    cluster_hash = md5(local.kops_cluster_config)
+    cluster_hash = md5(jsonencode(local.kops_cluster_config))
     ig_hash      = md5(jsonencode(local.kops_configs))
   }
 }
