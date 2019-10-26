@@ -14,3 +14,8 @@ provider "aws" {
     role_arn = var.aws_assume_role_arn
   }
 }
+
+provider "aws" {
+  version = "~> 2.25"
+  alias   = "current"
+}
