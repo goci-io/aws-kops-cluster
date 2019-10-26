@@ -93,18 +93,7 @@ EOF
     hash = md5(jsonencode(local.kops_configs))
   }
 }
-/*
-resource "null_resource" "export_kubecfg" {
-  provisioner "local-exec" {
-    command     = "kops export kubecfg"
-    environment = local.kops_env_config
-  }
 
-  triggers = {
-    hash = md5(jsonencode(local.kops_configs))
-  }
-}
-*/
 resource "null_resource" "kops_delete_cluster" {
   provisioner "local-exec" {
     when        = "destroy"
