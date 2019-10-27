@@ -18,7 +18,8 @@ spec:
   sshAccess:
   - ${vpc_cidr}
   networking:
-    calico: {}
+    calico:
+      majorVersion: v3
   api:
     dns: {}
     loadBalancer:
