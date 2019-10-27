@@ -21,7 +21,7 @@ locals {
     kops_bucket_name        = aws_s3_bucket.kops_state.id
     vpc_id                  = local.vpc_id
     vpc_cidr                = local.vpc_cidr
-    service_cluster_ip_cidr = cidrhost(local.vpc_cidr, 21)
+    service_cluster_ip_cidr = cidrsubnet(local.vpc_cidr, 3, 2)
     certificate_arn         = local.certificate_arn
     lb_security_groups      = ""
     create_api_lb           = !local.external_lb_enabled
