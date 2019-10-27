@@ -108,32 +108,32 @@ spec:
   - id: ${public_subnet_id_a}
     cidr: ${public_subnet_cidr_a}
     name: utility-${aws_region}a
-    type: public
+    type: Utility
     zone: ${aws_region}a
   - id: ${public_subnet_id_b}
     cidr: ${public_subnet_cidr_b}
     name: utility-${aws_region}b
-    type: public
+    type: Utility
     zone: ${aws_region}b
   - id: ${public_subnet_id_c}
     cidr: ${public_subnet_cidr_c}
     name: utility-${aws_region}c
-    type: public
+    type: Utility
     zone: ${aws_region}c
   - id: ${private_subnet_id_a}
     cidr: ${private_subnet_cidr_a}
     name: private-${aws_region}a
-    type: private
+    type: Private
     zone: ${aws_region}a
   - id: ${private_subnet_id_b}
     cidr: ${private_subnet_cidr_b}
     name: private-${aws_region}b
-    type: private
+    type: Private
     zone: ${aws_region}b
   - id: ${private_subnet_id_c}
     cidr: ${private_subnet_cidr_c}
     name: private-${aws_region}c
-    type: private
+    type: Private
     zone: ${aws_region}c
   topology:
     dns:
