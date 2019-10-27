@@ -32,7 +32,7 @@ spec:
     disableBasicAuth: true
     maxRequestsInflight: ${max_requests_in_flight}
     maxMutatingRequestsInflight: ${max_mutating_requests_in_flight}
-    serviceNodePortRange: 15000-65000
+    serviceNodePortRange: 15000-35000
   kubelet:
     anonymousAuth: false
     kubeReserved:
