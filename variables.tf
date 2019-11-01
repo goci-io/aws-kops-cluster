@@ -67,7 +67,7 @@ variable "etcd_events_storage_size" {
   description = "Amount of Storage for event volumes"
 }
 
-variable "etcd_main_storage_iops" {
+variable "etcd_events_storage_iops" {
   type        = number
   default     = 0
   description = "Additional IOPS for event volumes"
