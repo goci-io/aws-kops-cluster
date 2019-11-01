@@ -11,6 +11,14 @@ locals {
   ]
 }
 
+data "aws_iam_policy_document" "kops" {
+  statement {
+    effect    = "Allow"
+    actions   = []
+    resources = []
+  }
+}
+
 resource "aws_iam_user" "kops" {
   count = var.external_account ? 1 : 0
   name  = module.kops_label.id

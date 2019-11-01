@@ -2,6 +2,7 @@ namespace        = "goci"
 stage            = "prod"
 region           = "eu1"
 vpc_state_module = "vpc/eu1.tfstate"
+dns_state_module = "dns/eu1.tfstate"
 tf_bucket        = "goci-prod-terraform-state"
 certificate_arn  = "arn:aws:acm:<region>:<account-id>:certificate/<certificate-id>"
 instance_groups  = [

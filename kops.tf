@@ -13,6 +13,7 @@ locals {
     cluster_dns             = local.cluster_dns
     cluster_zone_id         = local.cluster_zone_id
     dns_type                = var.cluster_dns_type
+    k8s_version             = var.kubernetes_version
     cluster_cidr            = "100.0.0.0/8"
     namespace               = var.namespace
     stage                   = var.stage
@@ -38,6 +39,12 @@ locals {
     private_subnet_id_c     = local.private_subnet_id_c
     private_subnet_cidr_c   = local.private_subnet_cidr_c
     etcd_members            = data.null_data_source.master_info.*.outputs.name
+    etcd_main_volume_type   = var.etcd_main_storage_type
+    etcd_main_volume_iops   = var.etcd_main_storage_iops
+    etcd_main_volume_size   = var.etcd_main_storage_size
+    etcd_event_volume_type  = var.etcd_events_storage_type
+    etcd_event_volume_iops  = var.etcd_events_storage_iops
+    etcd_event_volume_size  = var.etcd_events_storage_size
 
     max_requests_in_flight          = var.max_requests_in_flight
     max_mutating_requests_in_flight = var.max_mutating_requests_in_flight

@@ -32,6 +32,12 @@ variable "region" {
   description = "The own region identifier for this deployment"
 }
 
+variable "kubernetes_version" {
+  type        = string
+  default     = "1.14.8"
+  description = "The kubernetes version to deploy" 
+}
+
 variable "instance_groups" {
   type        = list
   description = "Instance groups to create. The masters are included by default. You will need to configure at least one additional node group"
@@ -47,6 +53,48 @@ variable "masters_instance_count" {
   type        = number
   default     = 5
   description = "Number of master nodes to create. Suggesting at least 5 to support failover of 2 masters"
+}
+
+variable "etcd_events_storage_type" {
+  type        = string
+  default     = "gp2"
+  description = "Storage type to use for the etcd events volume. If required you may use io1"
+}
+
+variable "etcd_events_storage_size" {
+  type        = number
+  default     = 64
+  description = "Amount of Storage for event volumes"
+}
+
+variable "etcd_main_storage_iops" {
+  type        = number
+  default     = 0
+  description = "Additional IOPS for event volumes"
+}
+
+variable "etcd_main_storage_type" {
+  type        = string
+  default     = "gp2"
+  description = "Storage type to use for the etcd events volume"
+}
+
+variable "etcd_main_storage_size" {
+  type        = number
+  default     = 48
+  description = "Amount of Storage for main volumes"
+}
+
+variable "etcd_main_storage_iops" {
+  type        = number
+  default     = 0
+  description = "Additional IOPS for main volumes"
+}
+
+variable "masters_spot_enabled" {
+  type        = bool
+  default     = false
+  description = "If set to true creates spot requests for master instances"
 }
 
 variable "bastion_machine_type" {

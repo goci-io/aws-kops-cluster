@@ -5,7 +5,7 @@ metadata:
   labels:
     kops.k8s.io/cluster: ${cluster_dns}
 spec:
-  kubernetesVersion: 1.13.10
+  kubernetesVersion: ${k8s_version}
   masterPublicName: api.${cluster_dns}
   masterInternalName: api.${cluster_dns}
   networkCIDR: ${vpc_cidr}
@@ -84,8 +84,11 @@ spec:
     - encryptedVolume: true
       instanceGroup: ${member}
       name: master-${index}
-      volumeType: gp2
-      volumeSize: 96
+      volumeType: ${etcd_main_volume_type}
+      volumeSize: ${etcd_main_volume_size}
+%{ if etcd_main_volume_iops != 0 ~}
+      volumeIops: ${etcd_main_volume_iops}
+%{ endif ~}
 %{ endfor ~}
     name: main
     version: 3.3.13
@@ -95,9 +98,11 @@ spec:
     - encryptedVolume: true
       instanceGroup: ${member}
       name: master-${index}
-      volumeType: io1
-      volumeIops: 180
-      volumeSize: 56
+      volumeType: ${etcd_event_volume_type}
+      volumeSize: ${etcd_event_volume_size}
+%{ if etcd_main_volume_iops != 0 ~}
+      volumeIops: ${etcd_event_volume_iops}
+%{ endif ~}
 %{ endfor ~}
     name: events
     version: 3.3.13
