@@ -83,7 +83,7 @@ data "null_data_source" "master_instance_groups" {
       instance_min           = 1
       instance_type          = var.master_machine_type
       autospotting_enabled   = var.masters_spot_enabled
-      autospotting_max_price = 0.1
+      autospotting_max_price = 0.15
       autospotting_instances = distinct(concat([var.master_machine_type], ["m5.large", "m5.xlarge", "a1.large", "a1.xlarge", "i3.large"]))
     })
   }
