@@ -27,7 +27,9 @@ locals {
     lb_security_groups      = ""
     ssh_access              = length(var.ssh_access_cidrs) > 0 ? var.ssh_access_cidrs : [local.vpc_cidr]
     create_api_lb           = !local.external_lb_enabled
-    kops_ca_enabled         = local.custom_certificate_enabled
+    custom_certificate      = local.custom_certificate_enabled
+    custom_certificate_key  = local.certificate_private_key_pem
+    custom_certificate_body = local.certificate_client_pem
     public_subnet_id_a      = local.public_subnet_id_a
     public_subnet_cidr_a    = local.public_subnet_cidr_a
     public_subnet_id_b      = local.public_subnet_id_b
