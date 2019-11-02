@@ -5,7 +5,7 @@ module "s3_label" {
 }
 
 locals {
-  ssh_key_path = format("%s/%s", var.ssh_path, module.kops_label.id)
+  ssh_key_path = format("%s/ssh/%s", var.secrets_path, module.kops_label.id)
 }
 
 resource "aws_s3_bucket" "kops_state" {
