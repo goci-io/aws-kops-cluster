@@ -100,14 +100,14 @@ resource "null_resource" "replace_config" {
 
 resource "local_file" "ssl_private_key" {
   count             = local.custom_certificate_enabled ? 1 : 0
-  filename          = "${var.secrets_path}/pki/key.pem"
+  filename          = "${var.secrets_path}/pki/api-key.pem"
   sensitive_content = local.certificate_private_key_pem
 }
 
 resource "local_file" "ssl_cert" {
   count             = local.custom_certificate_enabled ? 1 : 0
-  filename          = "${var.secrets_path}/pki/ca.pem"
-  sensitive_content = local.certificate_ca_pem
+  filename          = "${var.secrets_path}/pki/api-cert.pem"
+  sensitive_content = local.certificate_client_pem
 }
 
 resource "null_resource" "api_ssl" {
@@ -115,7 +115,7 @@ resource "null_resource" "api_ssl" {
 
   provisioner "local-exec" {
     environment = local.kops_env_config
-    command     = "kops create secret keypair ca --cert ${join("", local_file.ssl_cert.*.filename)} --key ${join("", local_file.ssl_private_key.*.filename)}"
+    command     = "kops create secret keypair server --cert ${join("", local_file.ssl_cert.*.filename)} --key ${join("", local_file.ssl_private_key.*.filename)}"
   }
 
   triggers = {
