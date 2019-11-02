@@ -37,6 +37,10 @@ spec:
     serviceNodePortRange: 15000-65500
   kubelet:
     anonymousAuth: false
+%{ if kops_ca_enabled ~}
+    clientCAFile: /srv/kubernetes/ca.crt
+    tlsPrivateKeyFile: /srv/kubernetes/ca.key
+%{ endif ~}
     kubeReserved:
       cpu: 200m
       memory: 256Mi

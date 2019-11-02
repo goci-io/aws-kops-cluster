@@ -26,6 +26,7 @@ locals {
     certificate_arn         = local.certificate_arn
     lb_security_groups      = ""
     create_api_lb           = !local.external_lb_enabled
+    kops_ca_enabled         = local.custom_certificate_enabled
     public_subnet_id_a      = local.public_subnet_id_a
     public_subnet_cidr_a    = local.public_subnet_cidr_a
     public_subnet_id_b      = local.public_subnet_id_b
@@ -115,7 +116,7 @@ resource "null_resource" "api_ssl" {
 
   provisioner "local-exec" {
     environment = local.kops_env_config
-    command     = "kops create secret keypair server --cert ${join("", local_file.ssl_cert.*.filename)} --key ${join("", local_file.ssl_private_key.*.filename)}"
+    command     = "kops create secret keypair ca --cert ${join("", local_file.ssl_cert.*.filename)} --key ${join("", local_file.ssl_private_key.*.filename)}"
   }
 
   triggers = {
