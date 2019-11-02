@@ -5,7 +5,6 @@ metadata:
   labels:
     kops.k8s.io/cluster: ${cluster_dns}
 spec:
-  useHostCertificates: true
   kubernetesVersion: ${k8s_version}
   masterPublicName: api.${cluster_dns}
   masterInternalName: api.${cluster_dns}
@@ -31,7 +30,6 @@ spec:
       sslCertificate: ${certificate_arn}
       additionalSecurityGroups: [${lb_security_groups}]
       crossZoneLoadBalancing: true
-      useForInternalApi: true
   kubeAPIServer:
     targetRamMb: 2048
     eventTTL: 06h0m0s
@@ -40,7 +38,6 @@ spec:
     maxMutatingRequestsInflight: ${max_mutating_requests_in_flight}
     serviceNodePortRange: 15000-65500
   kubelet:
-    anonymousAuth: false
     kubeReserved:
       cpu: 180m
       memory: 224Mi
