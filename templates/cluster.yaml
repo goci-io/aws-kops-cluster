@@ -53,12 +53,12 @@ spec:
     maxRequestsInflight: ${max_requests_in_flight}
     maxMutatingRequestsInflight: ${max_mutating_requests_in_flight}
     serviceNodePortRange: 15000-65000
-  kubelet:
 %{ if certificate_enabled ~}
     tlsCertFile: /usr/local/share/api-cert.crt
     clientCAFile: /usr/local/share/api-cert.ca
     tlsPrivateKeyFile: /usr/local/share/api-cert.key
 %{ endif ~}
+  kubelet:
     anonymousAuth: false
     kubeReserved:
       cpu: 200m
