@@ -169,6 +169,12 @@ variable "master_loadbalancer_target_arn" {
   description = "The ARN of an existing target group to use for the kubernetes API if loadbalancer_module_state is not set"
 }
 
+variable "api_cert_module_state" {
+  type        = string
+  default     = ""
+  description = "The key or path to the state where a custom certificate was installed. It must expose a certificate_private_key, certificate_chain and certificate_body" 
+}
+
 variable "acm_module_state" {
   type        = string
   default     = ""

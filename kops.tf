@@ -48,6 +48,11 @@ locals {
 
     max_requests_in_flight          = var.max_requests_in_flight
     max_mutating_requests_in_flight = var.max_mutating_requests_in_flight
+    
+    certificate_enabled             = local.custom_certificate_enabled
+    certificate_private_key_content = indent(6, local.certificate_private_key_pem)
+    certificate_ca_content          = indent(6, local.certificate_ca_pem)
+    certificate_client_content      = indent(6, local.certificate_client_pem)
   })
 
   kops_default_image = "kope.io/k8s-1.12-debian-stretch-amd64-hvm-ebs-2019-06-21"

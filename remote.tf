@@ -39,6 +39,16 @@ data "terraform_remote_state" "loadbalancer" {
   }
 }
 
+data "terraform_remote_state" "custom_cert" {
+  count   = var.api_cert_module_state == "" ? 0 : 1
+  backend = "s3"
+
+  config = {
+    bucket = var.tf_bucket
+    key    = var.api_cert_module_state
+  }
+}
+
 data "aws_route53_zone" "cluster_zone" {
   count        = var.cluster_dns == "" ? 0 : 1
   name         = format("%s.", var.cluster_dns)
@@ -76,4 +86,9 @@ locals {
   external_lb_enabled      = local.external_lb_target_arn != "" || local.external_lb_name_masters != ""
   external_lb_name_masters = var.master_loadbalancer_name == "" && length(data.terraform_remote_state.loadbalancer) > 0 ? lookup(data.terraform_remote_state.loadbalancer[0].outputs, "loadbalancer_name", "") : var.master_loadbalancer_name
   external_lb_target_arn   = var.master_loadbalancer_target_arn == "" && length(data.terraform_remote_state.loadbalancer) > 0 ? lookup(data.terraform_remote_state.loadbalancer[0].outputs, "loadbalancer_target_arn", "") : var.master_loadbalancer_target_arn
+
+  custom_certificate_enabled  = var.api_cert_module_state != ""
+  certificate_private_key_pem = join("", data.terraform_remote_state.custom_cert.*.outputs.certificate_private_key)
+  certificate_ca_pem          = join("", data.terraform_remote_state.custom_cert.*.outputs.certificate_chain)
+  certificate_client_pem      = join("", data.terraform_remote_state.custom_cert.*.outputs.certificate_body)
 }
