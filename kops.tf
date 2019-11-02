@@ -121,7 +121,7 @@ EOF
   }
 
   triggers = {
-    hash = md5(join("", local_file.ssl_cert.*.sensitive_content)
+    hash = md5(join("", local_file.ssl_cert.*.sensitive_content))
   }
 }
 
