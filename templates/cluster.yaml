@@ -21,24 +21,6 @@ spec:
   networking:
     calico:
       majorVersion: v3
-%{ if certificate_enabled ~}
-  fileAssets:
-  - name: api-certificate
-    path: /srv/kubernetes/server.cert
-    roles: [Master,Node]
-    content: |
-      ${certificate_client_content}
-  - name: api-certificate-ca
-    path: /srv/kubernetes/ca.crt
-    roles: [Master,Node]
-    content: |
-      ${certificate_ca_content}
-  - name: api-private-key
-    path: /srv/kubernetes/server.key
-    roles: [Master]
-    content: |
-      ${certificate_private_key_content}
-%{ endif ~}
   api:
     dns: {}
     loadBalancer:

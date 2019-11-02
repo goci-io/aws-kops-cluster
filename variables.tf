@@ -121,9 +121,9 @@ variable "max_requests_in_flight" {
   description = "Max requests in flight reading API objects. Depends on the machine type and count for masters, as well as IOPS of etcd volumes"
 }
 
-variable "ssh_path" {
+variable "secrets_path" {
   type        = string
-  default     = "/secrets/tf/ssh"
+  default     = "/secrets/tf"
   description = "Path to put SSH keys into"
 }
 

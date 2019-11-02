@@ -48,11 +48,6 @@ locals {
 
     max_requests_in_flight          = var.max_requests_in_flight
     max_mutating_requests_in_flight = var.max_mutating_requests_in_flight
-    
-    certificate_enabled             = local.custom_certificate_enabled
-    certificate_private_key_content = indent(6, local.certificate_private_key_pem)
-    certificate_ca_content          = indent(6, local.certificate_ca_pem)
-    certificate_client_content      = indent(6, local.certificate_client_pem)
   })
 
   kops_default_image = "kope.io/k8s-1.12-debian-stretch-amd64-hvm-ebs-2019-06-21"
@@ -74,7 +69,7 @@ module "ssh_key_pair" {
   stage               = var.stage
   attributes          = local.attributes
   tags                = local.tags
-  ssh_public_key_path = var.ssh_path
+  ssh_public_key_path = format("%s/ssh", var.secrets_path)
   generate_ssh_key    = "true"
   name                = "kops"
 }
@@ -103,10 +98,39 @@ resource "null_resource" "replace_config" {
   }
 }
 
+resource "local_file" "ssl_private_key" {
+  count             = local.custom_certificate_enabled ? 1 : 0
+  filename          = "${var.secrets_path}/pki/key.pem"
+  sensitive_content = local.certificate_private_key_pem
+}
+
+resource "local_file" "ssl_cert" {
+  count             = local.custom_certificate_enabled ? 1 : 0
+  filename          = "${var.secrets_path}/pki/cert.pem"
+  sensitive_content = local.certificate_client_pem
+}
+
+resource "null_resource" "api_ssl" {
+  count = local.custom_certificate_enabled ? 1 : 0
+
+  provisioner "local-exec" {
+    environment = local.kops_env_config
+    command     = <<EOF
+      kops create secret keypair ca --cert ${join("", local_file.ssl_cert.*.sensitive_content)} --key ${join("", local_file.ssl_private_key.*.content)}"
+EOF
+  }
+
+  triggers = {
+    hash = md5(join("", local_file.ssl_cert.*.sensitive_content)
+  }
+}
+
+
 resource "null_resource" "kops_update_cluster" {
   depends_on = [
     null_resource.replace_cluster,
     null_resource.replace_config,
+    null_resource.api_ssl,
   ]
 
   provisioner "local-exec" {
