@@ -5,6 +5,7 @@ metadata:
   labels:
     kops.k8s.io/cluster: ${cluster_dns}
 spec:
+  useHostCertificates: true
   kubernetesVersion: ${k8s_version}
   masterPublicName: api.${cluster_dns}
   masterInternalName: api.${cluster_dns}
@@ -41,8 +42,8 @@ spec:
   kubelet:
     anonymousAuth: false
     kubeReserved:
-      cpu: 200m
-      memory: 256Mi
+      cpu: 180m
+      memory: 224Mi
       ephemeral-storage: 1Gi
     systemReserved:
       cpu: 50m
