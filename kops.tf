@@ -99,7 +99,7 @@ resource "null_resource" "replace_config" {
     hash = md5(local.kops_configs[count.index].rendered)
   }
 }
-
+/*
 resource "local_file" "ssl_private_key" {
   count             = local.custom_certificate_enabled ? 1 : 0
   filename          = "${var.secrets_path}/pki/api-key.pem"
@@ -124,13 +124,12 @@ resource "null_resource" "api_ssl" {
     hash = md5(join("", local_file.ssl_cert.*.sensitive_content))
   }
 }
-
+*/
 
 resource "null_resource" "kops_update_cluster" {
   depends_on = [
     null_resource.replace_cluster,
     null_resource.replace_config,
-    null_resource.api_ssl,
   ]
 
   provisioner "local-exec" {
