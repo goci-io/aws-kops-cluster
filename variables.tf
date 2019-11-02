@@ -127,12 +127,6 @@ variable "secrets_path" {
   description = "Path to put SSH keys into"
 }
 
-variable "ssh_key_bucket" {
-  type        = string
-  default     = ""
-  description = "S3 bucket to store private SSH key for admin kops user. Defaults to no storage (unrecoverable)" 
-}
-
 variable "cluster_dns" {
   type        = string
   default     = ""

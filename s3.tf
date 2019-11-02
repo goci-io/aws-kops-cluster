@@ -4,10 +4,6 @@ module "s3_label" {
   attributes = ["state"]
 }
 
-locals {
-  ssh_key_path = format("%s/ssh/%s", var.secrets_path, module.kops_label.id)
-}
-
 resource "aws_s3_bucket" "kops_state" {
   bucket        = module.s3_label.id
   tags          = module.s3_label.tags
@@ -35,14 +31,3 @@ resource "aws_s3_bucket_public_access_block" "block" {
   ignore_public_acls      = true
   restrict_public_buckets = true
 }
-
-resource "aws_s3_bucket_object" "ssh_key" {
-  count      = var.ssh_key_bucket == "" ? 0 : 1
-  depends_on = [null_resource.kops_update_cluster]
-  provider   = aws.current
-  key        = "kops/ssh/admin.pem"
-  bucket     = var.ssh_key_bucket
-  source     = local.ssh_key_path
-  etag       = filemd5(local.ssh_key_path)
-}
-
