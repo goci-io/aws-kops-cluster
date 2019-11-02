@@ -38,6 +38,7 @@ spec:
     maxMutatingRequestsInflight: ${max_mutating_requests_in_flight}
     serviceNodePortRange: 15000-65500
   kubelet:
+    anonymousAuth: false
     kubeReserved:
       cpu: 180m
       memory: 224Mi
