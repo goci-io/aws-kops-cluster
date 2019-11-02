@@ -44,6 +44,10 @@ resource "null_resource" "wait_for_iam" {
   count      = var.external_account ? 1 : 0
 
   provisioner "local-exec" {
-    command = "sleep 20"
+    command = "sleep 30"
+  }
+
+  triggers = {
+    user = join("", aws_iam_user.kops.*.arn)
   }
 }
