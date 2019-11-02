@@ -27,17 +27,17 @@ spec:
     path: /usr/local/share/api-cert.crt
     roles: [Master,Node]
     content: |
-${certificate_client_content}
+      ${certificate_client_content}
   - name: api-certificate-ca
     path: /usr/local/share/api-cert.ca
     roles: [Master,Node]
     content: |
-${certificate_ca_content}
+      ${certificate_ca_content}
   - name: api-private-key
     path: /usr/local/share/api-cert.key
     roles: [Master]
     content: |
-${certificate_private_key_content}
+      ${certificate_private_key_content}
 %{ endif ~}
   api:
     dns: {}
