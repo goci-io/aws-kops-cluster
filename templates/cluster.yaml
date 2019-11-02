@@ -40,7 +40,7 @@ spec:
   kubelet:
     anonymousAuth: false
 %{ if kops_ca_enabled ~}
-    clientCAFile: /srv/kubernetes/ca.crt
+    tlsCertFile: /srv/kubernetes/ca.crt
     tlsPrivateKeyFile: /srv/kubernetes/ca.key
 %{ endif ~}
     kubeReserved:
