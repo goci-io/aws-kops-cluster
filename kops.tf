@@ -106,8 +106,8 @@ resource "local_file" "ssl_private_key" {
 
 resource "local_file" "ssl_cert" {
   count             = local.custom_certificate_enabled ? 1 : 0
-  filename          = "${var.secrets_path}/pki/cert.pem"
-  sensitive_content = local.certificate_client_pem
+  filename          = "${var.secrets_path}/pki/ca.pem"
+  sensitive_content = local.certificate_ca_pem
 }
 
 resource "null_resource" "api_ssl" {
