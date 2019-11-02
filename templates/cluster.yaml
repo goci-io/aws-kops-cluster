@@ -21,6 +21,24 @@ spec:
   networking:
     calico:
       majorVersion: v3
+%{ if certificate_enabled ~}
+  fileAssets:
+  - name: api-certificate
+    path: /usr/local/share/api-cert.crt
+    roles: [Master,Node]
+    content: |
+${certificate_client_content}
+  - name: api-certificate-ca
+    path: /usr/local/share/api-cert.ca
+    roles: [Master,Node]
+    content: |
+${certificate_ca_content}
+  - name: api-private-key
+    path: /usr/local/share/api-cert.key
+    roles: [Master]
+    content: |
+${certificate_private_key_content}
+%{ endif ~}
   api:
     dns: {}
     loadBalancer:
@@ -30,11 +48,17 @@ spec:
       crossZoneLoadBalancing: true
   kubeAPIServer:
     targetRamMb: 2048
+    eventTTL: 06h0m0s
     disableBasicAuth: true
     maxRequestsInflight: ${max_requests_in_flight}
     maxMutatingRequestsInflight: ${max_mutating_requests_in_flight}
     serviceNodePortRange: 15000-65000
   kubelet:
+%{ if certificate_enabled ~}
+    tlsCertFile: /usr/local/share/api-cert.crt
+    clientCAFile: /usr/local/share/api-cert.ca
+    tlsPrivateKeyFile: /usr/local/share/api-cert.key
+%{ endif ~}
     anonymousAuth: false
     kubeReserved:
       cpu: 200m
