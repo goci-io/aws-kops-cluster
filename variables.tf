@@ -124,7 +124,13 @@ variable "max_requests_in_flight" {
 variable "secrets_path" {
   type        = string
   default     = "/secrets/tf"
-  description = "Path to put SSH keys into"
+  description = "Path to put CA and SSH keys into"
+}
+
+variable "ssh_access_cidrs" {
+  type        = list(string)
+  default     = [] 
+  description = "Allowed CIDRs for SSH access"
 }
 
 variable "cluster_dns" {
