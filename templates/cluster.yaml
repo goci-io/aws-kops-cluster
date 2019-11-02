@@ -17,7 +17,9 @@ spec:
   kubernetesApiAccess:
   - ${vpc_cidr}
   sshAccess:
-  - ${vpc_cidr}
+%{ for cidr in ssh_access ~}
+  - ${cidr}
+%{ endfor ~}
   networking:
     calico:
       majorVersion: v3
