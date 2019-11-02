@@ -30,6 +30,7 @@ spec:
       sslCertificate: ${certificate_arn}
       additionalSecurityGroups: [${lb_security_groups}]
       crossZoneLoadBalancing: true
+      useForInternalApi: true
   kubeAPIServer:
     targetRamMb: 2048
     eventTTL: 06h0m0s
@@ -37,11 +38,6 @@ spec:
     maxRequestsInflight: ${max_requests_in_flight}
     maxMutatingRequestsInflight: ${max_mutating_requests_in_flight}
     serviceNodePortRange: 15000-65500
-%{ if kops_ca_enabled ~}
-    clientCAFile: /etc/ssl/certs/ca-certificates.crt
-    tlsCertFile: /srv/kubernetes/ca.crt
-    tlsPrivateKeyFile: /srv/kubernetes/ca.key
-%{ endif ~}
   kubelet:
     anonymousAuth: false
     kubeReserved:
