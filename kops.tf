@@ -115,9 +115,7 @@ resource "null_resource" "api_ssl" {
 
   provisioner "local-exec" {
     environment = local.kops_env_config
-    command     = <<EOF
-      kops create secret keypair ca --cert ${join("", local_file.ssl_cert.*.sensitive_content)} --key ${join("", local_file.ssl_private_key.*.content)}"
-EOF
+    command     = "kops create secret keypair ca --cert ${join("", local_file.ssl_cert.*.sensitive_content)} --key ${join("", local_file.ssl_private_key.*.sensitive_content)}"
   }
 
   triggers = {
