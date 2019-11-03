@@ -66,8 +66,6 @@ spec:
     horizontalPodAutoscalerUpscaleDelay: 3m0s
     horizontalPodAutoscalerTolerance: 0.1
     clusterCIDR: ${cluster_cidr}
-  authentication:
-    aws: {}
   authorization:
     rbac: {}
   iam:
