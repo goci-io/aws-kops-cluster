@@ -22,6 +22,41 @@ resource "aws_s3_bucket" "kops_state" {
       }
     }
   }
+
+  lifecycle_rule {
+    enabled = true
+
+    noncurrent_version_expiration {
+      days = 360
+    }
+  }
+}
+
+data "aws_iam_policy_document" "custom" {
+  dynamic "statement" {
+    for_each = var.custom_s3_policies
+
+    content {
+      effect    = "Allow"
+      resources = lookup(statement.value, "resources", ["arn:aws:s3:::${aws_s3_bucket.kops_state.id}/*"])
+      actions   = lookup(statement.value, "readonly", true) ? ["s3:Get*"] : lookup(statement.value, "actions", ["*"])
+
+      dynamic "principals" {
+        for_each = lookup(statement.value, "principals", [])
+
+        content {
+          type        = principals.value.type
+          identifiers = principals.value.identifiers
+        }
+      }
+    }
+  }
+}
+
+resource "aws_s3_bucket_policy" "current" {
+  count  = length(custom_s3_policies) > 0 ? 1 : 0
+  bucket = aws_s3_bucket.kops_state.id
+  policy = data.aws_iam_policy_document.custom.json
 }
 
 resource "aws_s3_bucket_public_access_block" "block" {

@@ -127,6 +127,12 @@ variable "enable_kops_validation" {
   description = "Useful if you want to wait for cluster to start up, deploy further things and then validate the clusters health. In that case set the validation to false"
 }
 
+variable "custom_s3_policies" {
+  type        = list
+  default     = []
+  description = "Custom policies to attach to the kops s3 state bucket. You can specify readonly (true), actions ([*]), resources (bucket) and principals" 
+}
+
 variable "secrets_path" {
   type        = string
   default     = "/secrets/tf"
