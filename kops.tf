@@ -25,6 +25,7 @@ locals {
     service_cluster_ip_cidr = cidrsubnet("100.0.0.0/8", 6, 0)
     ssh_access              = length(var.ssh_access_cidrs) > 0 ? var.ssh_access_cidrs : [local.vpc_cidr]
     certificate_arn         = local.certificate_arn
+    lb_type                 = var.cluster_dns_type == "Private" ? "Internal" : "Public"
     lb_security_groups      = ""
     create_api_lb           = !local.external_lb_enabled
     custom_certificate      = local.custom_certificate_enabled
