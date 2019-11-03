@@ -126,18 +126,15 @@ resource "tls_cert_request" "kubernetes" {
 }
 
 resource "tls_locally_signed_cert" "kubernetes" {
-  ca_key_algorithm   = "RSA"
-  cert_request_pem   = tls_cert_request.kubernetes.cert_request_pem
-  ca_private_key_pem = local.certificate_ca_key_pem
-  ca_cert_pem        = local.certificate_ca_pem
-  is_ca_certificate  = true
+  ca_key_algorithm      = "RSA"
+  cert_request_pem      = tls_cert_request.kubernetes.cert_request_pem
+  ca_private_key_pem    = local.certificate_ca_key_pem
+  ca_cert_pem           = local.certificate_ca_pem
+  is_ca_certificate     = true
+  validity_period_hours = 4320
 
-  validity_period_hours = 720
-
-  allowed_uses = [
-    "crl_signing",
-    "cert_signing",
-  ]
+  # Allowed uses for kubernetes certificate issuer
+  allowed_uses = ["crl_signing", "cert_signing"]
 }
 
 resource "local_file" "ca_key" {
@@ -194,6 +191,16 @@ EOF
   }
 
   triggers = local.kops_triggers
+}
+
+resource "null_resource" "cluster_startup" {
+  depends_on = [null_resource.kops_update_cluster]
+
+  provisioner "local-exec" {
+    # This is only required during the initial setup
+    environment = local.kops_env_config
+    command     = "${path.module}/scripts/wait-for-cluster.sh"
+  }
 }
 
 resource "null_resource" "kops_delete_cluster" {
