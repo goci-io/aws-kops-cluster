@@ -40,7 +40,7 @@ data "terraform_remote_state" "loadbalancer" {
 }
 
 data "terraform_remote_state" "custom_cert" {
-  count   = local.custom_certificate_enabled ? 0 : 1
+  count   = local.custom_certificate_enabled ? 1 : 0
   backend = "s3"
 
   config = {
