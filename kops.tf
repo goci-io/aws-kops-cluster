@@ -109,7 +109,7 @@ resource "tls_cert_request" "kubernetes" {
   private_key_pem = tls_private_key.kubernetes.private_key_pem
   ip_addresses    = ["127.0.0.1"]
   dns_names       = [
-    local.cluster_dns, 
+    format("api.%s", local.cluster_dns), 
     "kubernetes", 
     "kubernetes.default", 
     "kubernetes.default.svc", 
