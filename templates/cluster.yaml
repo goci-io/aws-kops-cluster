@@ -17,7 +17,7 @@ spec:
   kubernetesApiAccess:
 %{ for cidr in api_access ~}
   - ${cidr}
-%{ endif ~}
+%{ endfor ~}
   sshAccess:
 %{ for cidr in ssh_access ~}
   - ${cidr}
