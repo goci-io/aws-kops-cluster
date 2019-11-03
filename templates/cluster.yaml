@@ -33,7 +33,8 @@ spec:
   kubeAPIServer:
     targetRamMb: 2560
     eventTTL: 06h0m0s
-    disableBasicAuth: true
+    # Kops generates a kubecfg with http basic credentials
+    disableBasicAuth: false
     maxRequestsInflight: ${max_requests_in_flight}
     maxMutatingRequestsInflight: ${max_mutating_requests_in_flight}
     serviceNodePortRange: 15000-65500
