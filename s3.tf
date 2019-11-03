@@ -32,7 +32,9 @@ resource "aws_s3_bucket" "kops_state" {
   }
 }
 
-data "aws_iam_policy_document" "custom" {
+data "aws_iam_policy_document" "custom_s3" {
+  count = length(var.custom_s3_policies) > 0 ? 1 : 0
+
   dynamic "statement" {
     for_each = var.custom_s3_policies
 
@@ -54,9 +56,9 @@ data "aws_iam_policy_document" "custom" {
 }
 
 resource "aws_s3_bucket_policy" "current" {
-  count  = length(custom_s3_policies) > 0 ? 1 : 0
+  count  = length(var.custom_s3_policies) > 0 ? 1 : 0
   bucket = aws_s3_bucket.kops_state.id
-  policy = data.aws_iam_policy_document.custom.json
+  policy = join("", data.aws_iam_policy_document.custom_s3.*.json)
 }
 
 resource "aws_s3_bucket_public_access_block" "block" {
