@@ -41,7 +41,7 @@ data "aws_iam_policy_document" "custom_s3" {
     content {
       effect    = "Allow"
       resources = lookup(statement.value, "resources", ["arn:aws:s3:::${aws_s3_bucket.kops_state.id}/*"])
-      actions   = lookup(statement.value, "readonly", true) ? ["s3:Get*"] : lookup(statement.value, "actions", ["*"])
+      actions   = lookup(statement.value, "readonly", true) ? ["s3:Get*", "s3:List*"] : lookup(statement.value, "actions", ["*"])
 
       dynamic "principals" {
         for_each = lookup(statement.value, "principals", [])
