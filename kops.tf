@@ -97,6 +97,7 @@ resource "null_resource" "replace_config" {
   triggers = {
     name = local.kops_configs[count.index].name
     hash = md5(local.kops_configs[count.index].rendered)
+    ca   = md5(join("", local_file.ca_cert.*.sensitive_content))
   }
 }
 
@@ -153,7 +154,8 @@ resource "local_file" "ca_cert" {
 }
 
 resource "null_resource" "custom_ca" {
-  count = local.custom_certificate_enabled ? 1 : 0
+  count      = local.custom_certificate_enabled ? 1 : 0
+  depends_on = [null_resource.replace_cluster]
 
   provisioner "local-exec" {
     environment = local.kops_env_config
