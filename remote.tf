@@ -40,7 +40,7 @@ data "terraform_remote_state" "loadbalancer" {
 }
 
 data "terraform_remote_state" "custom_cert" {
-  count   = var.api_cert_module_state == "" ? 0 : 1
+  count   = local.custom_certificate_enabled ? 0 : 1
   backend = "s3"
 
   config = {
@@ -89,6 +89,7 @@ locals {
 
   custom_certificate_enabled  = var.api_cert_module_state != ""
   certificate_private_key_pem = join("", data.terraform_remote_state.custom_cert.*.outputs.certificate_private_key)
-  certificate_ca_pem          = join("", data.terraform_remote_state.custom_cert.*.outputs.certificate_chain)
+  certificate_ca_pem          = join("", data.terraform_remote_state.custom_cert.*.outputs.certificate_ca_cert)
+  certificate_ca_key_pem      = join("", data.terraform_remote_state.custom_cert.*.outputs.certificate_ca_key)
   certificate_client_pem      = join("", data.terraform_remote_state.custom_cert.*.outputs.certificate_body)
 }

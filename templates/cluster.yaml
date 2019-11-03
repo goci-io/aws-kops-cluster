@@ -30,19 +30,6 @@ spec:
       sslCertificate: ${certificate_arn}
       additionalSecurityGroups: [${lb_security_groups}]
       crossZoneLoadBalancing: true
-%{ if custom_certificate ~}
-  fileAssets:
-  - name: acme-api-cert
-    path: /srv/kubernetes/kubernetes.cert
-    roles: [Master,Node]
-    content: |
-      ${custom_certificate_body}
-  - name: acme-api-key
-    path: /srv/kubernetes/kubernetes.key
-    roles: [Master,Node]
-    content: |
-      ${custom_certificate_key}
-%{ endif ~}
   kubeAPIServer:
     targetRamMb: 2560
     eventTTL: 06h0m0s
@@ -51,11 +38,6 @@ spec:
     maxMutatingRequestsInflight: ${max_mutating_requests_in_flight}
     serviceNodePortRange: 15000-65500
   kubelet:
-%{ if custom_certificate ~}
-    clientCAFile: /srv/kubernetes/ca.crt
-    tlsPrivateKeyFile: /srv/kubernetes/kubernetes.key
-    tlsCertFile: /srv/kubernetes/kubernetes.cert
-%{ endif ~}
     anonymousAuth: false
     kubeReserved:
       cpu: 180m
