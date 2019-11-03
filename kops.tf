@@ -28,8 +28,8 @@ locals {
     ssh_access              = length(var.ssh_access_cidrs) > 0 ? var.ssh_access_cidrs : [local.vpc_cidr]
     create_api_lb           = !local.external_lb_enabled
     custom_certificate      = local.custom_certificate_enabled
-    custom_certificate_key  = indent(6, local.certificate_private_key_pem)
-    custom_certificate_body = indent(6, local.certificate_client_pem)
+    custom_certificate_key  = indent(6, tls_private_key.kubernetes.private_key_pem)
+    custom_certificate_body = indent(6, tls_locally_signed_cert.kubernetes.cert_pem)
     public_subnet_id_a      = local.public_subnet_id_a
     public_subnet_cidr_a    = local.public_subnet_cidr_a
     public_subnet_id_b      = local.public_subnet_id_b
@@ -101,17 +101,48 @@ resource "null_resource" "replace_config" {
     hash = md5(local.kops_configs[count.index].rendered)
   }
 }
-/*
-resource "local_file" "ssl_private_key" {
+
+resource "local_file" "ca_key" {
   count             = local.custom_certificate_enabled ? 1 : 0
   filename          = "${var.secrets_path}/pki/api-key.pem"
   sensitive_content = local.certificate_private_key_pem
 }
 
-resource "local_file" "ssl_cert" {
+resource "local_file" "ca_cert" {
   count             = local.custom_certificate_enabled ? 1 : 0
   filename          = "${var.secrets_path}/pki/api-cert.pem"
   sensitive_content = local.certificate_client_pem
+}
+
+resource "tls_private_key" "kubernetes" {
+  algorithm = "RSA"
+}
+
+resource "tls_cert_request" "kubernetes" {
+  key_algorithm   = "RSA"
+  ip_addresses    = ["127.0.0.1"]
+  dns_names       = [local.cluster_dns]
+  private_key_pem = tls_private_key.kubernetes.private_key_pem
+
+  subject {
+    common_name  = "kubernetes"
+    organization = "system:nodes"
+  }
+}
+
+resource "tls_locally_signed_cert" "kubernetes" {
+  ca_key_algorithm   = "RSA"
+  cert_request_pem   = tls_cert_request.kubernetes.cert_request_pem
+  ca_private_key_pem = local.certificate_private_key_pem
+  ca_cert_pem        = local.certificate_client_pem
+
+  validity_period_hours = 720
+
+  allowed_uses = [
+    "key_encipherment",
+    "crl_signing",
+    "server_auth",
+  ]
 }
 
 resource "null_resource" "api_ssl" {
@@ -119,14 +150,14 @@ resource "null_resource" "api_ssl" {
 
   provisioner "local-exec" {
     environment = local.kops_env_config
-    command     = "kops create secret keypair ca --cert ${join("", local_file.ssl_cert.*.filename)} --key ${join("", local_file.ssl_private_key.*.filename)}"
+    command     = "kops create secret keypair ca --cert ${join("", local_file.ca_cert.*.filename)} --key ${join("", local_file.ca_key.*.filename)}"
   }
 
   triggers = {
-    hash = md5(join("", local_file.ssl_cert.*.sensitive_content))
+    hash = md5(join("", local_file.ca_cert.*.sensitive_content))
   }
 }
-*/
+
 
 resource "null_resource" "kops_update_cluster" {
   depends_on = [
