@@ -4,6 +4,14 @@ module "s3_label" {
   attributes = ["state"]
 }
 
+locals {
+  default_s3_actions   = ["s3:Get*", "s3:List*"]
+  default_s3_resources = [
+    "arn:aws:s3:::${aws_s3_bucket.kops_state.id}",
+    "arn:aws:s3:::${aws_s3_bucket.kops_state.id}/${local.cluster_dns}/*",
+  ]
+}
+
 resource "aws_s3_bucket" "kops_state" {
   bucket        = module.s3_label.id
   tags          = module.s3_label.tags
@@ -40,8 +48,8 @@ data "aws_iam_policy_document" "custom_s3" {
 
     content {
       effect    = "Allow"
-      resources = lookup(statement.value, "resources", ["arn:aws:s3:::${aws_s3_bucket.kops_state.id}", "arn:aws:s3:::${aws_s3_bucket.kops_state.id}/*"])
-      actions   = lookup(statement.value, "readonly", true) ? ["s3:Get*", "s3:List*"] : lookup(statement.value, "actions", ["*"])
+      resources = lookup(statement.value, "resources", local.default_s3_resources)
+      actions   = lookup(statement.value, "readonly", true) ? local.default_s3_actions : lookup(statement.value, "actions", ["*"])
 
       dynamic "principals" {
         for_each = lookup(statement.value, "principals", [])
