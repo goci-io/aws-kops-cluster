@@ -130,7 +130,7 @@ variable "enable_kops_validation" {
 variable "custom_s3_policies" {
   type        = list
   default     = []
-  description = "Custom policies to attach to the kops s3 state bucket. You can specify readonly (true), actions ([*]), resources (bucket) and principals" 
+  description = "Custom policies to attach to the kops s3 state bucket. You can specify readonly (true, Get* and List*), actions ([*]), resources (bucket) and principals" 
 }
 
 variable "secrets_path" {
@@ -143,6 +143,12 @@ variable "ssh_access_cidrs" {
   type        = list(string)
   default     = [] 
   description = "Allowed CIDRs for SSH access"
+}
+
+variable "api_access_cidrs" {
+  type        = list(string)
+  default     = []
+  description = "Allowed CIDRs to acces kubernetes master API"
 }
 
 variable "cluster_dns" {

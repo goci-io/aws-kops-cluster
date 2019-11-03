@@ -15,7 +15,9 @@ spec:
   nonMasqueradeCIDR: ${cluster_cidr}
   serviceClusterIPRange: ${service_cluster_ip_cidr}
   kubernetesApiAccess:
-  - ${vpc_cidr}
+%{ for cidr in api_access ~}
+  - ${cidr}
+%{ endif ~}
   sshAccess:
 %{ for cidr in ssh_access ~}
   - ${cidr}
@@ -27,9 +29,10 @@ spec:
     dns: {}
     loadBalancer:
       type: ${lb_type}
+      useForInternalApi: true
+      crossZoneLoadBalancing: true
       sslCertificate: ${certificate_arn}
       additionalSecurityGroups: [${lb_security_groups}]
-      crossZoneLoadBalancing: true
   kubeAPIServer:
     targetRamMb: 2560
     eventTTL: 06h0m0s
