@@ -194,6 +194,7 @@ EOF
 }
 
 resource "null_resource" "cluster_startup" {
+  count      = var.enable_kops_validation ? 1 : 0
   depends_on = [null_resource.kops_update_cluster]
 
   provisioner "local-exec" {

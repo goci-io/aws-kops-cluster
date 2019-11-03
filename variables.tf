@@ -121,6 +121,12 @@ variable "max_requests_in_flight" {
   description = "Max requests in flight reading API objects. Depends on the machine type and count for masters, as well as IOPS of etcd volumes"
 }
 
+variable "enable_kops_validation" {
+  type        = bool
+  default     = true 
+  description = "Useful if you want to wait for cluster to start up, deploy further things and then validate the clusters health. In that case set the validation to false"
+}
+
 variable "secrets_path" {
   type        = string
   default     = "/secrets/tf"
