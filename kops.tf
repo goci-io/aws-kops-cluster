@@ -23,9 +23,9 @@ locals {
     vpc_id                  = local.vpc_id
     vpc_cidr                = local.vpc_cidr
     service_cluster_ip_cidr = cidrsubnet("100.0.0.0/8", 6, 0)
+    ssh_access              = length(var.ssh_access_cidrs) > 0 ? var.ssh_access_cidrs : [local.vpc_cidr]
     certificate_arn         = local.certificate_arn
     lb_security_groups      = ""
-    ssh_access              = length(var.ssh_access_cidrs) > 0 ? var.ssh_access_cidrs : [local.vpc_cidr]
     create_api_lb           = !local.external_lb_enabled
     custom_certificate      = local.custom_certificate_enabled
     public_subnet_id_a      = local.public_subnet_id_a
@@ -143,7 +143,7 @@ resource "tls_locally_signed_cert" "kubernetes" {
   ]
 }
 */
-resource "null_resource" "api_ssl" {
+resource "null_resource" "custom_ca" {
   count = local.custom_certificate_enabled ? 1 : 0
 
   provisioner "local-exec" {
@@ -156,11 +156,21 @@ resource "null_resource" "api_ssl" {
   }
 }
 
+resource "null_resource" "delete_ca" {
+  count = local.custom_certificate_enabled ? 1 : 0
+
+  provisioner "local-exec" {
+    environment = local.kops_env_config
+    command     = "kops delete secret keypair ca || exit 0"
+    when        = "destroy"
+  }
+}
 
 resource "null_resource" "kops_update_cluster" {
   depends_on = [
     null_resource.replace_cluster,
     null_resource.replace_config,
+    null_resource.custom_ca,
   ]
 
   provisioner "local-exec" {
