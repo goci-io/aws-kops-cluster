@@ -94,7 +94,7 @@ spec:
 %{ endif ~}
 %{ endfor ~}
     name: main
-    version: 3.3.13
+    version: 3.3.15
     enableEtcdTLS: true
   - etcdMembers:
 %{ for index, member in etcd_members ~}
@@ -108,7 +108,7 @@ spec:
 %{ endif ~}
 %{ endfor ~}
     name: events
-    version: 3.3.13
+    version: 3.3.15
     cpuRequest: 300m
     memoryRequest: 768Mi
     enableEtcdTLS: true
