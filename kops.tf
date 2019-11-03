@@ -100,27 +100,22 @@ resource "null_resource" "replace_config" {
   }
 }
 
-resource "local_file" "ca_key" {
-  count             = local.custom_certificate_enabled ? 1 : 0
-  filename          = "${var.secrets_path}/pki/api-key.pem"
-  sensitive_content = local.certificate_ca_key_pem
-}
-
-resource "local_file" "ca_cert" {
-  count             = local.custom_certificate_enabled ? 1 : 0
-  filename          = "${var.secrets_path}/pki/api-cert.pem"
-  sensitive_content = local.certificate_ca_pem
-}
-/*
 resource "tls_private_key" "kubernetes" {
   algorithm = "RSA"
 }
 
 resource "tls_cert_request" "kubernetes" {
   key_algorithm   = "RSA"
-  ip_addresses    = ["127.0.0.1"]
-  dns_names       = [local.cluster_dns]
   private_key_pem = tls_private_key.kubernetes.private_key_pem
+  ip_addresses    = ["127.0.0.1"]
+  dns_names       = [
+    local.cluster_dns, 
+    "kubernetes", 
+    "kubernetes.default", 
+    "kubernetes.default.svc", 
+    "kubernetes.default.svc.cluster", 
+    "kubernetes.default.svc.cluster.local",
+  ]
 
   subject {
     common_name  = "kubernetes"
@@ -139,10 +134,22 @@ resource "tls_locally_signed_cert" "kubernetes" {
   allowed_uses = [
     "key_encipherment",
     "crl_signing",
-    "server_auth",
+    "cert_signing",
   ]
 }
-*/
+
+resource "local_file" "ca_key" {
+  count             = local.custom_certificate_enabled ? 1 : 0
+  filename          = "${var.secrets_path}/pki/key.pem"
+  sensitive_content = tls_private_key.kubernetes.private_key_pem
+}
+
+resource "local_file" "ca_cert" {
+  count             = local.custom_certificate_enabled ? 1 : 0
+  filename          = "${var.secrets_path}/pki/cert.pem"
+  sensitive_content = tls_locally_signed_cert.kubernetes.cert_pem
+}
+
 resource "null_resource" "custom_ca" {
   count = local.custom_certificate_enabled ? 1 : 0
 
