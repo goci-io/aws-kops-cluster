@@ -142,12 +142,14 @@ resource "local_file" "ca_key" {
   count             = local.custom_certificate_enabled ? 1 : 0
   filename          = "${var.secrets_path}/pki/key.pem"
   sensitive_content = tls_private_key.kubernetes.private_key_pem
+  file_permission   = 600
 }
 
 resource "local_file" "ca_cert" {
   count             = local.custom_certificate_enabled ? 1 : 0
   filename          = "${var.secrets_path}/pki/cert.pem"
   sensitive_content = tls_locally_signed_cert.kubernetes.cert_pem
+  file_permission   = 600
 }
 
 resource "null_resource" "custom_ca" {
