@@ -133,7 +133,6 @@ resource "tls_locally_signed_cert" "kubernetes" {
   validity_period_hours = 720
 
   allowed_uses = [
-    "key_encipherment",
     "crl_signing",
     "cert_signing",
   ]
