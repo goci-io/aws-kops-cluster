@@ -6,18 +6,21 @@ echo "Wait for cluster to start up the first time..."
 starting=1
 retries=0
 
-while [ $retries -lt 5 && $starting -ne 0 ]; do
-    sleep $retries * 180
+while [[ $retries -lt 5 && $starting -ne 0 ]]; do
+    timeout=$(($retries*180+180))
+    echo "Waiting $timeout before validating cluster" 
+    sleep $timeout
     
     set +e
     kops validate cluster
     starting=$?
     set -e
 
-    echo "Retrying..."    
+    echo "Retrying..."
+    retries=$(($retries+1))
 done
 
-if [ $starting -eq 0 ]; then
+if [[ $starting -eq 0 ]]; then
     echo "Cluster startup successful."
     exit 0
 else
