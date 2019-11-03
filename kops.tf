@@ -128,6 +128,7 @@ resource "tls_locally_signed_cert" "kubernetes" {
   cert_request_pem   = tls_cert_request.kubernetes.cert_request_pem
   ca_private_key_pem = local.certificate_ca_key_pem
   ca_cert_pem        = local.certificate_ca_pem
+  is_ca_certificate  = true
 
   validity_period_hours = 720
 
