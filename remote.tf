@@ -88,8 +88,6 @@ locals {
   external_lb_target_arn   = var.master_loadbalancer_target_arn == "" && length(data.terraform_remote_state.loadbalancer) > 0 ? lookup(data.terraform_remote_state.loadbalancer[0].outputs, "loadbalancer_target_arn", "") : var.master_loadbalancer_target_arn
 
   custom_certificate_enabled  = var.api_cert_module_state != ""
-  certificate_private_key_pem = join("", data.terraform_remote_state.custom_cert.*.outputs.certificate_private_key)
   certificate_ca_pem          = join("", data.terraform_remote_state.custom_cert.*.outputs.certificate_ca_cert)
   certificate_ca_key_pem      = join("", data.terraform_remote_state.custom_cert.*.outputs.certificate_ca_key)
-  certificate_client_pem      = join("", data.terraform_remote_state.custom_cert.*.outputs.certificate_body)
 }

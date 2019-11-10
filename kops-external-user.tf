@@ -33,14 +33,12 @@ resource "aws_iam_user_policy_attachment" "permissions" {
 }
 
 resource "aws_iam_access_key" "kops" {
-  depends_on = [null_resource.wait_for_iam]
   count      = var.external_account ? 1 : 0
   user       = join("", aws_iam_user.kops.*.name)
 }
 
 # Wait for IAM to propagate new user
 resource "null_resource" "wait_for_iam" {
-  depends_on = [aws_iam_user.kops]
   count      = var.external_account ? 1 : 0
 
   provisioner "local-exec" {
@@ -48,6 +46,6 @@ resource "null_resource" "wait_for_iam" {
   }
 
   triggers = {
-    user = join("", aws_iam_user.kops.*.arn)
+    user = join("", aws_iam_access_key.kops.*.id)
   }
 }
