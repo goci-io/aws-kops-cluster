@@ -29,6 +29,26 @@ data "terraform_remote_state" "dns" {
   }
 }
 
+data "terraform_remote_state" "loadbalancer" {
+  count   = var.loadbalancer_module_state == "" ? 0 : 1
+  backend = "s3"
+
+  config = {
+    bucket = var.tf_bucket
+    key    = var.loadbalancer_module_state
+  }
+}
+
+data "terraform_remote_state" "custom_cert" {
+  count   = local.custom_certificate_enabled ? 1 : 0
+  backend = "s3"
+
+  config = {
+    bucket = var.tf_bucket
+    key    = var.api_cert_module_state
+  }
+}
+
 data "aws_route53_zone" "cluster_zone" {
   count        = var.cluster_dns == "" ? 0 : 1
   name         = format("%s.", var.cluster_dns)
@@ -44,6 +64,7 @@ locals {
   cluster_dns     = var.cluster_dns == "" ? data.terraform_remote_state.dns[0].outputs.domain_name : var.cluster_dns
   cluster_zone_id = var.cluster_dns == "" ? data.terraform_remote_state.dns[0].outputs.zone_id : join("", data.aws_route53_zone.cluster_zone.*.zone_id)
 
+  # TODO optimize with dynamic lists
   public_subnet_id_a   = var.public_subnet_id_a == "" ? data.terraform_remote_state.vpc[0].outputs.public_subnet_ids[0] : var.public_subnet_id_a
   public_subnet_cidr_a = var.public_subnet_cidr_a == "" ? data.terraform_remote_state.vpc[0].outputs.public_subnet_cidrs[0] : var.public_subnet_cidr_a
 
@@ -61,4 +82,12 @@ locals {
 
   private_subnet_id_c   = var.private_subnet_id_c == "" ? data.terraform_remote_state.vpc[0].outputs.private_subnet_ids[2] : var.private_subnet_id_c
   private_subnet_cidr_c = var.private_subnet_cidr_c == "" ? data.terraform_remote_state.vpc[0].outputs.private_subnet_cidrs[2] : var.private_subnet_cidr_b
+  
+  external_lb_enabled      = local.external_lb_target_arn != "" || local.external_lb_name_masters != ""
+  external_lb_name_masters = var.master_loadbalancer_name == "" && length(data.terraform_remote_state.loadbalancer) > 0 ? lookup(data.terraform_remote_state.loadbalancer[0].outputs, "loadbalancer_name", "") : var.master_loadbalancer_name
+  external_lb_target_arn   = var.master_loadbalancer_target_arn == "" && length(data.terraform_remote_state.loadbalancer) > 0 ? lookup(data.terraform_remote_state.loadbalancer[0].outputs, "loadbalancer_target_arn", "") : var.master_loadbalancer_target_arn
+
+  custom_certificate_enabled  = var.api_cert_module_state != ""
+  certificate_ca_pem          = join("", data.terraform_remote_state.custom_cert.*.outputs.certificate_ca_cert)
+  certificate_ca_key_pem      = join("", data.terraform_remote_state.custom_cert.*.outputs.certificate_ca_key)
 }

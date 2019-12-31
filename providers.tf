@@ -4,7 +4,6 @@ terraform {
   required_providers {
     null       = "~> 2.1"
     local      = "~> 1.3"
-    kubernetes = "~> 1.8"
   }
 }
 
@@ -14,4 +13,9 @@ provider "aws" {
   assume_role {
     role_arn = var.aws_assume_role_arn
   }
+}
+
+provider "aws" {
+  version = "~> 2.25"
+  alias   = "current"
 }

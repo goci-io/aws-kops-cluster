@@ -3,27 +3,23 @@ kind: InstanceGroup
 metadata:
   name: ${instance_group_name}
   labels:
-    kops.k8s.io/cluster: ${cluster_name}
+    kops.k8s.io/cluster: ${cluster_dns}
     kops.k8s.io/instancegroup: ${instance_group_name}
 spec:
-  #additionalUserData:
-  #- name: reserved-resources.sh
-  #  type: text/x-shellscript
-  #  content: |
-  #    #!/bin/sh
-  #    
   cloudLabels:
     Cluster: ${cluster_name}
     Namespace: ${namespace}
     Stage: ${stage}
     Region: ${region}
     Role: ${instance_name}
-    kops.k8s.io/cluster: ${cluster_name}
+    kops.k8s.io/cluster: ${cluster_dns}
     kops.k8s.io/instancegroup: ${instance_group_name}
-    kubernetes.io/cluster/${cluster_name}: owned
-    k8s.io/cluster-autoscaler/${autoscaler}: \"\"
+    kubernetes.io/cluster/${cluster_dns}: owned
+%{ if autoscaler ~}
+    k8s.io/cluster-autoscaler/enabled: \"\"
     k8s.io/cluster-autoscaler/node-template/label/instance_type: ${instance_name}
     k8s.io/cluster-autoscaler/node-template/label/kops.k8s.io/instancegroup: ${instance_group_name}
+%{ endif ~}
   image: ${image}
   machineType: ${instance_type}
   maxSize: ${instance_max}
@@ -32,16 +28,60 @@ spec:
   rootVolumeType: ${storage_type}
   rootVolumeIops: ${storage_iops}
   associatePublicIp: ${public_ip}
+  additionalUserData:
+  - name: reserved-resources.sh
+    type: text/x-shellscript
+    content: |-
+      #!/bin/sh
+      sudo mkdir -p /sys/fs/cgroup/cpu,cpuacct/system-reserved;
+      sudo mkdir -p /sys/fs/cgroup/cpuset/system-reserved;
+      sudo mkdir -p /sys/fs/cgroup/cpu/system-reserved;
+      sudo mkdir -p /sys/fs/cgroup/memory/system-reserved;
+      sudo mkdir -p /sys/fs/cgroup/blkio/system-reserved;
+      sudo mkdir -p /sys/fs/cgroup/pids/system-reserved;
+      sudo mkdir -p /sys/fs/cgroup/devices/system-reserved;
+      sudo mkdir -p /sys/fs/cgroup/systemd/system-reserved;
+      sudo mkdir -p /sys/fs/cgroup/cpu,cpuacct/kube-reserved;
+      sudo mkdir -p /sys/fs/cgroup/cpuset/kube-reserved;
+      sudo mkdir -p /sys/fs/cgroup/cpu/kube-reserved;
+      sudo mkdir -p /sys/fs/cgroup/memory/kube-reserved;
+      sudo mkdir -p /sys/fs/cgroup/blkio/kube-reserved;
+      sudo mkdir -p /sys/fs/cgroup/pids/kube-reserved;
+      sudo mkdir -p /sys/fs/cgroup/devices/kube-reserved;
+      sudo mkdir -p /sys/fs/cgroup/systemd/kube-reserved;
+%{ if external_lb_name != "" || external_target_arn != "" ~}
+  externalLoadBalancers:
+  %{ if external_lb_name != "" && external_target_arn == "" }
+  - loadBalancerName: ${external_lb_name}
+  %{ else ~}
+  - targetGroupArn: ${external_target_arn}
+  %{ endif }
+%{ endif ~}
+%{ if autospotting_enabled ~}
+  maxPrice: \"${autospotting_max_price}\"
+  mixedInstancesPolicy:
+    onDemandAboveBase: 0
+    # https://github.com/kubernetes/kops/issues/7405
+    # spotAllocationStrategy: diversified
+    instances:
+  %{ for instance in autospotting_instances ~}
+    - ${instance}
+  %{ endfor ~}
+%{ endif }
   nodeLabels:
     Cluster: ${cluster_name}
     Namespace: ${namespace}
     Stage: ${stage}
     Region: ${region}
     Role: ${instance_name}
-    kops.k8s.io/cluster: ${cluster_name}
+    kops.k8s.io/cluster: ${cluster_dns}
     kops.k8s.io/instancegroup: ${instance_group_name}
     instance_type: ${instance_name}
-    spot: \"false\"
+%{ if autospotting_enabled ~}
+    spot: \"true\"
+%{ endif ~}
   role: ${node_role}
   subnets: 
-  - ${aws_subnet_id}
+  %{ for subnet in subnet_ids ~}
+  - ${subnet_type}-${subnet}
+  %{ endfor }  

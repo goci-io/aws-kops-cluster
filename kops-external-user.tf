@@ -1,6 +1,5 @@
 
 # Workaround for https://github.com/terraform-providers/terraform-provider-aws/issues/8242
-
 locals {
   kops_policies = [
     "arn:aws:iam::aws:policy/AmazonRoute53FullAccess",
@@ -25,6 +24,19 @@ resource "aws_iam_user_policy_attachment" "permissions" {
 }
 
 resource "aws_iam_access_key" "kops" {
-  count = var.external_account ? 1 : 0
-  user  = join("", aws_iam_user.kops.*.name)
+  count      = var.external_account ? 1 : 0
+  user       = join("", aws_iam_user.kops.*.name)
+}
+
+# Wait for IAM to propagate new user
+resource "null_resource" "wait_for_iam" {
+  count      = var.external_account ? 1 : 0
+
+  provisioner "local-exec" {
+    command = "sleep 30"
+  }
+
+  triggers = {
+    user = join("", aws_iam_access_key.kops.*.id)
+  }
 }

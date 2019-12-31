@@ -1,50 +1,60 @@
 apiVersion: kops/v1alpha2
 kind: Cluster
 metadata:
-  name: ${cluster_name}
+  name: ${cluster_dns}
   labels:
-    kops.k8s.io/cluster: ${cluster_name}
+    kops.k8s.io/cluster: ${cluster_dns}
 spec:
-  kubernetesVersion: 1.13.10
+  kubernetesVersion: ${k8s_version}
   masterPublicName: api.${cluster_dns}
+  masterInternalName: api.${cluster_dns}
   networkCIDR: ${vpc_cidr}
   networkID: ${vpc_id}
   awsRegion: ${aws_region}
   dnsZone: ${cluster_zone_id}
   nonMasqueradeCIDR: ${cluster_cidr}
+  serviceClusterIPRange: ${service_cluster_ip_cidr}
   kubernetesApiAccess:
-  - ${vpc_cidr}
+%{ for cidr in api_access ~}
+  - ${cidr}
+%{ endfor ~}
   sshAccess:
-  - ${vpc_cidr}
+%{ for cidr in ssh_access ~}
+  - ${cidr}
+%{ endfor ~}
   networking:
-    calico: {}
+    calico:
+      majorVersion: v3
   api:
     dns: {}
     loadBalancer:
-      type: Internal
+      type: ${lb_type}
+      useForInternalApi: true
+      crossZoneLoadBalancing: true
       sslCertificate: ${certificate_arn}
       additionalSecurityGroups: [${lb_security_groups}]
-      crossZoneLoadBalancing: true
   kubeAPIServer:
-    targetRamMb: 1536
-    disableBasicAuth: true
-    serviceNodePortRange: 10000-35000
+    targetRamMb: 2560
+    eventTTL: 06h0m0s
+    # Kops generates a kubecfg with http basic credentials
+    disableBasicAuth: false
+    maxRequestsInflight: ${max_requests_in_flight}
+    maxMutatingRequestsInflight: ${max_mutating_requests_in_flight}
+    serviceNodePortRange: 15000-65500
   kubelet:
     anonymousAuth: false
     kubeReserved:
-        cpu: 200m
-        memory: 256Mi
-        ephemeral-storage: 1Gi
+      cpu: 180m
+      memory: 224Mi
+      ephemeral-storage: 1Gi
     systemReserved:
-        cpu: 50m
-        memory: 112Mi
-        ephemeral-storage: 1Gi
+      cpu: 50m
+      memory: 112Mi
+      ephemeral-storage: 1Gi
     kubeReservedCgroup: "/kube-reserved"
     systemReservedCgroup: "/system-reserved"
     enforceNodeAllocatable: "pods,system-reserved,kube-reserved"
   docker:
-    registryMirrors:
-    - registry.hub.docker.com
     logDriver: json-file
     logOpt:
     - max-size=24m
@@ -59,8 +69,6 @@ spec:
     horizontalPodAutoscalerUpscaleDelay: 3m0s
     horizontalPodAutoscalerTolerance: 0.1
     clusterCIDR: ${cluster_cidr}
-  authentication:
-    aws: {}
   authorization:
     rbac: {}
   iam:
@@ -72,35 +80,39 @@ spec:
     Namespace: ${namespace}
     Stage: ${stage}
     Region: ${region}
-    kops.k8s.io/cluster: ${cluster_name}
+    kops.k8s.io/cluster: ${cluster_dns}
   cloudProvider: aws
-  configBase: s3://${kops_bucket_name}/${cluster_name}
+  configBase: s3://${kops_bucket_name}/${cluster_dns}
   etcdClusters:
   - etcdMembers:
+%{ for index, member in etcd_members ~}
     - encryptedVolume: true
-      instanceGroup: master-${aws_region}a
-      name: a
-    - encryptedVolume: true
-      instanceGroup: master-${aws_region}b
-      name: b
-    - encryptedVolume: true
-      instanceGroup: master-${aws_region}c
-      name: c
+      instanceGroup: ${member}
+      name: master-${index}
+      volumeType: ${etcd_main_volume_type}
+      volumeSize: ${etcd_main_volume_size}
+%{ if etcd_main_volume_iops != 0 ~}
+      volumeIops: ${etcd_main_volume_iops}
+%{ endif ~}
+%{ endfor ~}
     name: main
     version: 3.3.13
     enableEtcdTLS: true
   - etcdMembers:
+%{ for index, member in etcd_members ~}
     - encryptedVolume: true
-      instanceGroup: master-${aws_region}a
-      name: a
-    - encryptedVolume: true
-      instanceGroup: master-${aws_region}b
-      name: b
-    - encryptedVolume: true
-      instanceGroup: master-${aws_region}c
-      name: c
+      instanceGroup: ${member}
+      name: master-${index}
+      volumeType: ${etcd_event_volume_type}
+      volumeSize: ${etcd_event_volume_size}
+%{ if etcd_main_volume_iops != 0 ~}
+      volumeIops: ${etcd_event_volume_iops}
+%{ endif ~}
+%{ endfor ~}
     name: events
     version: 3.3.13
+    cpuRequest: 300m
+    memoryRequest: 768Mi
     enableEtcdTLS: true
   subnets:
   - id: ${public_subnet_id_a}
