@@ -35,7 +35,7 @@ resource "aws_s3_bucket" "kops_state" {
     enabled = true
 
     noncurrent_version_expiration {
-      days = 360
+      days = 90
     }
   }
 }
