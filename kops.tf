@@ -101,7 +101,7 @@ resource "null_resource" "replace_config" {
   triggers = {
     name = local.kops_configs[count.index].name
     hash = md5(local.kops_configs[count.index].rendered)
-    ca   = md5(join("", local_file.ca_cert.*.sensitive_content))
+    #ca   = md5(join("", local_file.ca_cert.*.sensitive_content))
   }
 }
 
