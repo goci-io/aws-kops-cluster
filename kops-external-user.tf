@@ -1,6 +1,5 @@
 
 # Workaround for https://github.com/terraform-providers/terraform-provider-aws/issues/8242
-
 locals {
   kops_policies = [
     "arn:aws:iam::aws:policy/AmazonRoute53FullAccess",
@@ -9,14 +8,6 @@ locals {
     "arn:aws:iam::aws:policy/AmazonS3FullAccess",
     "arn:aws:iam::aws:policy/IAMFullAccess",
   ]
-}
-
-data "aws_iam_policy_document" "kops" {
-  statement {
-    effect    = "Allow"
-    actions   = []
-    resources = []
-  }
 }
 
 resource "aws_iam_user" "kops" {
