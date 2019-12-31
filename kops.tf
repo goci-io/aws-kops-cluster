@@ -136,7 +136,7 @@ resource "null_resource" "cluster_startup" {
 
 resource "null_resource" "kops_delete_cluster" {
   provisioner "local-exec" {
-    when        = "destroy"
+    when        = destroy
     command     = "kops delete cluster --yes"
     environment = local.kops_env_config
   }
