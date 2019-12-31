@@ -109,7 +109,7 @@ resource "null_resource" "kops_update_cluster" {
   depends_on = [
     null_resource.replace_cluster,
     null_resource.replace_config,
-    null_resource.custom_ca,
+    #null_resource.custom_ca,
   ]
 
   provisioner "local-exec" {
