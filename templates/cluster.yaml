@@ -115,36 +115,20 @@ spec:
     memoryRequest: 768Mi
     enableEtcdTLS: true
   subnets:
-  - id: ${public_subnet_id_a}
-    cidr: ${public_subnet_cidr_a}
-    name: utility-${aws_region}a
+%{ for index, id in public_subnet_ids ~}
+  - id: ${id}
+    cidr: ${element(public_subnet_cidrs, index)}
+    name: utility-${element(aws_zones, index)}
     type: Utility
-    zone: ${aws_region}a
-  - id: ${public_subnet_id_b}
-    cidr: ${public_subnet_cidr_b}
-    name: utility-${aws_region}b
-    type: Utility
-    zone: ${aws_region}b
-  - id: ${public_subnet_id_c}
-    cidr: ${public_subnet_cidr_c}
-    name: utility-${aws_region}c
-    type: Utility
-    zone: ${aws_region}c
-  - id: ${private_subnet_id_a}
-    cidr: ${private_subnet_cidr_a}
-    name: private-${aws_region}a
+    zone: ${element(aws_zones, index)}
+%{ endfor ~}
+%{ for index, id in private_subnet_ids ~}
+  - id: ${id}
+    cidr: ${element(private_subnet_cidrs, index)}
+    name: private-${element(zones, index)}
     type: Private
-    zone: ${aws_region}a
-  - id: ${private_subnet_id_b}
-    cidr: ${private_subnet_cidr_b}
-    name: private-${aws_region}b
-    type: Private
-    zone: ${aws_region}b
-  - id: ${private_subnet_id_c}
-    cidr: ${private_subnet_cidr_c}
-    name: private-${aws_region}c
-    type: Private
-    zone: ${aws_region}c
+    zone: ${element(aws_zones, index)}
+%{ endfor ~}
   topology:
     dns:
       type: ${dns_type}

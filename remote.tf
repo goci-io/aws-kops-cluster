@@ -64,25 +64,11 @@ locals {
   cluster_dns     = var.cluster_dns == "" ? data.terraform_remote_state.dns[0].outputs.domain_name : var.cluster_dns
   cluster_zone_id = var.cluster_dns == "" ? data.terraform_remote_state.dns[0].outputs.zone_id : join("", data.aws_route53_zone.cluster_zone.*.zone_id)
 
-  # TODO optimize with dynamic lists
-  public_subnet_id_a   = var.public_subnet_id_a == "" ? data.terraform_remote_state.vpc[0].outputs.public_subnet_ids[0] : var.public_subnet_id_a
-  public_subnet_cidr_a = var.public_subnet_cidr_a == "" ? data.terraform_remote_state.vpc[0].outputs.public_subnet_cidrs[0] : var.public_subnet_cidr_a
+  public_subnet_ids    = length(var.public_subnet_ids) > 0 ? var.public_subnet_ids : data.terraform_remote_state.vpc[0].outputs.public_subnet_ids
+  private_subnet_ids   = length(var.private_subnet_ids) > 0 ? var.private_subnet_ids : data.terraform_remote_state.vpc[0].outputs.private_subnet_ids
+  public_subnet_cidrs  = length(var.public_subnet_cidrs) > 0 ? var.public_subnet_cidrs : data.terraform_remote_state.vpc[0].outputs.public_subnet_cidrs
+  private_subnet_cidrs = length(var.private_subnet_cidrs) > 0 ? var.private_subnet_cidrs : data.terraform_remote_state.vpc[0].outputs.private_subnet_cidrs
 
-  public_subnet_id_b   = var.public_subnet_id_b == "" ? data.terraform_remote_state.vpc[0].outputs.public_subnet_ids[1] : var.public_subnet_id_b
-  public_subnet_cidr_b = var.public_subnet_cidr_b == "" ? data.terraform_remote_state.vpc[0].outputs.public_subnet_cidrs[1] : var.public_subnet_cidr_b
-
-  public_subnet_id_c   = var.public_subnet_id_c == "" ? data.terraform_remote_state.vpc[0].outputs.public_subnet_ids[2] : var.public_subnet_id_c
-  public_subnet_cidr_c = var.public_subnet_cidr_c == "" ? data.terraform_remote_state.vpc[0].outputs.public_subnet_cidrs[2] : var.public_subnet_cidr_c
-
-  private_subnet_id_a   = var.private_subnet_id_a == "" ? data.terraform_remote_state.vpc[0].outputs.private_subnet_ids[0] : var.private_subnet_id_a
-  private_subnet_cidr_a = var.private_subnet_cidr_a == "" ? data.terraform_remote_state.vpc[0].outputs.private_subnet_cidrs[0] : var.private_subnet_cidr_a
-
-  private_subnet_id_b   = var.private_subnet_id_b == "" ? data.terraform_remote_state.vpc[0].outputs.private_subnet_ids[1] : var.private_subnet_id_b
-  private_subnet_cidr_b = var.private_subnet_cidr_b == "" ? data.terraform_remote_state.vpc[0].outputs.private_subnet_cidrs[1] : var.private_subnet_cidr_b
-
-  private_subnet_id_c   = var.private_subnet_id_c == "" ? data.terraform_remote_state.vpc[0].outputs.private_subnet_ids[2] : var.private_subnet_id_c
-  private_subnet_cidr_c = var.private_subnet_cidr_c == "" ? data.terraform_remote_state.vpc[0].outputs.private_subnet_cidrs[2] : var.private_subnet_cidr_b
-  
   external_lb_enabled      = local.external_lb_target_arn != "" || local.external_lb_name_masters != ""
   external_lb_name_masters = var.master_loadbalancer_name == "" && length(data.terraform_remote_state.loadbalancer) > 0 ? lookup(data.terraform_remote_state.loadbalancer[0].outputs, "loadbalancer_name", "") : var.master_loadbalancer_name
   external_lb_target_arn   = var.master_loadbalancer_target_arn == "" && length(data.terraform_remote_state.loadbalancer) > 0 ? lookup(data.terraform_remote_state.loadbalancer[0].outputs, "loadbalancer_target_arn", "") : var.master_loadbalancer_target_arn
