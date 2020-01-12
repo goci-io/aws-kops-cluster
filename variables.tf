@@ -229,76 +229,28 @@ variable "vpc_cidr" {
   description = "The VPC CIDR to use if vpc_module_state is not set"
 }
 
-variable "public_subnet_id_a" {
-  type        = string
-  default     = ""
-  description = "The ID of the first public subnet"
+variable "public_subnet_ids" {
+  type        = list(string)
+  default     = []
+  description = "List of public subnet ids. Can be read from vpc remote state"
 }
 
-variable "public_subnet_cidr_a" {
-  type        = string
-  default     = ""
-  description = "The CIDR of the first public subnet"
+variable "private_subnet_ids" {
+  type        = list(string)
+  default     = []
+  description = "List of private subnet ids. Can be read from vpc remote state"
 }
 
-variable "public_subnet_id_b" {
-  type        = string
-  default     = ""
-  description = "The ID of the second public subnet"
+variable "public_subnet_cidrs" {
+  type        = list(string)
+  default     = []
+  description = "List of public subnet cidrs. Can be read from vpc remote state"
 }
 
-variable "public_subnet_cidr_b" {
-  type        = string
-  default     = ""
-  description = "The CIDR of the second public subnet"
-}
-
-variable "public_subnet_id_c" {
-  type        = string
-  default     = ""
-  description = "The ID of the third public subnet"
-}
-
-variable "public_subnet_cidr_c" {
-  type        = string
-  default     = ""
-  description = "The CIDR of the third public subnet"
-}
-
-variable "private_subnet_id_a" {
-  type        = string
-  default     = ""
-  description = "The ID of the first private subnet"
-}
-
-variable "private_subnet_cidr_a" {
-  type        = string
-  default     = ""
-  description = "The CIDR of the first private subnet"
-}
-
-variable "private_subnet_id_b" {
-  type        = string
-  default     = ""
-  description = "The ID of the second private subnet"
-}
-
-variable "private_subnet_cidr_b" {
-  type        = string
-  default     = ""
-  description = "The CIDR of the second private subnet"
-}
-
-variable "private_subnet_id_c" {
-  type        = string
-  default     = ""
-  description = "The ID of the third private subnet"
-}
-
-variable "private_subnet_cidr_c" {
-  type        = string
-  default     = ""
-  description = "The CIDR of the third private subnet"
+variable "private_subnet_cidrs" {
+  type        = list(string)
+  default     = []
+  description = "List of private subnet cidrs. Can be read from vpc remote state"
 }
 
 variable "aws_region" {
