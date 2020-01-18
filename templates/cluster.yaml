@@ -125,7 +125,7 @@ spec:
 %{ for index, id in private_subnet_ids ~}
   - id: ${id}
     cidr: ${element(private_subnet_cidrs, index)}
-    name: private-${element(zones, index)}
+    name: private-${element(aws_zones, index)}
     type: Private
     zone: ${element(aws_zones, index)}
 %{ endfor ~}
