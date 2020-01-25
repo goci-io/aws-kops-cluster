@@ -70,6 +70,7 @@ resource "aws_s3_bucket_policy" "current" {
 }
 
 resource "aws_s3_bucket_public_access_block" "block" {
+  depends_on              = [aws_s3_bucket_policy.current]
   bucket                  = aws_s3_bucket.kops_state.id
   block_public_acls       = true
   block_public_policy     = true
