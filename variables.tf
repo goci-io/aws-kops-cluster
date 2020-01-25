@@ -205,6 +205,12 @@ variable "master_ips_for_private_api_dns" {
   description = "When there is a private hosted zone the api DNS record can point directly to the master IPs of the associated VPC"
 }
 
+variable "bastion_public_name" {
+  type        = string
+  default     = ""
+  description = "Set to any subdomain name of your cluster dns to create a public dns entry for your bastion"
+}
+
 variable "api_cert_module_state" {
   type        = string
   default     = ""

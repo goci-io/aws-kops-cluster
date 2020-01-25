@@ -136,5 +136,7 @@ spec:
     masters: private
     nodes: private
     bastion:
-      bastionPublicName: bastion.${cluster_dns}
       idleTimeoutSeconds: 900
+%{ if bastion_public_name != "" ~}
+      bastionPublicName: ${bastion_public_name}.${cluster_dns}
+%{ endif ~}
