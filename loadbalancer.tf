@@ -64,6 +64,25 @@ resource "aws_lb_target_group" "api" {
   vpc_id   = local.vpc_id
   protocol = "HTTPS"
   port     = 443
+
+  dynamic "health_check" {
+    for_each = var.public_api_loadbalancer_type == "application" ? [1] : []
+
+    content {
+      enabled  = true
+      path     = "/"
+      protocol = "HTTPS"
+      matcher  = "200-499"
+    }
+  }
+
+  dynamic "health_check" {
+    for_each = var.public_api_loadbalancer_type != "application" ? [1] : []
+    
+    content {
+      enabled  = true
+    }
+  }
 }
 
 resource "aws_lb_listener" "api" {
