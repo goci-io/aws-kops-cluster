@@ -48,7 +48,7 @@ locals {
     max_mutating_requests_in_flight = var.max_mutating_requests_in_flight
   })
 
-  kops_default_image = "kope.io/k8s-1.12-debian-stretch-amd64-hvm-ebs-2019-06-21"
+  kops_default_image = "kope.io/k8s-1.15-debian-stretch-amd64-hvm-ebs-2019-09-26"
   kops_configs = concat(
     [data.null_data_source.bastion_instance_group.outputs],
     data.null_data_source.master_instance_groups.*.outputs,
