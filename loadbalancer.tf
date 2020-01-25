@@ -8,7 +8,7 @@ data "aws_route53_zone" "public_cluster_zone" {
 locals {
   # Deploy additional public loadbalancer
   # This covers a setup where a private and public hosted zone exists and the API Server should be publicly available
-  create_additional_loadbalancer = var.create_api_loadbalancer && var.master_ips_for_private_api_dns && !local.external_lb_enabled
+  create_additional_loadbalancer = var.create_api_loadbalancer && !var.master_ips_for_private_api_dns && !local.external_lb_enabled && var.cluster_dns_type == "Private"
   api_log_prefix                 = "api/logs/${local.cluster_dns}"
 }
 
