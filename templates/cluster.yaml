@@ -14,14 +14,18 @@ spec:
   dnsZone: ${cluster_zone_id}
   nonMasqueradeCIDR: ${cluster_cidr}
   serviceClusterIPRange: ${service_cluster_ip_cidr}
+%{ if length(api_access) > 0 ~}
   kubernetesApiAccess:
 %{ for cidr in api_access ~}
   - ${cidr}
 %{ endfor ~}
+%{ endif ~}
+%{ if length(ssh_access) > 0 ~}
   sshAccess:
 %{ for cidr in ssh_access ~}
   - ${cidr}
 %{ endfor ~}
+%{ endif ~}
   networking:
     calico:
       majorVersion: v3
