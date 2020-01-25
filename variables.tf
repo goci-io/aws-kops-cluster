@@ -190,7 +190,13 @@ variable "master_loadbalancer_target_arn" {
 variable "create_load_balancer" {
   type        = bool
   default     = true
-  description = "Creates an AWS Load Balancer infront of masters and API Server"  
+  description = "Creates an AWS Load Balancer infront of masters and API Server."  
+}
+
+variable "master_ips_for_private_api_dns" {
+  type        = bool
+  default     = true
+  description = "When there is a private hosted zone the api DNS record can point directly to the master IPs of the associated VPC"
 }
 
 variable "api_cert_module_state" {
