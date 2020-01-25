@@ -44,9 +44,9 @@ resource "aws_lb" "public_api" {
   enable_deletion_protection = true
 
   access_logs {
-    bucket  = aws_s3_bucket.kops_state.id
-    prefix  = "${local.api_log_prefix}/public"
-    enabled = true
+    bucket  = var.api_access_log_bucket
+    prefix  = var.api_access_log_prefix
+    enabled = var.api_access_log_enabled
   }
 }
 

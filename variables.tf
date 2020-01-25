@@ -205,6 +205,24 @@ variable "api_record_name" {
   description = "Name of the publicly available additional public dns record"
 }
 
+variable "api_access_log_enabled" {
+  type        = bool
+  default     = true
+  description = "Enables API Access logs for additional public load balancer"
+}
+
+variable "api_access_log_bucket" {
+  type        = string
+  default     = ""
+  description = "S3 Bucket to write API access logs to. Make sure your bucket has the correct policy set"  
+}
+
+variable "api_access_log_prefix" {
+  type        = string
+  default     = "logs/"
+  description = "Prefix for API access log keys"
+}
+
 variable "master_ips_for_private_api_dns" {
   type        = bool
   default     = false
