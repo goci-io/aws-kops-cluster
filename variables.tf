@@ -187,13 +187,13 @@ variable "master_loadbalancer_target_arn" {
   description = "The ARN of an existing target group to use for the kubernetes API if loadbalancer_module_state is not set"
 }
 
-variable "create_load_balancer" {
+variable "create_api_loadbalancer" {
   type        = bool
   default     = true
   description = "Creates an AWS Load Balancer infront of masters and API Server."  
 }
 
-variable "load_balancer_type" {
+variable "api_loadbalancer_type" {
   type        = string
   default     = "application"
   description = "Load balancer type to deploy as additional public load balancer when a private zone uses master ips but API server should be publicly accessible"  

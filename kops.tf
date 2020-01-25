@@ -12,7 +12,7 @@ locals {
     cluster_name            = local.cluster_name
     cluster_dns             = local.cluster_dns
     cluster_zone_id         = local.cluster_zone_id
-    dns_type                = var.cluster_dns_type
+    dns_type                = var.master_ips_for_private_api_dns ? "Private" : var.cluster_dns_type
     k8s_version             = var.kubernetes_version
     cluster_cidr            = "100.0.0.0/8"
     namespace               = var.namespace
@@ -28,7 +28,7 @@ locals {
     api_access              = length(var.api_access_cidrs) > 0 ? var.api_access_cidrs : [local.vpc_cidr]
     certificate_arn         = local.certificate_arn
     lb_type                 = var.cluster_dns_type == "Private" ? "Internal" : "Public"
-    lb_create               = var.create_load_balancer && !var.master_ips_for_private_api_dns
+    lb_create               = var.create_api_loadbalancer && !var.master_ips_for_private_api_dns
     lb_security_groups      = ""
     create_api_lb           = !local.external_lb_enabled
     custom_certificate      = local.custom_certificate_enabled

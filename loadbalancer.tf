@@ -2,7 +2,7 @@
 locals {
   # Deploy additional public loadbalancer
   # This covers a setup where a private and public hosted zone exists and the API Server should be publicly available
-  create_additional_loadbalancer = var.create_load_balancer && var.master_ips_for_private_api_dns && !local.external_lb_enabled && var.cluster_dns_type != "Private"
+  create_additional_loadbalancer = var.create_api_loadbalancer && var.master_ips_for_private_api_dns && !local.external_lb_enabled
 }
 
 module "api_loadbalancer_label" {
@@ -31,7 +31,7 @@ resource "aws_lb" "public_api" {
   name                       = module.api_loadbalancer_label.id
   tags                       = module.api_loadbalancer_label.tags
   security_groups            = aws_security_group.public_loadbalancer.*.id
-  load_balancer_type         = var.load_balancer_type
+  load_balancer_type         = var.api_loadbalancer_type
   subnets                    = local.public_subnet_ids
   internal                   = false
   enable_deletion_protection = true
