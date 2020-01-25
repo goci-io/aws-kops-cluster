@@ -195,7 +195,7 @@ variable "create_load_balancer" {
 
 variable "master_ips_for_private_api_dns" {
   type        = bool
-  default     = true
+  default     = false
   description = "When there is a private hosted zone the api DNS record can point directly to the master IPs of the associated VPC"
 }
 
