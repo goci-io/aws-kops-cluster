@@ -34,7 +34,7 @@ locals {
     },
     {
       readonly  = false
-      resources = [format("%s/%s", aws_s3_bucket.kops_state.arn, local.api_log_prefix)]
+      resources = [format("%s/%s/*", aws_s3_bucket.kops_state.arn, local.api_log_prefix)]
       actions   = ["s3:PutObject"]
       principals = [{
         type        = "Service"
@@ -43,7 +43,7 @@ locals {
     },
     {
       readonly  = false
-      resources = [format("%s/%s", aws_s3_bucket.kops_state.arn, local.api_log_prefix)]
+      resources = [format("%s/%s/*", aws_s3_bucket.kops_state.arn, local.api_log_prefix)]
       actions   = ["s3:PutObject"]
       principals = [{
         type        = "AWS"
