@@ -27,6 +27,9 @@ spec:
       majorVersion: v3
   api:
     dns: {}
+# Note: When there is no ELB the certificate validation fails when using kops kubecfg
+# master_ips_for_private_api_dns is not recommended on AWS.
+# Use a private load balancer integration and deploy additional tagret groups or load balancers for public facing behaviour
 %{ if lb_create ~}
     loadBalancer:
       type: ${lb_type}
