@@ -1,4 +1,10 @@
 
+data "aws_route53_zone" "public_cluster_zone" {
+  count        = local.cluster_dns == "" ? 0 : 1
+  name         = format("%s.", local.cluster_dns)
+  private_zone = false
+}
+
 locals {
   # Deploy additional public loadbalancer
   # This covers a setup where a private and public hosted zone exists and the API Server should be publicly available
@@ -63,5 +69,17 @@ resource "aws_lb_listener" "api" {
   default_action {
     type             = "forward"
     target_group_arn = join("", aws_lb_target_group.api.*.arn)
+  }
+}
+
+resource "aws_route53_record" "public_api" {
+  zone_id = join("", data.aws_route53_zone.public_cluster_zone.*.zone_id)
+  name    = format("%s.%s", var.api_record_name, var.cluster_dns)
+  type    = "A"
+  
+  alias {
+    name                   = join("", aws_lb.public_api.*.dns_name)
+    zone_id                = join("",  aws_lb.public_api.*.zone_id)
+    evaluate_target_health = true
   }
 }

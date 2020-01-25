@@ -199,6 +199,12 @@ variable "api_loadbalancer_type" {
   description = "Load balancer type to deploy as additional public load balancer when a private zone uses master ips but API server should be publicly accessible"  
 }
 
+variable "api_record_name" {
+  type        = string
+  default     = "api"
+  description = "Name of the publicly available additional public dns record"
+}
+
 variable "master_ips_for_private_api_dns" {
   type        = bool
   default     = false
