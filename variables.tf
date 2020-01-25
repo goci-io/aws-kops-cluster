@@ -213,7 +213,7 @@ variable "master_ips_for_private_api_dns" {
 
 variable "bastion_public_name" {
   type        = string
-  default     = ""
+  default     = "bastion"
   description = "Set to any subdomain name of your cluster dns to create a public dns entry for your bastion"
 }
 
