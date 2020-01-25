@@ -30,6 +30,7 @@ locals {
     lb_type                 = var.cluster_dns_type == "Private" ? "Internal" : "Public"
     lb_create               = !var.master_ips_for_private_api_dns && !local.external_lb_enabled
     lb_security_groups      = ""
+    elb_security_group_id   = join("", aws_security_group.public_loadbalancer.*.id)
     bastion_public_name     = var.bastion_public_name
     custom_certificate      = local.custom_certificate_enabled
     public_subnet_ids       = local.public_subnet_ids

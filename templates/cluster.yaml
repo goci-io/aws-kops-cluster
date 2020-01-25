@@ -22,6 +22,10 @@ spec:
 %{ for cidr in ssh_access ~}
   - ${cidr}
 %{ endfor ~}
+%{ if elb_security_group_id != "" ~}
+  cloudConfig:
+    elbSecurityGroup: ${elb_security_group_id}
+%{ endif ~}
   networking:
     calico:
       majorVersion: v3
