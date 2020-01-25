@@ -95,10 +95,10 @@ resource "aws_s3_bucket" "kops_state" {
 }
 
 data "aws_iam_policy_document" "custom_s3" {
-  count = length(var.custom_s3_policies) > 0 ? 1 : 0
+  count = length(local.custom_s3_policies) > 0 ? 1 : 0
 
   dynamic "statement" {
-    for_each = var.custom_s3_policies
+    for_each = local.custom_s3_policies
 
     content {
       effect    = "Allow"
