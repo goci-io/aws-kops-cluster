@@ -193,6 +193,12 @@ variable "create_load_balancer" {
   description = "Creates an AWS Load Balancer infront of masters and API Server."  
 }
 
+variable "load_balancer_type" {
+  type        = string
+  default     = "application"
+  description = "Load balancer type to deploy as additional public load balancer when a private zone uses master ips but API server should be publicly accessible"  
+}
+
 variable "master_ips_for_private_api_dns" {
   type        = bool
   default     = false
