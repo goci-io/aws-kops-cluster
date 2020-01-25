@@ -187,6 +187,12 @@ variable "master_loadbalancer_target_arn" {
   description = "The ARN of an existing target group to use for the kubernetes API if loadbalancer_module_state is not set"
 }
 
+variable "create_load_balancer" {
+  type        = bool
+  default     = true
+  description = "Creates an AWS Load Balancer infront of masters and API Server"  
+}
+
 variable "api_cert_module_state" {
   type        = string
   default     = ""

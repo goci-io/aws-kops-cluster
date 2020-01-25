@@ -27,15 +27,16 @@ spec:
       majorVersion: v3
   api:
     dns: {}
+%{ if lb_create ~}
     loadBalancer:
       type: ${lb_type}
-      useForInternalApi: true
       crossZoneLoadBalancing: true
       sslCertificate: ${certificate_arn}
       additionalSecurityGroups: [${lb_security_groups}]
+%{ endif ~}
   kubeAPIServer:
     targetRamMb: 2560
-    eventTTL: 06h0m0s
+    eventTTL: 12h0m0s
     # Kops generates a kubecfg with http basic credentials
     disableBasicAuth: false
     maxRequestsInflight: ${max_requests_in_flight}
@@ -44,7 +45,7 @@ spec:
   kubelet:
     anonymousAuth: false
     kubeReserved:
-      cpu: 180m
+      cpu: 150m
       memory: 224Mi
       ephemeral-storage: 1Gi
     systemReserved:
@@ -136,3 +137,4 @@ spec:
     nodes: private
     bastion:
       bastionPublicName: bastion.${cluster_dns}
+      idleTimeoutSeconds: 900

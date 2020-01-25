@@ -28,6 +28,7 @@ locals {
     api_access              = length(var.api_access_cidrs) > 0 ? var.api_access_cidrs : [local.vpc_cidr]
     certificate_arn         = local.certificate_arn
     lb_type                 = var.cluster_dns_type == "Private" ? "Internal" : "Public"
+    lb_create               = var.create_load_balancer
     lb_security_groups      = ""
     create_api_lb           = !local.external_lb_enabled
     custom_certificate      = local.custom_certificate_enabled
