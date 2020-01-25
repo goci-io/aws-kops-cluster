@@ -50,8 +50,8 @@ data "terraform_remote_state" "custom_cert" {
 }
 
 data "aws_route53_zone" "cluster_zone" {
-  count        = var.cluster_dns == "" ? 0 : 1
-  name         = format("%s.", var.cluster_dns)
+  count        = local.cluster_dns == "" ? 0 : 1
+  name         = format("%s.", local.cluster_dns)
   private_zone = var.cluster_dns_type == "Private"
 }
 
@@ -62,7 +62,7 @@ locals {
   vpc_cidr        = var.vpc_cidr == "" ? data.terraform_remote_state.vpc[0].outputs.vpc_cidr : var.vpc_cidr
   certificate_arn = var.certificate_arn == "" ? data.terraform_remote_state.acm[0].outputs.certificate_arn : var.certificate_arn
   cluster_dns     = var.cluster_dns == "" ? data.terraform_remote_state.dns[0].outputs.domain_name : var.cluster_dns
-  cluster_zone_id = var.cluster_dns == "" ? data.terraform_remote_state.dns[0].outputs.zone_id : join("", data.aws_route53_zone.cluster_zone.*.zone_id)
+  cluster_zone_id = join("", aws_route53_zone.cluster_zone.*.zone_id)
 
   public_subnet_ids    = length(var.public_subnet_ids) > 0 ? var.public_subnet_ids : data.terraform_remote_state.vpc[0].outputs.public_subnet_ids
   private_subnet_ids   = length(var.private_subnet_ids) > 0 ? var.private_subnet_ids : data.terraform_remote_state.vpc[0].outputs.private_subnet_ids

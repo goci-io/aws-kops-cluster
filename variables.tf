@@ -202,7 +202,7 @@ variable "acm_module_state" {
 variable "dns_module_state" {
   type        = string
   default     = ""
-  description = "The key or path to the state where a DNS module was installed. It must expose a domain_name and zone_id. If acm_module_state and certificate_arn are not set we try to get the certificate_arn from this module"
+  description = "The key or path to the state where a DNS module was installed. It must expose a domain_name. If acm_module_state and certificate_arn are not set we try to get the certificate_arn from this module"
 }
 
 variable "certificate_arn" {
