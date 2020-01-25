@@ -9,6 +9,7 @@ locals {
   # Deploy additional public loadbalancer
   # This covers a setup where a private and public hosted zone exists and the API Server should be publicly available
   create_additional_loadbalancer = var.create_api_loadbalancer && var.master_ips_for_private_api_dns && !local.external_lb_enabled
+  api_log_prefix                 = "api/logs/${local.cluster_dns}"
 }
 
 module "api_loadbalancer_label" {
@@ -43,8 +44,8 @@ resource "aws_lb" "public_api" {
   enable_deletion_protection = true
 
   access_logs {
-    bucket  = aws_s3_bucket.kops_state.id
-    prefix  = "public-api-access-logs"
+    bucket  = join("", aws_s3_bucket.public_api_access_logs.*.id)
+    prefix  = "${local.public_api_log_prefix}/public"
     enabled = true
   }
 }
@@ -79,7 +80,7 @@ resource "aws_route53_record" "public_api" {
   
   alias {
     name                   = join("", aws_lb.public_api.*.dns_name)
-    zone_id                = join("",  aws_lb.public_api.*.zone_id)
+    zone_id                = join("", aws_lb.public_api.*.zone_id)
     evaluate_target_health = true
   }
 }
