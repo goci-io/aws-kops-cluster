@@ -62,7 +62,7 @@ locals {
 }
 
 module "ssh_key_pair" {
-  source              = "git::https://github.com/cloudposse/terraform-aws-key-pair.git?ref=tags/0.4.0"
+  source              = "git::https://github.com/cloudposse/terraform-aws-key-pair.git?ref=tags/0.7.0"
   namespace           = var.namespace
   stage               = var.stage
   attributes          = local.attributes
