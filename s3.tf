@@ -52,7 +52,7 @@ locals {
     }
   ]
 
-  required_s3_policies = concat([], local.create_additional_loadbalancer ? [local.api_log_s3_policies] : [])
+  required_s3_policies = concat([], local.create_additional_loadbalancer ? local.api_log_s3_policies : [])
   custom_s3_policies   = concat(var.custom_s3_policies, local.required_s3_policies)
 }
 
