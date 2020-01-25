@@ -28,7 +28,7 @@ locals {
     api_access              = length(var.api_access_cidrs) > 0 ? var.api_access_cidrs : [local.vpc_cidr]
     certificate_arn         = local.certificate_arn
     lb_type                 = var.cluster_dns_type == "Private" ? "Internal" : "Public"
-    lb_create               = var.create_api_loadbalancer && !var.master_ips_for_private_api_dns && !local.external_lb_enabled
+    lb_create               = !var.master_ips_for_private_api_dns && !local.external_lb_enabled
     lb_security_groups      = ""
     bastion_public_name     = var.bastion_public_name
     custom_certificate      = local.custom_certificate_enabled

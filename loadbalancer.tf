@@ -8,7 +8,7 @@ data "aws_route53_zone" "public_cluster_zone" {
 locals {
   # Deploy additional public loadbalancer
   # This covers a setup where a private and public hosted zone exists and the API Server should be publicly available
-  create_additional_loadbalancer = var.create_api_loadbalancer && !var.master_ips_for_private_api_dns && !local.external_lb_enabled && var.cluster_dns_type == "Private"
+  create_additional_loadbalancer = var.create_public_api_loadbalancer && !var.master_ips_for_private_api_dns && !local.external_lb_enabled && var.cluster_dns_type == "Private"
   api_log_prefix                 = "api/logs/${local.cluster_dns}"
 }
 
@@ -45,7 +45,7 @@ resource "aws_lb" "public_api" {
   name                       = module.api_loadbalancer_label.id
   tags                       = module.api_loadbalancer_label.tags
   security_groups            = aws_security_group.public_loadbalancer.*.id
-  load_balancer_type         = var.api_loadbalancer_type
+  load_balancer_type         = var.public_api_loadbalancer_type
   subnets                    = local.public_subnet_ids
   internal                   = false
   enable_deletion_protection = true
@@ -82,7 +82,7 @@ resource "aws_lb_listener" "api" {
 
 resource "aws_route53_record" "public_api" {
   zone_id = join("", data.aws_route53_zone.public_cluster_zone.*.zone_id)
-  name    = format("%s.%s", var.api_record_name, var.cluster_dns)
+  name    = format("%s.%s", var.public_api_record_name, var.cluster_dns)
   type    = "A"
   
   alias {

@@ -187,40 +187,22 @@ variable "master_loadbalancer_target_arn" {
   description = "The ARN of an existing target group to use for the kubernetes API if loadbalancer_module_state is not set"
 }
 
-variable "create_api_loadbalancer" {
+variable "create_public_api_loadbalancer" {
   type        = bool
-  default     = true
-  description = "Creates an AWS Load Balancer infront of masters and API Server."  
+  default     = false
+  description = "Creates an publicly available AWS Load Balancer infront of masters and API Server."  
 }
 
-variable "api_loadbalancer_type" {
+variable "public_api_loadbalancer_type" {
   type        = string
   default     = "application"
   description = "Load balancer type to deploy as additional public load balancer when a private zone uses master ips but API server should be publicly accessible"  
 }
 
-variable "api_record_name" {
+variable "public_api_record_name" {
   type        = string
   default     = "api"
   description = "Name of the publicly available additional public dns record"
-}
-
-variable "api_access_log_enabled" {
-  type        = bool
-  default     = true
-  description = "Enables API Access logs for additional public load balancer"
-}
-
-variable "api_access_log_bucket" {
-  type        = string
-  default     = ""
-  description = "S3 Bucket to write API access logs to. Make sure your bucket has the correct policy set"  
-}
-
-variable "api_access_log_prefix" {
-  type        = string
-  default     = "logs/"
-  description = "Prefix for API access log keys"
 }
 
 variable "master_ips_for_private_api_dns" {
