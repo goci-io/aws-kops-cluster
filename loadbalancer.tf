@@ -45,7 +45,7 @@ resource "aws_lb" "public_api" {
 
   access_logs {
     bucket  = aws_s3_bucket.kops_state.id
-    prefix  = "${local.public_api_log_prefix}/public"
+    prefix  = "${local.api_log_prefix}/public"
     enabled = true
   }
 }
