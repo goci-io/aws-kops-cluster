@@ -193,6 +193,12 @@ variable "create_public_api_loadbalancer" {
   description = "Creates an publicly available AWS Load Balancer infront of masters and API Server."  
 }
 
+variable "enable_classic_api_loadbalancer" {
+  type        = bool
+  default     = true
+  description = "Deploys a classic AWS Load Balancer as public API proxy. This provides support for port forwarding etc."
+}
+
 variable "public_api_loadbalancer_type" {
   type        = string
   default     = "application"

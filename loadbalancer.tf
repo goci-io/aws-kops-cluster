@@ -41,7 +41,7 @@ resource "aws_security_group" "public_loadbalancer" {
 }
 
 resource "aws_lb" "public_api" {
-  count                      = local.create_additional_loadbalancer ? 1 : 0
+  count                      = local.create_additional_loadbalancer && !var.enable_classic_api_loadbalancer ? 1 : 0
   name                       = module.api_loadbalancer_label.id
   tags                       = module.api_loadbalancer_label.tags
   security_groups            = aws_security_group.public_loadbalancer.*.id
@@ -58,7 +58,7 @@ resource "aws_lb" "public_api" {
 }
 
 resource "aws_lb_target_group" "api" {
-  count    = local.create_additional_loadbalancer ? 1 : 0
+  count    = local.create_additional_loadbalancer && !var.enable_classic_api_loadbalancer ? 1 : 0
   name     = module.api_loadbalancer_label.id
   tags     = module.api_loadbalancer_label.tags
   vpc_id   = local.vpc_id
@@ -86,7 +86,7 @@ resource "aws_lb_target_group" "api" {
 }
 
 resource "aws_lb_listener" "api" {
-  count             = local.create_additional_loadbalancer ? 1 : 0
+  count             = local.create_additional_loadbalancer && !var.enable_classic_api_loadbalancer ? 1 : 0
   load_balancer_arn = join("", aws_lb.public_api.*.arn)
   certificate_arn   = local.certificate_arn
   ssl_policy        = "ELBSecurityPolicy-TLS-1-2-2017-01"
@@ -99,14 +99,49 @@ resource "aws_lb_listener" "api" {
   }
 }
 
+resource "aws_elb" "classic_public_api" {
+  count                       = local.create_additional_loadbalancer && var.enable_classic_api_loadbalancer ? 1 : 0
+  name                        = module.api_loadbalancer_label.id
+  tags                        = module.api_loadbalancer_label.tags
+  subnets                     = local.public_subnet_ids
+  security_groups             = aws_security_group.public_loadbalancer.*.id
+  availability_zones          = slice(data.aws_availability_zones.available.names, 0, var.max_availability_zones)
+  connection_draining         = true
+  cross_zone_load_balancing   = true
+  internal                    = false
+  idle_timeout                = 900
+
+  listener {
+    lb_port            = 443
+    lb_protocol        = "SSL"
+    instance_port      = 443
+    instance_protocol  = "SSL"
+    ssl_certificate_id = local.certificate_arn
+  }
+
+  health_check {
+    healthy_threshold   = 2
+    unhealthy_threshold = 2
+    timeout             = 3
+    target              = "SSL"
+    interval            = 30
+  }
+
+  access_logs {
+    bucket  = aws_s3_bucket.kops_state.id
+    prefix  = "${local.api_log_prefix}/public"
+    enabled = true
+  }
+}
+
 resource "aws_route53_record" "public_api" {
   zone_id = join("", data.aws_route53_zone.public_cluster_zone.*.zone_id)
   name    = format("%s.%s", var.public_api_record_name, var.cluster_dns)
   type    = "A"
   
   alias {
-    name                   = join("", aws_lb.public_api.*.dns_name)
-    zone_id                = join("", aws_lb.public_api.*.zone_id)
+    name                   = coalesce(join("", aws_lb.public_api.*.dns_name), join("", aws_elb.classic_public_api.*.dns_name))
+    zone_id                = coalesce(join("", aws_lb.public_api.*.zone_id), join("", aws_elb.classic_public_api.*.zone_id))
     evaluate_target_health = true
   }
 }
