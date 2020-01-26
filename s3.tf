@@ -11,7 +11,7 @@ locals {
     "arn:aws:s3:::${aws_s3_bucket.kops_state.id}/${local.cluster_dns}/*",
   ]
 
-  application_access_log_account = {
+  lb_access_log_account = {
     eu-central-1 = "054676820928",
     eu-west-2 = "652711504416",
     us-east-1 = "127311923021",
@@ -47,7 +47,7 @@ locals {
       actions   = ["s3:PutObject"]
       principals = [{
         type        = "AWS"
-        identifiers = [format("arn:aws:iam::%s:root", local.application_access_log_account[local.aws_region])]
+        identifiers = [format("arn:aws:iam::%s:root", local.lb_access_log_account[local.aws_region])]
       }]
     }
   ]
