@@ -49,9 +49,9 @@ spec:
       sudo mkdir -p /sys/fs/cgroup/pids/kube-reserved;
       sudo mkdir -p /sys/fs/cgroup/devices/kube-reserved;
       sudo mkdir -p /sys/fs/cgroup/systemd/kube-reserved;
-%{ if external_lb_name != "" || external_target_arn != "" ~}
+%{ if external_lb_name != "-" || external_target_arn != "-" ~}
   externalLoadBalancers:
-  %{ if external_lb_name != "" && external_target_arn == "" }
+  %{ if external_lb_name != "-" && external_target_arn == "-" }
   - loadBalancerName: ${external_lb_name}
   %{ else ~}
   - targetGroupArn: ${external_target_arn}
