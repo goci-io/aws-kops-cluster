@@ -35,9 +35,11 @@ spec:
   networking:
     calico:
       majorVersion: v3
+%{ if additional_master_policies != "" ~}
   additionalPolicies:
     master: |
       ${additional_master_policies}
+%{ endif ~}
   api:
     dns: {}
 # Note: When there is no ELB the certificate validation fails when using kops kubecfg

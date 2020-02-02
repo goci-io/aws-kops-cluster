@@ -193,6 +193,12 @@ variable "master_loadbalancer_target_arn" {
   description = "The ARN of an existing target group to use for the kubernetes API if loadbalancer_module_state is not set"
 }
 
+variable "additional_master_policies" {
+  type        = string
+  default     = ""
+  description = "Additional policies to attach to the masters (Effect, Action, Resource policy as JSON list)"
+}
+
 variable "create_public_api_loadbalancer" {
   type        = bool
   default     = false
