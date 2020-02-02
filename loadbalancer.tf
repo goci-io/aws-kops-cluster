@@ -128,9 +128,9 @@ resource "aws_elb" "classic_public_api" {
   }
 
   access_logs {
-    bucket  = aws_s3_bucket.kops_state.id
-    prefix  = "${local.api_log_prefix}/public"
-    enabled = true
+    bucket        = aws_s3_bucket.kops_state.id
+    bucket_prefix = "${local.api_log_prefix}/public"
+    enabled       = true
   }
 }
 
