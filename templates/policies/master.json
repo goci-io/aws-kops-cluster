@@ -1,11 +1,13 @@
-{
-    "Effect": "Allow",
-    "Resources": ["*"],
-    "Actions": [
-        "autoscaling:DescribeAutoScalingGroups",
-        "autoscaling:DescribeAutoScalingInstances",
-        "autoscaling:DescribeTags",
-        "autoscaling:SetDesiredCapacity",
-        "autoscaling:TerminateInstanceInAutoScalingGroup"
-    ]
-}
+[
+    {
+        "Effect": "Allow",
+        "Resources": ["*"],
+        "Actions": [
+            "autoscaling:DescribeAutoScalingGroups",
+            "autoscaling:DescribeAutoScalingInstances",
+            "autoscaling:DescribeTags",
+            "autoscaling:SetDesiredCapacity",
+            "autoscaling:TerminateInstanceInAutoScalingGroup"
+        ]
+    }
+]
