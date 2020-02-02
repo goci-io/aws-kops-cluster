@@ -27,6 +27,7 @@ locals {
     service_cluster_ip_cidr = cidrsubnet("100.0.0.0/8", 6, 0)
     ssh_access              = length(var.ssh_access_cidrs) > 0 ? var.ssh_access_cidrs : [local.vpc_cidr]
     api_access              = length(var.api_access_cidrs) > 0 ? var.api_access_cidrs : [local.create_additional_loadbalancer ? "0.0.0.0/0" : local.vpc_cidr]
+    elb_security_group_id   = join("", aws_security_group.public_loadbalancer.*.id)
     certificate_arn         = local.certificate_arn
     lb_type                 = var.cluster_dns_type == "Private" ? "Internal" : "Public"
     lb_create               = !var.master_ips_for_private_api_dns && !local.external_lb_enabled
