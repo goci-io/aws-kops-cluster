@@ -105,7 +105,6 @@ resource "aws_elb" "classic_public_api" {
   tags                        = module.api_loadbalancer_label.tags
   subnets                     = local.public_subnet_ids
   security_groups             = aws_security_group.public_loadbalancer.*.id
-  availability_zones          = slice(data.aws_availability_zones.available.names, 0, var.max_availability_zones)
   connection_draining         = true
   cross_zone_load_balancing   = true
   internal                    = false
