@@ -37,7 +37,7 @@ spec:
       majorVersion: v3
   additionalPolicies:
     master: |
-${additional_master_policies}
+      ${additional_master_policies}
   api:
     dns: {}
 # Note: When there is no ELB the certificate validation fails when using kops kubecfg
