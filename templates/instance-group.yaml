@@ -51,9 +51,10 @@ spec:
       sudo mkdir -p /sys/fs/cgroup/systemd/kube-reserved;
 %{ if external_lb_name != "-" || external_target_arn != "-" ~}
   externalLoadBalancers:
-  %{ if external_lb_name != "-" && external_target_arn == "-" }
+  %{ if external_lb_name != "-" }
   - loadBalancerName: ${external_lb_name}
-  %{ else ~}
+  %{ endif }
+  %{ if external_target_arn != "-" }
   - targetGroupArn: ${external_target_arn}
   %{ endif }
 %{ endif ~}
