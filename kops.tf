@@ -49,7 +49,7 @@ locals {
     max_requests_in_flight          = var.max_requests_in_flight
     max_mutating_requests_in_flight = var.max_mutating_requests_in_flight
 
-    additional_master_policies = indent(6, replace(data.aws_iam_policy_document.master.json, "/\\\"/", "\\\""))
+    additional_master_policies = indent(6, replace(file("${path.module}/templates/policies/master.json"), "/\\\"/", "\\\""))
   })
 
   kops_default_image = "kope.io/k8s-1.15-debian-stretch-amd64-hvm-ebs-2019-09-26"
@@ -74,20 +74,6 @@ module "ssh_key_pair" {
   ssh_public_key_path = format("%s/ssh", var.secrets_path)
   generate_ssh_key    = "true"
   name                = "kops"
-}
-
-data "aws_iam_policy_document" "master" {
-  statement {
-    effect    = "Allow"
-    resources = ["*"]
-    actions   = [
-      "autoscaling:DescribeAutoScalingGroups",
-      "autoscaling:DescribeAutoScalingInstances",
-      "autoscaling:DescribeTags",
-      "autoscaling:SetDesiredCapacity",
-      "autoscaling:TerminateInstanceInAutoScalingGroup"
-    ]
-  }
 }
 
 resource "null_resource" "replace_cluster" {
