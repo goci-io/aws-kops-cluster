@@ -1,8 +1,8 @@
 [
     {
         "Effect": "Allow",
-        "Resources": ["*"],
-        "Actions": [
+        "Resource": ["*"],
+        "Action": [
             "autoscaling:DescribeAutoScalingGroups",
             "autoscaling:DescribeAutoScalingInstances",
             "autoscaling:DescribeTags",
