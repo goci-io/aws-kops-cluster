@@ -26,6 +26,12 @@ spec:
   - ${cidr}
 %{ endfor ~}
 %{ endif ~}
+%{ if length(addons) > 0 ~}
+  addons:
+%{ for addon in addons ~}
+  - manifest: ${addon}
+%{ endfor ~}
+%{ endif ~}
   networking:
     calico:
       majorVersion: v3

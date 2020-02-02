@@ -18,6 +18,7 @@ locals {
     namespace               = var.namespace
     stage                   = var.stage
     region                  = var.region
+    addons                  = var.kops_addons
     aws_region              = local.aws_region
     aws_zones               = slice(data.aws_availability_zones.available.names, 0, var.max_availability_zones)
     kops_bucket_name        = aws_s3_bucket.kops_state.id

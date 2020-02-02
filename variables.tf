@@ -121,6 +121,12 @@ variable "max_requests_in_flight" {
   description = "Max requests in flight reading API objects. Depends on the machine type and count for masters, as well as IOPS of etcd volumes"
 }
 
+variable "kops_addons" {
+  type        = list(string)
+  default     = []
+  description = "Additional kops addons to include in the cluster manifest"
+}
+
 variable "enable_kops_validation" {
   type        = bool
   default     = true 
