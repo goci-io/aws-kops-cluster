@@ -35,6 +35,21 @@ spec:
   networking:
     calico:
       majorVersion: v3
+  additionalPolicies:
+    master: |
+      [
+        {
+          "Effect": "Allow",
+          "Resource": ["*"],
+          "Action": [
+            "autoscaling:DescribeAutoScalingGroups",
+            "autoscaling:DescribeAutoScalingInstances",
+            "autoscaling:DescribeTags",
+            "autoscaling:SetDesiredCapacity",
+            "autoscaling:TerminateInstanceInAutoScalingGroup"
+          ]
+        }
+      ]
   api:
     dns: {}
 # Note: When there is no ELB the certificate validation fails when using kops kubecfg
