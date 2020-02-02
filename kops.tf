@@ -49,7 +49,7 @@ locals {
     max_requests_in_flight          = var.max_requests_in_flight
     max_mutating_requests_in_flight = var.max_mutating_requests_in_flight
 
-    additional_master_policies = indent(6, replace(data.aws_iam_policy_document.master.json, "/\\\"/", "\\\\\""))
+    additional_master_policies = indent(6, data.aws_iam_policy_document.master.json)
   })
 
   kops_default_image = "kope.io/k8s-1.15-debian-stretch-amd64-hvm-ebs-2019-09-26"
