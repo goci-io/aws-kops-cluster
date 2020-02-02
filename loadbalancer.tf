@@ -123,7 +123,7 @@ resource "aws_elb" "classic_public_api" {
     healthy_threshold   = 2
     unhealthy_threshold = 2
     timeout             = 3
-    target              = "SSL"
+    target              = "SSL:443"
     interval            = 30
   }
 
