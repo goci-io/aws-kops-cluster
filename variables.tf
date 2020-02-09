@@ -109,6 +109,12 @@ variable "max_availability_zones" {
   description = "Maximum availability zones to span with this cluster. We currently only support 3!!"
 }
 
+variable "require_one_node" {
+  type        = bool
+  default     = false
+  description = "If minSize of all worker instance group is set to 0 but at least one node is required (eg. for kube-dns)"
+}
+
 variable "max_mutating_requests_in_flight" {
   type        = number
   default     = 800

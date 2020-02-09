@@ -1,3 +1,9 @@
+locals {
+  require_one_worker_node = var.require_one_node && local.worker_node_min_count == 0
+  worker_node_min_count   = length(flatten([
+    for e in var.instance_groups.*.count_min : range(e)
+  ]))
+}
 
 # Deploy seperate IGs per AWS Availability Zone
 # This usually helps the cluster autoscaler 
@@ -24,7 +30,7 @@ data "null_data_source" "instance_groups" {
       instance_name          = lookup(var.instance_groups[floor(count.index / 3)], "name")
       instance_type          = lookup(var.instance_groups[floor(count.index / 3)], "instance_type")
       instance_max           = lookup(var.instance_groups[floor(count.index / 3)], "count_max", 5)
-      instance_min           = lookup(var.instance_groups[floor(count.index / 3)], "count_min", 1)
+      instance_min           = local.require_one_worker_node && count.index == 0 ? 1 : lookup(var.instance_groups[floor(count.index / 3)], "count_min", 1)
       external_lb_name       = lookup(var.instance_groups[floor(count.index / 3)], "loadbalancer_name", "")
       external_target_arn    = lookup(var.instance_groups[floor(count.index / 3)], "loadbalancer_target_arn", "")
       storage_type           = lookup(var.instance_groups[floor(count.index / 3)], "storage_type", "gp2")
