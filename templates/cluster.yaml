@@ -85,6 +85,8 @@ spec:
     watchIngress: true
   kubeProxy:
     clusterCIDR: ${cluster_cidr}
+    cpuRequest: 80m
+    memoryRequest: 72Mi
   kubeControllerManager:
     horizontalPodAutoscalerSyncPeriod: 30s
     horizontalPodAutoscalerDownscaleDelay: 5m0s
