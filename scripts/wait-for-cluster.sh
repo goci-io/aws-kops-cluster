@@ -1,9 +1,15 @@
 #!/bin/sh
 set -e
 
+kops export kubecfg
+
 echo "Wait for cluster to start up the first time..."
 
-starting=1
+set +e
+kops validate cluster
+starting=$?
+set -e
+
 retries=0
 
 while [[ $retries -lt 5 && $starting -ne 0 ]]; do
@@ -11,13 +17,13 @@ while [[ $retries -lt 5 && $starting -ne 0 ]]; do
     echo "Waiting $timeout before validating cluster" 
     sleep $timeout
     
+    echo "Retrying..."
+    retries=$(($retries+1))
+
     set +e
     kops validate cluster
     starting=$?
     set -e
-
-    echo "Retrying..."
-    retries=$(($retries+1))
 done
 
 if [[ $starting -eq 0 ]]; then
