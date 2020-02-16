@@ -126,7 +126,11 @@ EOF
 
 resource "null_resource" "cluster_startup" {
   count      = var.enable_kops_validation ? 1 : 0
-  depends_on = [null_resource.kops_update_cluster]
+  depends_on = [
+    null_resource.kops_update_cluster,
+    aws_elb.classic_public_api,
+    aws_lb.public_api,
+  ]
 
   provisioner "local-exec" {
     # This is only required during the initial setup
