@@ -55,6 +55,7 @@ spec:
 %{ if lb_create ~}
     loadBalancer:
       type: ${lb_type}
+      useForInternalApi: true
       crossZoneLoadBalancing: true
       sslCertificate: ${certificate_arn}
       additionalSecurityGroups: [${lb_security_groups}]
