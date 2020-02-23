@@ -49,6 +49,8 @@ locals {
     max_requests_in_flight          = var.max_requests_in_flight
     max_mutating_requests_in_flight = var.max_mutating_requests_in_flight
 
+    has_external_policies      = length(var.external_master_policies) > 0
+    external_master_policies   = var.external_master_policies
     additional_master_policies = var.additional_master_policies == "" ? "" : indent(6, replace(var.additional_master_policies, "/\\\"/", "\\\""))
   })
 

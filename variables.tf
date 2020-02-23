@@ -202,7 +202,13 @@ variable "master_loadbalancer_target_arn" {
 variable "additional_master_policies" {
   type        = string
   default     = ""
-  description = "Additional policies to attach to the masters (Effect, Action, Resource policy as JSON list)"
+  description = "Additional policy documents to attach to the masters (Effect, Action, Resource policy as JSON list)"
+}
+
+variable "external_master_policies" {
+  type        = string
+  default     = []
+  description = "Additional policy ARNs to attach to the master role"
 }
 
 variable "create_public_api_loadbalancer" {

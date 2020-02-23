@@ -40,6 +40,13 @@ spec:
     master: |
       ${additional_master_policies}
 %{ endif ~}
+%{ if has_external_policies ~}
+  externalPolicies:
+    master:
+%{ for policy in external_master_policies ~}
+    - ${policy}
+%{ endfor ~}
+%{ endif ~}
   api:
     dns: {}
 # Note: When there is no ELB the certificate validation fails when using kops kubecfg
