@@ -206,7 +206,7 @@ variable "additional_master_policies" {
 }
 
 variable "external_master_policies" {
-  type        = string
+  type        = list(string)
   default     = []
   description = "Additional policy ARNs to attach to the master role"
 }
