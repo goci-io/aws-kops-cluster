@@ -28,6 +28,9 @@ spec:
   rootVolumeType: ${storage_type}
   rootVolumeIops: ${storage_iops}
   associatePublicIp: ${public_ip}
+%{ if security_group != "" ~}
+  securityGroupOverride: ${security_group}
+%{ endif ~}
   additionalUserData:
   - name: reserved-resources.sh
     type: text/x-shellscript

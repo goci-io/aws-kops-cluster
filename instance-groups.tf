@@ -36,6 +36,7 @@ data "null_data_source" "instance_groups" {
       storage_type           = lookup(var.instance_groups[floor(count.index / 3)], "storage_type", "gp2")
       storage_iops           = lookup(var.instance_groups[floor(count.index / 3)], "storage_iops", 0)
       storage_in_gb          = lookup(var.instance_groups[floor(count.index / 3)], "storage_in_gb", 28)
+      security_group         = lookup(var.instance_groups[floor(count.index / 3)], "security_group", "")
       subnet_type            = lookup(var.instance_groups[floor(count.index / 3)], "subnet", "private")
       subnet_ids             = [element(data.aws_availability_zones.available.names, count.index % var.max_availability_zones)]
       autospotting_enabled   = lookup(var.instance_groups[floor(count.index / 3)], "autospotting_enabled", true)
@@ -78,6 +79,7 @@ data "null_data_source" "master_instance_groups" {
       external_lb_name       = coalesce(local.external_lb_name_masters, join("", aws_elb.classic_public_api.*.name), "-")
       external_target_arn    = coalesce(local.external_lb_target_arn, join("", aws_lb_target_group.api.*.arn), "-")
       instance_group_name    = element(data.null_data_source.master_info.*.outputs.name, count.index)
+      security_group         = ""
       subnet_ids             = [element(data.null_data_source.master_info.*.outputs.subnet_id, count.index)]
       subnet_type            = "private"
       storage_type           = "gp2"
@@ -116,6 +118,7 @@ data "null_data_source" "bastion_instance_group" {
       subnet_ids             = data.aws_availability_zones.available.names
       external_target_arn    = ""
       external_lb_name       = ""
+      security_group         = ""
       subnet_type            = "utility"
       instance_group_name    = "bastion"
       node_role              = "Bastion"
