@@ -57,7 +57,7 @@ variable "masters_instance_count" {
 
 variable "etcd_version" {
   type        = string
-  default     = "3.3.18"
+  default     = "3.3.13"
   description = "Version of etcd to use for kubernetes backend"
 }
 
