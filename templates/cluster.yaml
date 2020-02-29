@@ -71,11 +71,11 @@ spec:
   kubelet:
     anonymousAuth: false
     kubeReserved:
-      cpu: 150m
-      memory: 224Mi
+      cpu: 100m
+      memory: 156Mi
       ephemeral-storage: 1Gi
     systemReserved:
-      cpu: 50m
+      cpu: 30m
       memory: 112Mi
       ephemeral-storage: 1Gi
     kubeReservedCgroup: "/kube-reserved"
@@ -84,20 +84,20 @@ spec:
   docker:
     logDriver: json-file
     logOpt:
-    - max-size=24m
-    - max-file=10
+    - max-size=32m
+    - max-file=12
   externalDns:
     watchIngress: true
   kubeProxy:
     clusterCIDR: ${cluster_cidr}
     cpuRequest: 80m
-    memoryRequest: 72Mi
+    memoryRequest: 128Mi
   kubeControllerManager:
     horizontalPodAutoscalerSyncPeriod: 30s
     horizontalPodAutoscalerDownscaleDelay: 5m0s
     horizontalPodAutoscalerUpscaleDelay: 3m0s
     horizontalPodAutoscalerTolerance: 0.1
-    clusterCIDR: ${cluster_cidr}
+    clusterCIDR: ${pods_cluster_ip_cidr}
   authorization:
     rbac: {}
   iam:
