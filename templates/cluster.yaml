@@ -88,7 +88,6 @@ spec:
   externalDns:
     watchIngress: true
   kubeProxy:
-    clusterCIDR: ${cluster_cidr}
     cpuRequest: 80m
     memoryRequest: 128Mi
   kubeControllerManager:
