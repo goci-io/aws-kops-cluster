@@ -12,8 +12,9 @@ locals {
     cluster_name            = local.cluster_name
     cluster_dns             = local.cluster_dns
     cluster_zone_id         = local.cluster_zone_id
-    dns_type                = var.master_ips_for_private_api_dns ? "Private" : var.cluster_dns_type
+    dns_type                = var.cluster_dns_type
     k8s_version             = var.kubernetes_version
+    etcd_version            = var.etcd_version
     cluster_cidr            = "100.0.0.0/8"
     namespace               = var.namespace
     stage                   = var.stage
@@ -30,7 +31,7 @@ locals {
     elb_security_group_id   = join("", aws_security_group.public_loadbalancer.*.id)
     certificate_arn         = local.certificate_arn
     lb_type                 = var.cluster_dns_type == "Private" ? "Internal" : "Public"
-    lb_create               = !var.master_ips_for_private_api_dns && !local.external_lb_enabled
+    lb_create               = !local.external_lb_enabled
     lb_security_groups      = ""
     bastion_public_name     = var.bastion_public_name
     custom_certificate      = local.custom_certificate_enabled

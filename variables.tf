@@ -55,6 +55,12 @@ variable "masters_instance_count" {
   description = "Number of master nodes to create. Suggesting at least 5 to support failover of 2 masters"
 }
 
+variable "etcd_version" {
+  type        = string
+  default     = "3.3.18"
+  description = "Version of etcd to use for kubernetes backend"
+}
+
 variable "etcd_events_storage_type" {
   type        = string
   default     = "gp2"
@@ -233,12 +239,6 @@ variable "public_api_record_name" {
   type        = string
   default     = "api"
   description = "Name of the publicly available additional public dns record"
-}
-
-variable "master_ips_for_private_api_dns" {
-  type        = bool
-  default     = false
-  description = "When there is a private hosted zone the api DNS record can point directly to the master IPs of the associated VPC"
 }
 
 variable "bastion_public_name" {
