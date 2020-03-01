@@ -28,11 +28,11 @@ locals {
     service_cluster_ip_cidr = "100.0.0.0/16"
     pods_cluster_ip_cidr    = "100.1.0.0/16"
     ssh_access              = length(var.ssh_access_cidrs) > 0 ? var.ssh_access_cidrs : [local.vpc_cidr]
-    api_access              = length(var.api_access_cidrs) > 0 ? var.api_access_cidrs : [local.create_additional_loadbalancer ? "0.0.0.0/0" : local.vpc_cidr]
+    api_access              = length(var.api_access_cidrs) > 0 ? var.api_access_cidrs : [local.vpc_cidr]
     elb_security_group_id   = join("", aws_security_group.public_loadbalancer.*.id)
     certificate_arn         = local.certificate_arn
     lb_type                 = var.cluster_dns_type == "Private" ? "Internal" : "Public"
-    lb_create               = !local.external_lb_enabled
+    lb_create               = !local.external_lb_enabled && (!var.use_master_ips_for_private_dns || var.cluster_dns_type != "Private")
     lb_security_groups      = ""
     bastion_public_name     = var.bastion_public_name
     custom_certificate      = local.custom_certificate_enabled

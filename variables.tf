@@ -217,6 +217,24 @@ variable "external_master_policies" {
   description = "Additional policy ARNs to attach to the master role"
 }
 
+variable "use_master_ips_for_private_dns" {
+  type        = bool
+  default     = true
+  description = "When dns type is set to private we can use private IPs available in the VPC to connect to master nodes directly"
+}
+
+variable "additional_master_ingress" {
+  type        = list(object)
+  default     = []
+  description = "Additional ingress rules for security group on master nodes"  
+}
+
+variable "additional_node_ingress" {
+  type        = list(object)
+  default     = []
+  description = "Additional ingress rules for default security group for worker nodes"
+}
+
 variable "create_public_api_loadbalancer" {
   type        = bool
   default     = false

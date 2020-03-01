@@ -1,0 +1,55 @@
+masters:
+  - to_port: 0
+    from_port: 0
+    protocol: "-1"
+    self: true
+    # Kops security ingress rules (etcd, calico)
+  - to_port: 4001
+    from_port: 443
+    protocol: tcp
+    security_groups: 
+    - ${nodes_sg}
+  - to_port: 65535
+    from_port: 4003
+    protocol: tcp
+    security_groups: 
+    - ${nodes_sg}
+  - to_port: 65535
+    from_port: 1
+    protocol: udp
+    security_groups: 
+    - ${nodes_sg}
+  - to_port: -1
+    from_port: -1
+    protocol: ipv4
+    security_groups: 
+    - ${nodes_sg}
+nodes:
+  - to_port: 443
+    from_port: 443
+    protocol: tcp
+    security_groups:
+    - ${masters_sg}
+  # Non root ports (NodePorts, kubelet, ..)
+  - to_port: 65535
+    from_port: 3000
+    protocol: tcp
+    security_groups:
+    - ${masters_sg}
+  - to_port: 65535
+    from_port: 3000
+    protocol: tcp
+    self: true
+  - to_port: 443
+    from_port: 443
+    protocol: tcp
+    self: true
+  - to_port: 80
+    from_port: 80
+    protocol: tcp
+    self: true
+  # Calico BGP port
+  - to_port: 179
+    from_port: 179
+    protocol: tcp
+    self: true
