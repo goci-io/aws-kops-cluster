@@ -6,17 +6,6 @@ module "masters_sg_label" {
   delimiter = "."
 }
 
-locals {
-  additional_public_loadbalancer_sg = local.create_additional_loadbalancer ? [{
-    security_groups = aws_security_group.public_loadbalancer.*.id
-    from_port       = 443
-    to_port         = 443
-    protocol        = "tcp"
-  }] : []
-  
-  masters_security_ingress = concat(var.additional_master_ingress, local.additional_public_loadbalancer_sg)
-}
-
 resource "aws_security_group" "masters" {
   name        = module.masters_sg_label.id
   tags        = module.masters_sg_label.tags
@@ -32,14 +21,12 @@ resource "aws_security_group" "masters" {
 }
 
 resource "aws_security_group_rule" "masters_ingress" {
-  count                    = length(local.masters_security_ingress)
-  type                     = "ingress"
+  count                    = local.create_additional_loadbalancer ? 1 : 0
+  source_security_group_id = aws_security_group.public_loadbalancer.*.id
   security_group_id        = aws_security_group.masters.id
-  to_port                  = local.masters_security_ingress[count.index].to_port
-  from_port                = local.masters_security_ingress[count.index].from_port
-  self                     = lookup(local.masters_security_ingress[count.index], "self", false)
-  protocol                 = lookup(local.masters_security_ingress[count.index], "protocol", "tcp")
-  cidr_blocks              = lookup(local.masters_security_ingress[count.index], "cidr_blocks", [])
-  source_security_group_id = lookup(local.masters_security_ingress[count.index], "security_group", "")
-  description              = lookup(local.masters_security_ingress[count.index], "description", "Managed by Terraform")
+  type                     = "ingress"
+  to_port                  = 443
+  from_port                = 443
+  protocol                 = "tcp"
+  description              = "Allows access from a public API Load Balancer security group"
 }
