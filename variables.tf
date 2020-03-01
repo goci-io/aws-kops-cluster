@@ -229,12 +229,6 @@ variable "additional_master_ingress" {
   description = "Additional ingress rules for security group on master nodes"  
 }
 
-variable "additional_node_ingress" {
-  type        = list(any)
-  default     = []
-  description = "Additional ingress rules for default security group for worker nodes"
-}
-
 variable "create_public_api_loadbalancer" {
   type        = bool
   default     = false

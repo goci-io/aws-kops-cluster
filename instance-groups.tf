@@ -36,9 +36,9 @@ data "null_data_source" "instance_groups" {
       storage_type           = lookup(var.instance_groups[floor(count.index / 3)], "storage_type", "gp2")
       storage_iops           = lookup(var.instance_groups[floor(count.index / 3)], "storage_iops", 0)
       storage_in_gb          = lookup(var.instance_groups[floor(count.index / 3)], "storage_in_gb", 28)
+      security_group         = lookup(var.instance_groups[floor(count.index / 3)], "security_group", "")
       subnet_type            = lookup(var.instance_groups[floor(count.index / 3)], "subnet", "private")
       subnet_ids             = [element(data.aws_availability_zones.available.names, count.index % var.max_availability_zones)]
-      security_group         = lookup(var.instance_groups[floor(count.index / 3)], "security_group", aws_security_group.nodes.id)
       autospotting_enabled   = lookup(var.instance_groups[floor(count.index / 3)], "autospotting_enabled", true)
       autospotting_max_price = lookup(var.instance_groups[floor(count.index / 3)], "autospotting_max_price", 0.03)
       autospotting_instances = lookup(var.instance_groups[floor(count.index / 3)], "autospotting_instances", [lookup(var.instance_groups[floor(count.index / 3)], "instance_type")])
