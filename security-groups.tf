@@ -12,11 +12,11 @@ module "nodes_sg_label" {
 }
 
 locals {
-  nodes_security_group   = join("", aws_security_group.nodes.*.id)
-  masters_security_group = join("", aws_security_group.masters.*.id)
+  expected_master_rules  = 5
+  expected_node_rules    = 6
   security_default_rules = yamldecode(templatefile("${path.module}/templates/security-groups.yaml", {
-    nodes_sg   = local.nodes_security_group
-    masters_sg = local.masters_security_group
+    nodes_sg   = join("", aws_security_group.nodes.*.id)
+    masters_sg = join("", aws_security_group.masters.*.id)
   }))
   
   nodes_security_ingress   = concat(var.additional_node_ingress, local.security_default_rules.nodes)
@@ -38,7 +38,7 @@ resource "aws_security_group" "masters" {
 }
 
 resource "aws_security_group_rule" "masters_ingress" {
-  count                    = length(local.masters_security_ingress)
+  count                    = length(var.additional_master_ingress) + local.expected_master_rules
   type                     = "ingress"
   security_group_id        = aws_security_group.masters.id
   to_port                  = local.masters_security_ingress[count.index].to_port
@@ -76,7 +76,7 @@ resource "aws_security_group" "nodes" {
 }
 
 resource "aws_security_group_rule" "nodes_ingress" {
-  count                    = length(local.nodes_security_ingress)
+  count                    = length(var.additional_node_ingress) + local.expected_node_rules
   type                     = "ingress"
   security_group_id        = aws_security_group.nodes.id
   to_port                  = local.nodes_security_ingress[count.index].to_port
