@@ -43,16 +43,16 @@ resource "aws_security_group" "masters" {
 }
 
 resource "aws_security_group_rule" "masters_ingress" {
-  count             = length(local.masters_security_ingress)
-  type              = "ingress"
-  security_group_id = aws_security_group.masters.id
-  to_port           = local.masters_security_ingress[count.index].to_port
-  from_port         = local.masters_security_ingress[count.index].from_port
-  self              = lookup(local.masters_security_ingress[count.index], "self", false)
-  protocol          = lookup(local.masters_security_ingress[count.index], "protocol", "tcp")
-  cidr_blocks       = lookup(local.masters_security_ingress[count.index], "cidr_blocks", [])
-  security_groups   = lookup(local.masters_security_ingress[count.index], "security_groups", [])
-  description       = lookup(local.masters_security_ingress[count.index], "description", "Managed by Terraform")
+  count                    = length(local.masters_security_ingress)
+  type                     = "ingress"
+  security_group_id        = aws_security_group.masters.id
+  to_port                  = local.masters_security_ingress[count.index].to_port
+  from_port                = local.masters_security_ingress[count.index].from_port
+  self                     = lookup(local.masters_security_ingress[count.index], "self", false)
+  protocol                 = lookup(local.masters_security_ingress[count.index], "protocol", "tcp")
+  cidr_blocks              = lookup(local.masters_security_ingress[count.index], "cidr_blocks", [])
+  source_security_group_id = lookup(local.masters_security_ingress[count.index], "security_group", "")
+  description              = lookup(local.masters_security_ingress[count.index], "description", "Managed by Terraform")
 }
 
 resource "aws_security_group" "nodes" {
@@ -70,14 +70,14 @@ resource "aws_security_group" "nodes" {
 }
 
 resource "aws_security_group_rule" "nodes_ingress" {
-  count             = length(local.nodes_security_ingress)
-  type              = "ingress"
-  security_group_id = aws_security_group.nodes.id
-  to_port           = local.nodes_security_ingress[count.index].to_port
-  from_port         = local.nodes_security_ingress[count.index].from_port
-  self              = lookup(local.nodes_security_ingress[count.index], "self", false)
-  protocol          = lookup(local.nodes_security_ingress[count.index], "protocol", "tcp")
-  cidr_blocks       = lookup(local.nodes_security_ingress[count.index], "cidr_blocks", [])
-  security_groups   = lookup(local.nodes_security_ingress[count.index], "security_groups", [])
-  description       = lookup(local.nodes_security_ingress[count.index], "description", "Managed by Terraform")
+  count                    = length(local.nodes_security_ingress)
+  type                     = "ingress"
+  security_group_id        = aws_security_group.nodes.id
+  to_port                  = local.nodes_security_ingress[count.index].to_port
+  from_port                = local.nodes_security_ingress[count.index].from_port
+  self                     = lookup(local.nodes_security_ingress[count.index], "self", false)
+  protocol                 = lookup(local.nodes_security_ingress[count.index], "protocol", "tcp")
+  cidr_blocks              = lookup(local.nodes_security_ingress[count.index], "cidr_blocks", [])
+  source_security_group_id = lookup(local.nodes_security_ingress[count.index], "security_group", "")
+  description              = lookup(local.nodes_security_ingress[count.index], "description", "Managed by Terraform")
 }

@@ -7,36 +7,30 @@ masters:
   - to_port: 4001
     from_port: 443
     protocol: tcp
-    security_groups: 
-    - ${nodes_sg}
+    security_group: ${nodes_sg}
   - to_port: 65535
     from_port: 4003
     protocol: tcp
-    security_groups: 
-    - ${nodes_sg}
+    security_group: ${nodes_sg}
   - to_port: 65535
     from_port: 1
     protocol: udp
-    security_groups: 
-    - ${nodes_sg}
+    security_group: ${nodes_sg}
   - to_port: -1
     from_port: -1
     protocol: ipv4
-    security_groups: 
-    - ${nodes_sg}
+    security_group: ${nodes_sg}
 nodes:
   - to_port: 443
     from_port: 443
     protocol: tcp
     description: "Allow masters to communicate with nodes on https"
-    security_groups:
-    - ${masters_sg}
+    security_group: ${masters_sg}
   # Non root ports (NodePorts, kubelet, ..)
   - to_port: 65535
     from_port: 3000
     protocol: tcp
-    security_groups:
-    - ${masters_sg}
+    security_group: ${masters_sg}
   - to_port: 65535
     from_port: 3000
     protocol: tcp
