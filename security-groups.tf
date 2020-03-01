@@ -1,8 +1,9 @@
 
 module "masters_sg_label" {
-  source  = "git::https://github.com/cloudposse/terraform-null-label.git?ref=tags/0.16.0"
-  context = module.label.context
-  name    = "masters"
+  source    = "git::https://github.com/cloudposse/terraform-null-label.git?ref=tags/0.16.0"
+  context   = module.label.context
+  name      = "masters"
+  delimiter = "."
 }
 
 locals {
