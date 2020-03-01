@@ -20,8 +20,8 @@ locals {
   }] : []
 
   security_default_rules = yamldecode(templatefile("${path.module}/templates/security-groups.yaml", {
-    nodes_sg   = aws_security_group.nodes.id
-    masters_sg = aws_security_group.masters.id
+    nodes_sg   = join("", aws_security_group.nodes.*.id)
+    masters_sg = join("", aws_security_group.masters.*.id)
   }))
   
   nodes_security_ingress   = concat(var.additional_node_ingress, local.security_default_rules.nodes)
