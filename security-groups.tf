@@ -12,16 +12,19 @@ module "nodes_sg_label" {
 }
 
 locals {
+  public_lb_security_groups         = aws_security_group.public_loadbalancer.*.id
   additional_public_loadbalancer_sg = local.create_additional_loadbalancer ? [{
-    security_groups = aws_security_group.public_loadbalancer.*.id
+    security_groups = local.public_lb_security_groups
     from_port       = 443
     to_port         = 443
     protocol        = "tcp"
   }] : []
 
+  nodes_security_group   = join("", aws_security_group.nodes.*.id)
+  masters_security_group = join("", aws_security_group.masters.*.id)
   security_default_rules = yamldecode(templatefile("${path.module}/templates/security-groups.yaml", {
-    nodes_sg   = join("", aws_security_group.nodes.*.id)
-    masters_sg = join("", aws_security_group.masters.*.id)
+    nodes_sg   = local.nodes_security_group
+    masters_sg = local.masters_security_group
   }))
   
   nodes_security_ingress   = concat(var.additional_node_ingress, local.security_default_rules.nodes)
