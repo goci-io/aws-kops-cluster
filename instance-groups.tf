@@ -36,9 +36,9 @@ data "null_data_source" "instance_groups" {
       storage_type           = lookup(var.instance_groups[floor(count.index / 3)], "storage_type", "gp2")
       storage_iops           = lookup(var.instance_groups[floor(count.index / 3)], "storage_iops", 0)
       storage_in_gb          = lookup(var.instance_groups[floor(count.index / 3)], "storage_in_gb", 28)
-      security_group         = lookup(var.instance_groups[floor(count.index / 3)], "security_group", "")
       subnet_type            = lookup(var.instance_groups[floor(count.index / 3)], "subnet", "private")
       subnet_ids             = [element(data.aws_availability_zones.available.names, count.index % var.max_availability_zones)]
+      security_group         = lookup(var.instance_groups[floor(count.index / 3)], "security_group", aws_security_group.nodes.id)
       autospotting_enabled   = lookup(var.instance_groups[floor(count.index / 3)], "autospotting_enabled", true)
       autospotting_max_price = lookup(var.instance_groups[floor(count.index / 3)], "autospotting_max_price", 0.03)
       autospotting_instances = lookup(var.instance_groups[floor(count.index / 3)], "autospotting_instances", [lookup(var.instance_groups[floor(count.index / 3)], "instance_type")])
@@ -76,10 +76,10 @@ data "null_data_source" "master_instance_groups" {
       public_ip              = false
       autoscaler             = false
       image                  = local.kops_default_image
+      security_group         = aws_security_group.masters.id
       external_lb_name       = coalesce(local.external_lb_name_masters, join("", aws_elb.classic_public_api.*.name), "-")
       external_target_arn    = coalesce(local.external_lb_target_arn, join("", aws_lb_target_group.api.*.arn), "-")
       instance_group_name    = element(data.null_data_source.master_info.*.outputs.name, count.index)
-      security_group         = ""
       subnet_ids             = [element(data.null_data_source.master_info.*.outputs.subnet_id, count.index)]
       subnet_type            = "private"
       storage_type           = "gp2"
