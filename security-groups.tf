@@ -22,7 +22,7 @@ resource "aws_security_group" "masters" {
 
 resource "aws_security_group_rule" "masters_ingress" {
   count                    = local.create_additional_loadbalancer ? 1 : 0
-  source_security_group_id = aws_security_group.public_loadbalancer.*.id
+  source_security_group_id = join("", aws_security_group.public_loadbalancer.*.id)
   security_group_id        = aws_security_group.masters.id
   type                     = "ingress"
   to_port                  = 443
