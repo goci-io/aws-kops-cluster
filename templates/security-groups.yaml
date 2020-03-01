@@ -3,7 +3,7 @@ masters:
     from_port: 0
     protocol: "-1"
     self: true
-    # Kops security ingress rules (etcd, calico)
+    # Kops security ingress rules (kubelet, calico)
   - to_port: 4001
     from_port: 443
     protocol: tcp
@@ -28,6 +28,7 @@ nodes:
   - to_port: 443
     from_port: 443
     protocol: tcp
+    description: "Allow masters to communicate with nodes on https"
     security_groups:
     - ${masters_sg}
   # Non root ports (NodePorts, kubelet, ..)
@@ -40,16 +41,20 @@ nodes:
     from_port: 3000
     protocol: tcp
     self: true
+    description: "Allow communication on non-root ports eg for calico and node ports"
   - to_port: 443
     from_port: 443
     protocol: tcp
     self: true
+    description: "Allow https communication between nodes"
   - to_port: 80
     from_port: 80
     protocol: tcp
     self: true
+    description: "HTTP Traffic may need to be routes through nodes for customers"
   # Calico BGP port
   - to_port: 179
     from_port: 179
     protocol: tcp
     self: true
+    description: "Calico BGP port"
