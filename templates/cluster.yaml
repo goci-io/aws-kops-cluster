@@ -55,9 +55,6 @@ spec:
       crossZoneLoadBalancing: true
       sslCertificate: ${certificate_arn}
       additionalSecurityGroups: [${lb_security_groups}]
-%{ if elb_security_group_id != "" ~}
-      securityGroupOverride: ${elb_security_group_id}
-%{ endif ~}
 %{ else ~}
     dns: {}
 %{ endif ~}
