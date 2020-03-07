@@ -12,7 +12,7 @@ spec:
   networkCIDR: ${vpc_cidr}
   awsRegion: ${aws_region}
   dnsZone: ${cluster_zone_id}
-  serviceClusterIPRange: ${service_cluster_ip_cidr}
+  nonMasqueradeCIDR: ${cluster_cidr}
 %{ if length(api_access) > 0 ~}
   kubernetesApiAccess:
 %{ for cidr in api_access ~}
@@ -98,7 +98,6 @@ spec:
     horizontalPodAutoscalerDownscaleDelay: 5m0s
     horizontalPodAutoscalerUpscaleDelay: 3m0s
     horizontalPodAutoscalerTolerance: 0.1
-    clusterCIDR: ${pods_cluster_ip_cidr}
   authorization:
     rbac: {}
   iam:

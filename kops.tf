@@ -15,6 +15,7 @@ locals {
     dns_type                = var.cluster_dns_type
     k8s_version             = var.kubernetes_version
     etcd_version            = var.etcd_version
+    cluster_cidr            = "100.0.0.0/15"
     namespace               = var.namespace
     stage                   = var.stage
     region                  = var.region
@@ -24,8 +25,6 @@ locals {
     kops_bucket_name        = aws_s3_bucket.kops_state.id
     vpc_id                  = local.vpc_id
     vpc_cidr                = local.vpc_cidr
-    service_cluster_ip_cidr = "100.0.0.0/16"
-    pods_cluster_ip_cidr    = "100.1.0.0/16"
     ssh_access              = length(var.ssh_access_cidrs) > 0 ? var.ssh_access_cidrs : [local.vpc_cidr]
     api_access              = length(var.api_access_cidrs) > 0 ? var.api_access_cidrs : [local.vpc_cidr]
     elb_security_group_id   = join("", aws_security_group.public_loadbalancer.*.id)
