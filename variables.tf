@@ -219,7 +219,7 @@ variable "external_master_policies" {
 
 variable "use_master_ips_for_private_dns" {
   type        = bool
-  default     = true
+  default     = false
   description = "When dns type is set to private we can use private IPs available in the VPC to connect to master nodes directly"
 }
 
