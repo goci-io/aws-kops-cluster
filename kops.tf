@@ -24,7 +24,6 @@ locals {
     aws_zones               = slice(data.aws_availability_zones.available.names, 0, var.max_availability_zones)
     kops_bucket_name        = aws_s3_bucket.kops_state.id
     vpc_id                  = local.vpc_id
-    vpc_cidr                = local.vpc_cidr
     service_cluster_ip_cidr = "100.0.0.0/16"
     pods_cluster_ip_cidr    = "100.1.0.0/16"
     ssh_access              = length(var.ssh_access_cidrs) > 0 ? var.ssh_access_cidrs : [local.vpc_cidr]

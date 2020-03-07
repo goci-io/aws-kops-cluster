@@ -8,7 +8,6 @@ spec:
   kubernetesVersion: ${k8s_version}
   masterPublicName: api.${cluster_dns}
   masterInternalName: api.${cluster_dns}
-  networkCIDR: ${vpc_cidr}
   networkID: ${vpc_id}
   awsRegion: ${aws_region}
   dnsZone: ${cluster_zone_id}
@@ -35,6 +34,8 @@ spec:
   networking:
     calico:
       majorVersion: v3
+      typhaReplicas: 3
+      crossSubnet: true
 %{ if additional_master_policies != "" ~}
   additionalPolicies:
     master: |
@@ -48,7 +49,6 @@ spec:
 %{ endfor ~}
 %{ endif ~}
   api:
-    dns: {}
 %{ if lb_create ~}
     loadBalancer:
       type: ${lb_type}
@@ -58,6 +58,8 @@ spec:
 %{ if elb_security_group_id != "" ~}
       securityGroupOverride: ${elb_security_group_id}
 %{ endif ~}
+%{ else ~}
+    dns: {}
 %{ endif ~}
   kubeAPIServer:
     targetRamMb: 2560
@@ -66,9 +68,10 @@ spec:
     disableBasicAuth: false
     maxRequestsInflight: ${max_requests_in_flight}
     maxMutatingRequestsInflight: ${max_mutating_requests_in_flight}
-    serviceNodePortRange: 15000-65500
+    serviceNodePortRange: 20000-65000
   kubelet:
     anonymousAuth: false
+    cloudProvider: aws
     kubeReserved:
       cpu: 100m
       memory: 156Mi
