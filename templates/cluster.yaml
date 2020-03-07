@@ -12,7 +12,7 @@ spec:
   networkCIDR: ${vpc_cidr}
   awsRegion: ${aws_region}
   dnsZone: ${cluster_zone_id}
-  nonMasqueradeCIDR: ${cluster_cidr}
+  serviceClusterIPRange: ${service_cluster_ip_cidr}
 %{ if length(api_access) > 0 ~}
   kubernetesApiAccess:
 %{ for cidr in api_access ~}
