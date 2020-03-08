@@ -34,7 +34,6 @@ spec:
   networking:
     calico:
       majorVersion: v3
-      typhaReplicas: 3
       crossSubnet: true
 %{ if additional_master_policies != "" ~}
   additionalPolicies:
