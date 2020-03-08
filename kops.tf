@@ -15,7 +15,7 @@ locals {
     dns_type                = var.cluster_dns_type
     k8s_version             = var.kubernetes_version
     etcd_version            = var.etcd_version
-    cluster_cidr            = "100.0.0.0/15"
+    cluster_cidr            = "100.0.0.0/16"
     namespace               = var.namespace
     stage                   = var.stage
     region                  = var.region
