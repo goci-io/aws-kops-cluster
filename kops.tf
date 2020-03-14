@@ -53,7 +53,7 @@ locals {
     additional_master_policies = var.additional_master_policies == "" ? "" : indent(6, replace(var.additional_master_policies, "/\\\"/", "\\\""))
   })
 
-  kops_default_image = "099720109477/ubuntu/images/hvm-instance/ubuntu-eoan-19.10-amd64-server-20200313"
+  kops_default_image = "099720109477/ubuntu/images/hvm-ssd/ubuntu-eoan-19.10-amd64-server-20200313"
   kops_configs = concat(
     [data.null_data_source.bastion_instance_group.outputs],
     data.null_data_source.master_instance_groups.*.outputs,
