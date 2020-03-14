@@ -4,7 +4,7 @@ set -e
 kops export kubecfg
 
 echo "Wait for cluster to start up the first time..."
-starting=0
+starting=1
 retries=0
 
 while [[ $retries -lt 10 && $starting -ne 0 ]]; do
