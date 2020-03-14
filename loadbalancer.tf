@@ -38,6 +38,10 @@ resource "aws_security_group" "public_loadbalancer" {
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 resource "aws_lb" "public_api" {
@@ -82,6 +86,10 @@ resource "aws_lb_target_group" "api" {
     content {
       enabled  = true
     }
+  }
+
+  lifecycle {
+    create_before_destroy = true
   }
 }
 
@@ -134,6 +142,7 @@ resource "aws_elb" "classic_public_api" {
 }
 
 resource "aws_route53_record" "public_api" {
+  count   = local.create_additional_loadbalancer ? 1 : 0
   zone_id = join("", data.aws_route53_zone.public_cluster_zone.*.zone_id)
   name    = format("%s.%s", var.public_api_record_name, var.cluster_dns)
   type    = "A"
