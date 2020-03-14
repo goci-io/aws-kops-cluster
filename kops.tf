@@ -53,7 +53,7 @@ locals {
     additional_master_policies = var.additional_master_policies == "" ? "" : indent(6, replace(var.additional_master_policies, "/\\\"/", "\\\""))
   })
 
-  kops_default_image = "kope.io/k8s-1.15-debian-stretch-amd64-hvm-ebs-2020-01-17"
+  kops_default_image = "099720109477/ubuntu/images/hvm-instance/ubuntu-eoan-19.10-amd64-server-20200313"
   kops_configs = concat(
     [data.null_data_source.bastion_instance_group.outputs],
     data.null_data_source.master_instance_groups.*.outputs,
@@ -103,7 +103,7 @@ resource "null_resource" "replace_config" {
   triggers = {
     name = local.kops_configs[count.index].name
     hash = md5(local.kops_configs[count.index].rendered)
-    #ca   = md5(join("", local_file.ca_cert.*.sensitive_content))
+    #ca   = md5(join("", tls_locally_signed_cert.kubernetes.*.validity_start_time))
   }
 }
 
