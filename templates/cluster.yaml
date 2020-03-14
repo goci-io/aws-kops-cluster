@@ -5,6 +5,7 @@ metadata:
   labels:
     kops.k8s.io/cluster: ${cluster_dns}
 spec:
+  cloudProvider: aws
   kubernetesVersion: ${k8s_version}
   masterPublicName: api.${cluster_dns}
   masterInternalName: api.${cluster_dns}
@@ -13,6 +14,7 @@ spec:
   awsRegion: ${aws_region}
   dnsZone: ${cluster_zone_id}
   nonMasqueradeCIDR: ${cluster_cidr}
+  configBase: s3://${kops_bucket_name}/${cluster_dns}
 %{ if length(api_access) > 0 ~}
   kubernetesApiAccess:
 %{ for cidr in api_access ~}
@@ -67,10 +69,9 @@ spec:
     serviceNodePortRange: 20000-65000
   kubelet:
     anonymousAuth: false
-    cloudProvider: aws
     kubeReserved:
-      cpu: 100m
-      memory: 156Mi
+      cpu: 70m
+      memory: 128Mi
       ephemeral-storage: 1Gi
     systemReserved:
       cpu: 30m
@@ -106,8 +107,6 @@ spec:
     Stage: ${stage}
     Region: ${region}
     kops.k8s.io/cluster: ${cluster_dns}
-  cloudProvider: aws
-  configBase: s3://${kops_bucket_name}/${cluster_dns}
   etcdClusters:
   - etcdMembers:
 %{ for index, member in etcd_members ~}
