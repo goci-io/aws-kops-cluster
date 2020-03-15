@@ -2,8 +2,6 @@ apiVersion: kops.k8s.io/v1alpha2
 kind: Cluster
 metadata:
   name: ${cluster_dns}
-  labels:
-    kops.k8s.io/cluster: ${cluster_dns}
 spec:
   cloudProvider: aws
   kubernetesVersion: ${k8s_version}
@@ -61,7 +59,6 @@ spec:
 %{ endif ~}
   kubeAPIServer:
     targetRamMb: 2560
-    eventTTL: 12h0m0s
     # Kops generates a kubecfg with http basic credentials
     disableBasicAuth: false
     maxRequestsInflight: ${max_requests_in_flight}
@@ -69,17 +66,6 @@ spec:
     serviceNodePortRange: 20000-65000
   kubelet:
     anonymousAuth: false
-    kubeReserved:
-      cpu: 70m
-      memory: 128Mi
-      ephemeral-storage: 1Gi
-    systemReserved:
-      cpu: 30m
-      memory: 112Mi
-      ephemeral-storage: 1Gi
-    kubeReservedCgroup: "/kube-reserved"
-    systemReservedCgroup: "/system-reserved"
-    enforceNodeAllocatable: "pods,system-reserved,kube-reserved"
   docker:
     logDriver: json-file
     logOpt:
@@ -90,23 +76,12 @@ spec:
   kubeProxy:
     cpuRequest: 80m
     memoryRequest: 128Mi
-  kubeControllerManager:
-    horizontalPodAutoscalerSyncPeriod: 30s
-    horizontalPodAutoscalerDownscaleDelay: 5m0s
-    horizontalPodAutoscalerUpscaleDelay: 3m0s
-    horizontalPodAutoscalerTolerance: 0.1
-  authorization:
-    rbac: {}
-  iam:
-    allowContainerRegistry: true
-    legacy: false
   channel: stable
   cloudLabels:
     Cluster: ${cluster_name}
     Namespace: ${namespace}
     Stage: ${stage}
     Region: ${region}
-    kops.k8s.io/cluster: ${cluster_dns}
   etcdClusters:
   - etcdMembers:
 %{ for index, member in etcd_members ~}
@@ -135,8 +110,8 @@ spec:
 %{ endfor ~}
     name: events
     version: ${etcd_version}
-    cpuRequest: 200m
-    memoryRequest: 624Mi
+    cpuRequest: 120m
+    memoryRequest: 156Mi
     enableEtcdTLS: true
   subnets:
 %{ for index, id in public_subnet_ids ~}
