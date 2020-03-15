@@ -60,6 +60,8 @@ spec:
     Role: ${instance_name}
     InstanceGroup: ${instance_group_name}
     InstanceType: ${instance_name}
+    kops.k8s.io/cluster: ${cluster_dns}
+    kops.k8s.io/instancegroup: ${instance_group_name}
 %{ if autospotting_enabled ~}
     spot: \"true\"
 %{ endif ~}

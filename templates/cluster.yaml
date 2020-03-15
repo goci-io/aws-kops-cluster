@@ -84,6 +84,7 @@ spec:
     Namespace: ${namespace}
     Stage: ${stage}
     Region: ${region}
+    kops.k8s.io/cluster: ${cluster_dns}
   etcdClusters:
   - etcdMembers:
 %{ for index, member in etcd_members ~}
