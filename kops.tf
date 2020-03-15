@@ -53,7 +53,7 @@ locals {
     additional_master_policies = var.additional_master_policies == "" ? "" : indent(6, replace(var.additional_master_policies, "/\\\"/", "\\\""))
   })
 
-  kops_default_image = "136693071363/debian-10-amd64-20200210-166"
+  kops_default_image = "kope.io/k8s-1.16-debian-stretch-amd64-hvm-ebs-2020-01-17"
   kops_configs = concat(
     [data.null_data_source.bastion_instance_group.outputs],
     data.null_data_source.master_instance_groups.*.outputs,
