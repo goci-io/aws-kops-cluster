@@ -2,6 +2,8 @@ apiVersion: kops.k8s.io/v1alpha2
 kind: Cluster
 metadata:
   name: ${cluster_dns}
+  labels:
+    kops.k8s.io/cluster: ${cluster_dns}
 spec:
   cloudProvider: aws
   kubernetesVersion: ${k8s_version}

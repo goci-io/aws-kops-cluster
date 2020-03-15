@@ -2,6 +2,9 @@ apiVersion: kops.k8s.io/v1alpha2
 kind: InstanceGroup
 metadata:
   name: ${instance_group_name}
+  labels:
+    kops.k8s.io/cluster: ${cluster_dns}
+    kops.k8s.io/instancegroup: ${instance_group_name}
 spec:
   cloudLabels:
     Cluster: ${cluster_name}
