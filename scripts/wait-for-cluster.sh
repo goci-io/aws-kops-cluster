@@ -8,7 +8,7 @@ starting=1
 retries=0
 
 while [[ $retries -lt 10 && $starting -ne 0 ]]; do
-    timeout=$(($retries*30+120))
+    timeout=$(($retries*30+60))
     echo "Waiting $timeout seconds before validating cluster" 
     sleep $timeout
     
