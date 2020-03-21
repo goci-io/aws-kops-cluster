@@ -7,8 +7,8 @@ metadata:
 spec:
   cloudProvider: aws
   kubernetesVersion: ${k8s_version}
-  masterPublicName: api.${cluster_dns}
-  masterInternalName: api.${cluster_dns}
+  masterPublicName: ${cluster_dns}
+  masterInternalName: ${cluster_dns}
   networkID: ${vpc_id}
   networkCIDR: ${vpc_cidr}
   awsRegion: ${aws_region}
@@ -36,7 +36,6 @@ spec:
   networking:
     calico:
       majorVersion: v3
-      crossSubnet: true
 %{ if additional_master_policies != "" ~}
   additionalPolicies:
     master: |
@@ -53,53 +52,24 @@ spec:
 %{ if lb_create ~}
     loadBalancer:
       type: ${lb_type}
-      crossZoneLoadBalancing: true
       sslCertificate: ${certificate_arn}
       additionalSecurityGroups: [${lb_security_groups}]
 %{ else ~}
     dns: {}
 %{ endif ~}
   kubeAPIServer:
-    targetRamMb: 2560
-    eventTTL: 12h0m0s
-    # Kops generates a kubecfg with http basic credentials
-    disableBasicAuth: false
     maxRequestsInflight: ${max_requests_in_flight}
     maxMutatingRequestsInflight: ${max_mutating_requests_in_flight}
-    serviceNodePortRange: 20000-65000
   kubelet:
     anonymousAuth: false
-    kubeReserved:
-      cpu: 70m
-      memory: 128Mi
-      ephemeral-storage: 1Gi
-    systemReserved:
-      cpu: 30m
-      memory: 112Mi
-      ephemeral-storage: 1Gi
-    kubeReservedCgroup: "/kube-reserved"
-    systemReservedCgroup: "/system-reserved"
-    enforceNodeAllocatable: "pods,system-reserved,kube-reserved"
   docker:
     logDriver: json-file
     logOpt:
     - max-size=32m
     - max-file=12
-  externalDns:
-    watchIngress: true
   kubeProxy:
     cpuRequest: 80m
     memoryRequest: 128Mi
-  kubeControllerManager:
-    horizontalPodAutoscalerSyncPeriod: 30s
-    horizontalPodAutoscalerDownscaleDelay: 5m0s
-    horizontalPodAutoscalerUpscaleDelay: 3m0s
-    horizontalPodAutoscalerTolerance: 0.1
-  authorization:
-    rbac: {}
-  iam:
-    allowContainerRegistry: true
-    legacy: false
   channel: stable
   cloudLabels:
     Cluster: ${cluster_name}
@@ -135,8 +105,8 @@ spec:
 %{ endfor ~}
     name: events
     version: ${etcd_version}
-    cpuRequest: 200m
-    memoryRequest: 624Mi
+    cpuRequest: 120m
+    memoryRequest: 156Mi
     enableEtcdTLS: true
   subnets:
 %{ for index, id in public_subnet_ids ~}

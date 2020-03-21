@@ -34,7 +34,7 @@ variable "region" {
 
 variable "kubernetes_version" {
   type        = string
-  default     = "1.15.10"
+  default     = "1.16.8"
   description = "The kubernetes version to deploy" 
 }
 
@@ -57,7 +57,7 @@ variable "masters_instance_count" {
 
 variable "etcd_version" {
   type        = string
-  default     = "3.3.13"
+  default     = "3.2.24"
   description = "Version of etcd to use for kubernetes backend"
 }
 
@@ -243,7 +243,7 @@ variable "public_api_loadbalancer_type" {
 
 variable "public_api_record_name" {
   type        = string
-  default     = "api"
+  default     = ""
   description = "Name of the publicly available additional public dns record"
 }
 

@@ -15,7 +15,7 @@ locals {
     dns_type                = var.cluster_dns_type
     k8s_version             = var.kubernetes_version
     etcd_version            = var.etcd_version
-    cluster_cidr            = "100.0.0.0/16"
+    cluster_cidr            = "100.64.0.0/10"
     namespace               = var.namespace
     stage                   = var.stage
     region                  = var.region
@@ -53,7 +53,6 @@ locals {
     additional_master_policies = var.additional_master_policies == "" ? "" : indent(6, replace(var.additional_master_policies, "/\\\"/", "\\\""))
   })
 
-  kops_default_image = "kope.io/k8s-1.16-debian-stretch-amd64-hvm-ebs-2020-01-17"
   kops_configs = concat(
     [data.null_data_source.bastion_instance_group.outputs],
     data.null_data_source.master_instance_groups.*.outputs,

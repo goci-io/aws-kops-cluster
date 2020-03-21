@@ -26,7 +26,7 @@ data "null_data_source" "instance_groups" {
       node_role              = "Node"
       public_ip              = false
       autoscaler             = true
-      image                  = lookup(var.instance_groups[floor(count.index / 3)], "image", local.kops_default_image)
+      image                  = lookup(var.instance_groups[floor(count.index / 3)], "image", "")
       instance_name          = lookup(var.instance_groups[floor(count.index / 3)], "name")
       instance_type          = lookup(var.instance_groups[floor(count.index / 3)], "instance_type")
       instance_max           = lookup(var.instance_groups[floor(count.index / 3)], "count_max", 5)
@@ -35,7 +35,7 @@ data "null_data_source" "instance_groups" {
       external_target_arn    = lookup(var.instance_groups[floor(count.index / 3)], "loadbalancer_target_arn", "")
       storage_type           = lookup(var.instance_groups[floor(count.index / 3)], "storage_type", "gp2")
       storage_iops           = lookup(var.instance_groups[floor(count.index / 3)], "storage_iops", 0)
-      storage_in_gb          = lookup(var.instance_groups[floor(count.index / 3)], "storage_in_gb", 28)
+      storage_in_gb          = lookup(var.instance_groups[floor(count.index / 3)], "storage_in_gb", 32)
       security_group         = lookup(var.instance_groups[floor(count.index / 3)], "security_group", "")
       subnet_type            = lookup(var.instance_groups[floor(count.index / 3)], "subnet", "private")
       subnet_ids             = [element(data.aws_availability_zones.available.names, count.index % var.max_availability_zones)]
@@ -75,7 +75,7 @@ data "null_data_source" "master_instance_groups" {
       region                 = var.region
       public_ip              = false
       autoscaler             = false
-      image                  = local.kops_default_image
+      image                  = ""
       security_group         = aws_security_group.masters.id
       external_lb_name       = coalesce(local.external_lb_name_masters, join("", aws_elb.classic_public_api.*.name), "-")
       external_target_arn    = coalesce(local.external_lb_target_arn, join("", aws_lb_target_group.api.*.arn), "-")
@@ -84,7 +84,7 @@ data "null_data_source" "master_instance_groups" {
       subnet_type            = "private"
       storage_type           = "gp2"
       storage_iops           = 0
-      storage_in_gb          = 32
+      storage_in_gb          = 48
       node_role              = "Master"
       instance_name          = "master"
       instance_max           = 1
@@ -106,7 +106,7 @@ data "null_data_source" "bastion_instance_group" {
       namespace              = var.namespace
       stage                  = var.stage
       region                 = var.region
-      image                  = local.kops_default_image
+      image                  = ""
       external_lb_name       = ""
       autoscaler             = false
       storage_type           = "gp2"

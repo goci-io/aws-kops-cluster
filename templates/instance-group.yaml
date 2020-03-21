@@ -12,15 +12,17 @@ spec:
     Stage: ${stage}
     Region: ${region}
     Role: ${instance_name}
-    kops.k8s.io/cluster: ${cluster_dns}
-    kops.k8s.io/instancegroup: ${instance_group_name}
+    InstanceType: ${instance_name}
+    InstanceGroup: ${instance_group_name}
     kubernetes.io/cluster/${cluster_dns}: owned
 %{ if autoscaler ~}
     k8s.io/cluster-autoscaler/enabled: \"\"
-    k8s.io/cluster-autoscaler/node-template/label/instance_type: ${instance_name}
-    k8s.io/cluster-autoscaler/node-template/label/kops.k8s.io/instancegroup: ${instance_group_name}
+    k8s.io/cluster-autoscaler/node-template/label/InstanceType: ${instance_name}
+    k8s.io/cluster-autoscaler/node-template/label/InstanceGroup: ${instance_group_name}
 %{ endif ~}
+%{ if image != "" ~}
   image: ${image}
+%{ endif ~}
   machineType: ${instance_type}
   maxSize: ${instance_max}
   minSize: ${instance_min}
@@ -31,27 +33,6 @@ spec:
 %{ if security_group != "" ~}
   securityGroupOverride: ${security_group}
 %{ endif ~}
-  additionalUserData:
-  - name: reserved-resources.sh
-    type: text/x-shellscript
-    content: |-
-      #!/bin/sh
-      sudo mkdir -p /sys/fs/cgroup/cpu,cpuacct/system-reserved;
-      sudo mkdir -p /sys/fs/cgroup/cpuset/system-reserved;
-      sudo mkdir -p /sys/fs/cgroup/cpu/system-reserved;
-      sudo mkdir -p /sys/fs/cgroup/memory/system-reserved;
-      sudo mkdir -p /sys/fs/cgroup/blkio/system-reserved;
-      sudo mkdir -p /sys/fs/cgroup/pids/system-reserved;
-      sudo mkdir -p /sys/fs/cgroup/devices/system-reserved;
-      sudo mkdir -p /sys/fs/cgroup/systemd/system-reserved;
-      sudo mkdir -p /sys/fs/cgroup/cpu,cpuacct/kube-reserved;
-      sudo mkdir -p /sys/fs/cgroup/cpuset/kube-reserved;
-      sudo mkdir -p /sys/fs/cgroup/cpu/kube-reserved;
-      sudo mkdir -p /sys/fs/cgroup/memory/kube-reserved;
-      sudo mkdir -p /sys/fs/cgroup/blkio/kube-reserved;
-      sudo mkdir -p /sys/fs/cgroup/pids/kube-reserved;
-      sudo mkdir -p /sys/fs/cgroup/devices/kube-reserved;
-      sudo mkdir -p /sys/fs/cgroup/systemd/kube-reserved;
 %{ if external_lb_name != "-" || external_target_arn != "-" ~}
   externalLoadBalancers:
   %{ if external_lb_name != "-" }
@@ -78,9 +59,10 @@ spec:
     Stage: ${stage}
     Region: ${region}
     Role: ${instance_name}
+    InstanceGroup: ${instance_group_name}
+    InstanceType: ${instance_name}
     kops.k8s.io/cluster: ${cluster_dns}
     kops.k8s.io/instancegroup: ${instance_group_name}
-    instance_type: ${instance_name}
 %{ if autospotting_enabled ~}
     spot: \"true\"
 %{ endif ~}

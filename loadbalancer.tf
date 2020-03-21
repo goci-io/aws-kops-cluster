@@ -20,7 +20,7 @@ module "api_loadbalancer_label" {
 
 resource "aws_security_group" "public_loadbalancer" {
   count       = local.create_additional_loadbalancer ? 1 : 0
-  name        = module.api_loadbalancer_label.id
+  name        = "public-api.${local.cluster_dns}"
   tags        = module.api_loadbalancer_label.tags
   description = "Allows public HTTPS inbound traffic to API Server"
   vpc_id      = local.vpc_id
