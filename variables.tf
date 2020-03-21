@@ -243,7 +243,7 @@ variable "public_api_loadbalancer_type" {
 
 variable "public_api_record_name" {
   type        = string
-  default     = "api"
+  default     = ""
   description = "Name of the publicly available additional public dns record"
 }
 
