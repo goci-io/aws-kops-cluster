@@ -12,6 +12,7 @@ spec:
     Stage: ${stage}
     Region: ${region}
     Role: ${instance_name}
+    InstanceType: ${instance_name}
     InstanceGroup: ${instance_group_name}
     kubernetes.io/cluster/${cluster_dns}: owned
 %{ if autoscaler ~}
