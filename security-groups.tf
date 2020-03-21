@@ -3,11 +3,10 @@ module "masters_sg_label" {
   source    = "git::https://github.com/cloudposse/terraform-null-label.git?ref=tags/0.16.0"
   context   = module.label.context
   name      = "masters"
-  delimiter = "."
 }
 
 resource "aws_security_group" "masters" {
-  name        = module.masters_sg_label.id
+  name        = "masters.${local.cluster_dns}"
   tags        = module.masters_sg_label.tags
   description = "Controls traffic to the master nodes of cluster ${local.cluster_name}"
   vpc_id      = local.vpc_id
