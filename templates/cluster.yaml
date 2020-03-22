@@ -68,10 +68,12 @@ spec:
     oidcGroupsClaim: ${oidc_groups_claim}
     oidcGroupsPrefix: "${oidc_groups_prefix}"
     oidcCAFile: /etc/ssl/certs/oidc-issuer-ca
+%{ if length(oidc_required_claims) > 0 ~}
     oidcRequiredClaim:
 %{ for claim in oidc_required_claims ~}
     - "${claim.key}=${claim.value}"
 %{ endfor ~}
+%{ endif ~}
 %{ endif ~}
   kubelet:
     anonymousAuth: false
