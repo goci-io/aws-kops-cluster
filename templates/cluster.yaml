@@ -60,6 +60,19 @@ spec:
   kubeAPIServer:
     maxRequestsInflight: ${max_requests_in_flight}
     maxMutatingRequestsInflight: ${max_mutating_requests_in_flight}
+%{ if openid_connect_enabled ~}
+    oidcIssuerURL: ${oidc_issuer_url}
+    oidcClientID: ${oidc_client_id}
+    oidcUsernameClaim: ${oidc_username_claim}
+    oidcUsernamePrefix: "${oidc_username_prefix}"
+    oidcGroupsClaim: ${oidc_groups_claim}
+    oidcGroupsPrefix: "${oidc_groups_prefix}"
+    oidcCAFile: /etc/ssl/certs/oidc-issuer-ca
+    oidcRequiredClaim:
+%{ for claim in oidc_required_claims ~}
+    - "${claim.key}=${claim.value}"
+%{ endfor ~}
+%{ endif ~}
   kubelet:
     anonymousAuth: false
   docker:
@@ -77,6 +90,14 @@ spec:
     Stage: ${stage}
     Region: ${region}
     kops.k8s.io/cluster: ${cluster_dns}
+%{ if oidc_ca_file != "" ~}
+  fileAssets:
+  - name: oidc-issuer-ca
+    path: /etc/ssl/certs/oidc-issuer-ca
+    roles: [Master]
+    content: |
+      ${indent(6, file(oidc_ca_file))}
+%{ endif ~}
   etcdClusters:
   - etcdMembers:
 %{ for index, member in etcd_members ~}

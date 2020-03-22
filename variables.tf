@@ -344,3 +344,56 @@ variable "external_account" {
   description = "Whether kops is deployed into a different AWS account. Required to provide kops access to this account"
 }
 
+variable "openid_connect_enabled" {
+  type        = bool
+  default     = false
+  description = "If set to true requires all other oidc_ prefixed variables to be set to configure OpenID connect on the Kubernetes API Server"
+}
+
+variable "oidc_issuer_url" {
+  type        = string
+  default     = ""
+  description = "The issue URL of the OIDC token issuer"
+}
+
+variable "oidc_client_id" {
+  type        = string
+  default     = ""
+  description = "The client ID for the API to use"
+}
+
+variable "oidc_username_claim" {
+  type        = string
+  default     = ""
+  description = "The field representing the claim with username set"
+}
+
+variable "oidc_username_prefix" {
+  type        = string
+  default     = ""
+  description = "A prefix to identify username claim (eg. oicd:)"
+}
+
+variable "oidc_groups_claim" {
+  type        = string
+  default     = ""
+  description = "The field representing the claim with groups defined"
+}
+
+variable "oidc_groups_prefix" {
+  type        = string
+  default     = ""
+  description = "A prefix to identify group claim (eg. oicd:)"
+}
+
+variable "oidc_ca_file" {
+  type        = string
+  default     = ""
+  description = "Must be a path on the local file system containing the CA file"
+}
+
+variable "oidc_required_claims" {
+  type        = list(object({ key = string, value = string}))
+  default     = []
+  description = "Required claims which must be set to allow access"
+}

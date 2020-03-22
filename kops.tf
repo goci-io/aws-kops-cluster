@@ -51,6 +51,16 @@ locals {
     has_external_policies      = length(var.external_master_policies) > 0
     external_master_policies   = var.external_master_policies
     additional_master_policies = var.additional_master_policies == "" ? "" : indent(6, replace(var.additional_master_policies, "/\\\"/", "\\\""))
+
+    openid_connect_enabled = var.openid_connect_enabled
+    oidc_issuer_url        = var.oidc_issuer_url
+    oidc_client_id         = var.oidc_client_id
+    oidc_username_claim    = var.oidc_username_claim
+    oidc_username_prefix   = var.oidc_username_prefix
+    oidc_groups_claim      = var.oidc_groups_claim
+    oidc_groups_prefix     = var.oidc_groups_prefix
+    oidc_ca_file           = var.oidc_ca_file
+    oidc_required_claims   = var.oidc_required_claims
   })
 
   kops_configs = concat(
@@ -66,7 +76,7 @@ locals {
 }
 
 module "ssh_key_pair" {
-  source              = "git::https://github.com/cloudposse/terraform-aws-key-pair.git?ref=tags/0.7.0"
+  source              = "git::https://github.com/cloudposse/terraform-aws-key-pair.git?ref=tags/0.9.0"
   namespace           = var.namespace
   stage               = var.stage
   attributes          = local.attributes
