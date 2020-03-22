@@ -350,7 +350,7 @@ variable "openid_connect_enabled" {
   description = "If set to true requires all other oidc_ prefixed variables to be set to configure OpenID connect on the Kubernetes API Server"
 }
 
-variable "oidc_isser_url" {
+variable "oidc_issuer_url" {
   type        = string
   default     = ""
   description = "The issue URL of the OIDC token issuer"

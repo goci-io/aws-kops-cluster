@@ -53,7 +53,7 @@ locals {
     additional_master_policies = var.additional_master_policies == "" ? "" : indent(6, replace(var.additional_master_policies, "/\\\"/", "\\\""))
 
     openid_connect_enabled = var.openid_connect_enabled
-    oidc_isser_url         = var.oidc_isser_url
+    oidc_issuer_url        = var.oidc_issuer_url
     oidc_client_id         = var.oidc_client_id
     oidc_username_claim    = var.oidc_username_claim
     oidc_username_prefix   = var.oidc_username_prefix
