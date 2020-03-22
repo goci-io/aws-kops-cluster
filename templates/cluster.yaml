@@ -93,7 +93,7 @@ spec:
 %{ if oidc_ca_file != "" ~}
   fileAssets:
   - name: oidc-issuer-ca
-    path: /etc/ssl/certs/
+    path: /etc/ssl/certs/oidc-issuer-ca
     roles: [Master]
     content: |
       ${indent(6, file(oidc_ca_file))}
