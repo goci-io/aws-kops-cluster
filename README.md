@@ -40,8 +40,8 @@ module "kops" {
 **Note:** When creating or updating the cluster its completely normal to run into Rate limit errors. Retries will sort this out. 
 
 <details>
-<summary>Example creating cluster pipeline output</summary>
-<p>
+<summary>Example creating cluster pipeline output</summary><p>
+
 #### Pipeline output
 
 ```
@@ -94,7 +94,7 @@ module.kops.null_resource.cluster_startup[0] (local-exec): Pod  kube-system/kube
 ...
 ```
 
-In the end of you should see something like this:
+#### Success
 
 ```
 module.kops.null_resource.cluster_startup[0] (local-exec): Retrying...
@@ -126,12 +126,12 @@ The validation errors can already identify a problem or even `kops create cluste
 In case you don't know whats going on we'd love to hear your feedback and what would have helped you. 
 If your cluster does not become healthy you can jump on the nodes and investigate log files (eg `/var/log/kube-apiserver.log` on the masters or `/var/log/kube-proxy.log` on the nodes as well as `/var/log/syslog` (might vary based on your OS)). You can either wait until the pipeline fails and get the SSH private key from the terraform state bucket or maintain your own EC2 SSH access.
 
-</details>
+</p></details>
 
 
 <details>
-<summary>`kubectl get pods -A` on a fresh cluster</summary>
-<p>
+<summary>`kubectl get pods -A` on a fresh cluster</summary><p>
+
 ```
 bash-5.0# kubectl get pods -A
 NAMESPACE         NAME                                                                     READY   STATUS              RESTARTS   AGE
@@ -187,8 +187,8 @@ kube-system       kube-scheduler-ip-10-100-59-215.eu-central-1.compute.internal 
 kube-system       kube-scheduler-ip-10-100-6-190.eu-central-1.compute.internal             1/1     Running             0          6m3s
 kube-system       kube-scheduler-ip-10-100-83-59.eu-central-1.compute.internal             1/1     Running             0          5m39s
 ```
-</p>
-</details>
+
+</p></details>
 
 There are different kinds of setup. Please refer to the detailed setup documentation for recommendations and example setups.
 
