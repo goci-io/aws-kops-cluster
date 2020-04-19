@@ -27,12 +27,11 @@ locals {
     vpc_cidr                = local.vpc_cidr
     ssh_access              = length(var.ssh_access_cidrs) > 0 ? var.ssh_access_cidrs : [local.vpc_cidr]
     api_access              = length(var.api_access_cidrs) > 0 ? var.api_access_cidrs : [var.cluster_dns_type != "Private" ? "0.0.0.0/0" : local.vpc_cidr]
-    certificate_arn         = local.certificate_arn
+    certificate_arn         = local.create_additional_loadbalancer ? "" : local.certificate_arn
     lb_type                 = var.cluster_dns_type == "Private" ? "Internal" : "Public"
     lb_create               = !local.external_lb_enabled && (!var.use_master_ips_for_private_dns || var.cluster_dns_type != "Private")
     lb_security_groups      = ""
     bastion_public_name     = var.bastion_public_name
-    custom_certificate      = local.custom_certificate_enabled
     public_subnet_ids       = local.public_subnet_ids
     private_subnet_ids      = local.private_subnet_ids
     public_subnet_cidrs     = local.public_subnet_cidrs
@@ -113,7 +112,6 @@ resource "null_resource" "replace_config" {
   triggers = {
     name = local.kops_configs[count.index].name
     hash = md5(local.kops_configs[count.index].rendered)
-    #ca   = md5(join("", tls_locally_signed_cert.kubernetes.*.validity_start_time))
   }
 }
 
@@ -121,7 +119,6 @@ resource "null_resource" "kops_update_cluster" {
   depends_on = [
     null_resource.replace_cluster,
     null_resource.replace_config,
-    #null_resource.custom_ca,
   ]
 
   provisioner "local-exec" {
