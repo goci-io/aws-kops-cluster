@@ -54,10 +54,10 @@ spec:
 %{ if lb_create ~}
     loadBalancer:
       type: ${lb_type}
-      additionalSecurityGroups: [${lb_security_groups}]
 %{ if certificate_arn != "" ~}
-      sslCertificate: ${certificate_arn}
-%{ endif ~}
+      sslCertificate: "${certificate_arn}"
+%{ endif ~}
+      additionalSecurityGroups: [${lb_security_groups}]
 %{ else ~}
     dns: {}
 %{ endif ~}
