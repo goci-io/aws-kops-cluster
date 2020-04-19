@@ -259,12 +259,6 @@ variable "bastion_public_name" {
   description = "Set to any subdomain name of your cluster dns to create a public dns entry for your bastion"
 }
 
-variable "api_cert_module_state" {
-  type        = string
-  default     = ""
-  description = "The key or path to the state where a custom certificate was installed. It must expose a certificate_private_key, certificate_chain and certificate_body" 
-}
-
 variable "acm_module_state" {
   type        = string
   default     = ""
