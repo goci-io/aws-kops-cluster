@@ -34,7 +34,7 @@ variable "region" {
 
 variable "kubernetes_version" {
   type        = string
-  default     = "1.16.8"
+  default     = "1.16.9"
   description = "The kubernetes version to deploy" 
 }
 
