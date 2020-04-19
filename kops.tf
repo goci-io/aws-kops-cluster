@@ -89,6 +89,7 @@ module "ssh_key_pair" {
 resource "null_resource" "replace_cluster" {
   depends_on = [
     null_resource.wait_for_iam,
+    aws_route53_record.public_api,
     aws_s3_bucket_public_access_block.block,
   ]
 

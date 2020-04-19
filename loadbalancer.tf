@@ -70,7 +70,7 @@ resource "aws_lb_target_group" "api" {
   port     = 443
 
   dynamic "health_check" {
-    for_each = var.public_api_loadbalancer_type == "application" ? [1] : []
+    for_each = !var.enable_classic_api_loadbalancer ? [1] : []
 
     content {
       enabled  = true
@@ -81,7 +81,7 @@ resource "aws_lb_target_group" "api" {
   }
 
   dynamic "health_check" {
-    for_each = var.public_api_loadbalancer_type != "application" ? [1] : []
+    for_each = var.enable_classic_api_loadbalancer ? [1] : []
     
     content {
       enabled  = true
