@@ -103,6 +103,12 @@ variable "masters_spot_enabled" {
   description = "If set to true creates spot requests for master instances"
 }
 
+variable "masters_spot_on_demand" {
+  type        = number
+  default     = 2
+  description = "Minimum on demand instances for masters to avoid service interruption when multiple spot instances go away at the same time"
+}
+
 variable "bastion_machine_type" {
   type        = string
   default     = "t2.micro"

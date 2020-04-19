@@ -40,6 +40,7 @@ data "null_data_source" "instance_groups" {
       subnet_type            = lookup(var.instance_groups[floor(count.index / 3)], "subnet", "private")
       subnet_ids             = [element(data.aws_availability_zones.available.names, count.index % var.max_availability_zones)]
       autospotting_enabled   = lookup(var.instance_groups[floor(count.index / 3)], "autospotting_enabled", true)
+      autospotting_on_demand = lookup(var.instance_groups[floor(count.index / 3)], "autospotting_on_demand", 0)
       autospotting_max_price = lookup(var.instance_groups[floor(count.index / 3)], "autospotting_max_price", 0.03)
       autospotting_instances = lookup(var.instance_groups[floor(count.index / 3)], "autospotting_instances", [lookup(var.instance_groups[floor(count.index / 3)], "instance_type")])
 
@@ -90,8 +91,9 @@ data "null_data_source" "master_instance_groups" {
       instance_max           = 1
       instance_min           = 1
       instance_type          = var.master_machine_type
-      autospotting_enabled   = var.masters_spot_enabled
-      autospotting_max_price = 0.15
+      autospotting_max_price = 0.19
+      autospotting_enabled   = var.masters_spot_enabled && count.index >= var.masters_spot_on_demand
+      autospotting_on_demand = count.index < var.masters_spot_on_demand ? 1 : 0
       autospotting_instances = distinct(concat([var.master_machine_type], ["m5.large", "m5.xlarge", "a1.large", "a1.xlarge", "i3.large"]))
     })
   }
@@ -112,6 +114,7 @@ data "null_data_source" "bastion_instance_group" {
       storage_type           = "gp2"
       storage_iops           = 0
       storage_in_gb          = 8
+      autospotting_on_demand = 0
       autospotting_enabled   = true
       autospotting_max_price = 0.008
       autospotting_instances = distinct([var.bastion_machine_type, "t2.small", "t2.medium", "t3.small", "t3.medium"])

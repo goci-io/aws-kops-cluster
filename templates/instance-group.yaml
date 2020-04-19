@@ -45,7 +45,7 @@ spec:
 %{ if autospotting_enabled ~}
   maxPrice: \"${autospotting_max_price}\"
   mixedInstancesPolicy:
-    onDemandAboveBase: 0
+    onDemandAboveBase: "${autospotting_on_demand}"
     # https://github.com/kubernetes/kops/issues/7405
     # spotAllocationStrategy: diversified
     instances:
