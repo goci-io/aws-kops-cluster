@@ -78,8 +78,8 @@ data "null_data_source" "master_instance_groups" {
       autoscaler             = false
       image                  = ""
       security_group         = ""
-      external_lb_name       = coalesce(local.external_lb_name_masters, join("", aws_elb.classic_public_api.*.name), "-")
-      external_target_arn    = coalesce(local.external_lb_target_arn, join("", aws_lb_target_group.api.*.arn), "-")
+      external_lb_name       = local.external_lb_name_masters
+      external_target_arn    = local.external_lb_target_arn
       instance_group_name    = element(data.null_data_source.master_info.*.outputs.name, count.index)
       subnet_ids             = [element(data.null_data_source.master_info.*.outputs.subnet_id, count.index)]
       subnet_type            = "private"
