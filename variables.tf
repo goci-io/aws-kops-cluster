@@ -1,11 +1,13 @@
 
 variable "stage" {
   type        = string
+  default     = ""
   description = "The stage the cluster will be deployed for"
 }
 
 variable "namespace" {
   type        = string
+  default     = ""
   description = "Namespace the cluster belongs to"
 }
 
