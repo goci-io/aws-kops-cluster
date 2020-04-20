@@ -219,34 +219,6 @@ You can still create public Ingress resources to route traffic using a different
 
 **Note:** You can also pass vpc and subnet details into the module without using remote state references. The above example assumes you habe a vpc with remote state already installed. Kops can also generate a VPC for you. This scenario is currently not covered. Let us know if you run into any issues!
 
-#### Private Cluster with public API only
-
-You might want to setup a cluster in your VPC but allow traffic to the API server from the outside world. Be careful when exposing your API server to the public world! 
-When choosing this setup you get a dedicated load balancer for public facing traffic and one, created by kops, managing internal/cluster traffic. If you dont need or have a **Private and Public Hosted Zone* available you can consider using `cluster_dns_type` with `Public` to avoid a separate Load Balancer and Hosted zone. But we recommend the following setup:
-
-```hcl
-module "kops" {
-  source                          = ""
-  namespace                       = "goci"
-  stage                           = "staging"
-  cluster_dns_type                = "Private"
-  tf_bucket                       = "my-terraform-state-bucket"
-  vpc_module_state                = "vpc/terraform.tfstate"
-  create_public_api_loadbalancer  = true
-  enable_classic_api_loadbalancer = false|true
-  public_api_record_name          = "api"
-
-  instance_groups = [
-    {
-      name                   = "worker"
-      instance_type          = "t2.medium"
-    }
-  ]
-}
-```
-
-To avoid setting up an additional Load Balancer for the internal/cluster communication you can also set `use_master_ips_for_private_dns` to true. This way kops does not know about your ACM certificate if you use one and you need to make sure to add the ACM CA to your kubernetes API configuration. When masters come up successfully they currently sync IP addresses with the record in your private zone anyway. Enforcing this setup can be done by enabling the above mentioned feature. 
-
 #### Kops validation
 
 By default when spinning up the cluster the first time the script [`scripts/wait-for-cluster.sh`] is executed and runs `kops validate cluster`, awaiting a healthy cluster state. Keep in mind once you spin up a cluster we will need for: EC2 instances, Route53 records and the API server and required tools becoming ready and healthy. This may take a while. If you anyway need to disable the initial validation you can set `enable_kops_validation` to `false`. When updating the cluster we assume other machanisms in place when the cluster is put in a bad state after a rollout. Most changes are only rolled out once a new EC2 node comes up. You can also force the update by using `kops rolling-update cluster`. We might offer in the feature to combine the `kops update` with a rolling update if required, but usually this is something requiring some kind of approval/review process before updating.
@@ -272,6 +244,7 @@ instance_groups = [
     autospotting_enabled    = true
     autospotting_max_price  = 0.03
     autospotting_instances  = []
+    autospotting_on_demand  = 0
   }
 ]
 ```
