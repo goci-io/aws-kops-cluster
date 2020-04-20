@@ -251,13 +251,15 @@ A simple setup for a publicly available kops cluster without using any remote st
 
 ```hcl
 module "kops" {
-  source             = "git::https://github.com/goci-io/aws-kops-cluster.git?ref=tags/<latest-version>"
-  cluster_dns        = "corp.eu1.goci.io"
-  cluster_dns_type   = "Public"
-  vpc_id             = "vpc-12345678"
-  public_subnet_ids  = ["subnet-abc"]
-  private_subnet_ids = ["subnet-cba"]
-  instance_groups  = [
+  source               = "git::https://github.com/goci-io/aws-kops-cluster.git?ref=tags/<latest-version>"
+  cluster_dns          = "corp.eu1.goci.io"
+  cluster_dns_type     = "Public"
+  vpc_id               = "vpc-12345678"
+  public_subnet_ids    = ["subnet-abc"]
+  public_subnet_cidrs  = ["10.0.0.0/24"]
+  private_subnet_ids   = ["10.0.1.0/24"]
+  private_subnet_cidrs = 
+  instance_groups      = [
     {
       name          = "worker"
       instance_type = "t2.medium"
