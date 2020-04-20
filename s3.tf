@@ -11,17 +11,6 @@ locals {
     "arn:aws:s3:::${aws_s3_bucket.kops_state.id}/${local.cluster_dns}/*",
   ]
 
-  lb_access_log_account = {
-    eu-central-1 = "054676820928",
-    eu-west-2 = "652711504416",
-    us-east-1 = "127311923021",
-    us-west-2 = "797873946194",
-    ap-northeast-2 = "600734575887",
-    ap-southeast-1 = "114774131450",
-    ap-east-1 = "754344448648",
-    # TODO: complete list
-  }
-
   api_log_s3_policies = [
     {
       readonly  = false
@@ -32,28 +21,7 @@ locals {
         identifiers = ["delivery.logs.amazonaws.com"]
       }]
     },
-    {
-      readonly  = false
-      resources = [format("%s/%s/*", aws_s3_bucket.kops_state.arn, local.api_log_prefix)]
-      actions   = ["s3:PutObject"]
-      principals = [{
-        type        = "Service"
-        identifiers = ["delivery.logs.amazonaws.com"]
-      }]
-    },
-    {
-      readonly  = false
-      resources = [format("%s/%s/*", aws_s3_bucket.kops_state.arn, local.api_log_prefix)]
-      actions   = ["s3:PutObject"]
-      principals = [{
-        type        = "AWS"
-        identifiers = [format("arn:aws:iam::%s:root", local.lb_access_log_account[local.aws_region])]
-      }]
-    }
   ]
-
-  required_s3_policies = concat([], local.create_additional_loadbalancer ? local.api_log_s3_policies : [])
-  custom_s3_policies   = concat(var.custom_s3_policies, local.required_s3_policies)
 }
 
 resource "aws_s3_bucket" "kops_state" {
@@ -83,22 +51,13 @@ resource "aws_s3_bucket" "kops_state" {
       days = 90
     }
   }
-
-  lifecycle_rule {
-    enabled = true
-    prefix  = local.api_log_prefix
-
-    expiration {
-      days = 120
-    }
-  }
 }
 
 data "aws_iam_policy_document" "custom_s3" {
-  count = length(local.custom_s3_policies) > 0 ? 1 : 0
+  count = length(var.custom_s3_policies) > 0 ? 1 : 0
 
   dynamic "statement" {
-    for_each = local.custom_s3_policies
+    for_each = var.custom_s3_policies
 
     content {
       effect    = "Allow"

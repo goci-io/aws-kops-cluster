@@ -225,36 +225,6 @@ variable "external_master_policies" {
   description = "Additional policy ARNs to attach to the master role"
 }
 
-variable "use_master_ips_for_private_dns" {
-  type        = bool
-  default     = false
-  description = "When dns type is set to private we can use private IPs available in the VPC to connect to master nodes directly"
-}
-
-variable "create_public_api_loadbalancer" {
-  type        = bool
-  default     = false
-  description = "Creates an publicly available AWS Load Balancer infront of masters and API Server."  
-}
-
-variable "enable_classic_api_loadbalancer" {
-  type        = bool
-  default     = true
-  description = "Deploys a classic AWS Load Balancer as public API proxy. This provides support for port forwarding etc."
-}
-
-variable "public_api_loadbalancer_type" {
-  type        = string
-  default     = "application"
-  description = "Load balancer type to deploy as additional public load balancer when a private zone uses master ips but API server should be publicly accessible"  
-}
-
-variable "public_api_record_name" {
-  type        = string
-  default     = ""
-  description = "Name of the publicly available additional public dns record"
-}
-
 variable "bastion_public_name" {
   type        = string
   default     = "bastion"
