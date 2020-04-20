@@ -27,9 +27,9 @@ locals {
     vpc_cidr                = local.vpc_cidr
     ssh_access              = length(var.ssh_access_cidrs) > 0 ? var.ssh_access_cidrs : [local.vpc_cidr]
     api_access              = length(var.api_access_cidrs) > 0 ? var.api_access_cidrs : [var.cluster_dns_type != "Private" ? "0.0.0.0/0" : local.vpc_cidr]
-    certificate_arn         = local.create_additional_loadbalancer ? "" : local.certificate_arn
+    certificate_arn         = local.certificate_arn
     lb_type                 = var.cluster_dns_type == "Private" ? "Internal" : "Public"
-    lb_create               = !local.external_lb_enabled && (!var.use_master_ips_for_private_dns || var.cluster_dns_type != "Private")
+    lb_create               = !local.external_lb_enabled
     lb_security_groups      = ""
     bastion_public_name     = var.bastion_public_name
     public_subnet_ids       = local.public_subnet_ids
@@ -69,8 +69,8 @@ locals {
   )
 
   kops_triggers = {
-    cluster_hash = md5(jsonencode(local.kops_cluster_config))
-    igs_hash     = md5(jsonencode(local.kops_configs))
+    cluster  = jsonencode(local.kops_cluster_config)
+    igs_hash = md5(jsonencode(local.kops_configs))
   }
 }
 
@@ -88,13 +88,12 @@ module "ssh_key_pair" {
 resource "null_resource" "replace_cluster" {
   depends_on = [
     null_resource.wait_for_iam,
-    aws_route53_record.public_api,
     aws_s3_bucket_public_access_block.block,
   ]
 
   provisioner "local-exec" {
     environment = local.kops_env_config
-    command     = "echo \"${local.kops_cluster_config}\" | kops replace --force -f -"
+    command     = "echo \"${self.triggers.cluster}\" | kops replace --force -f -"
   }
 
   triggers = local.kops_triggers
@@ -106,12 +105,11 @@ resource "null_resource" "replace_config" {
 
   provisioner "local-exec" {
     environment = local.kops_env_config
-    command     = "echo \"${local.kops_configs[count.index].rendered}\" | kops replace --force -f -"
+    command     = "echo \"${self.triggers.content}\" | kops replace --force -f -"
   }
 
   triggers = {
-    name = local.kops_configs[count.index].name
-    hash = md5(local.kops_configs[count.index].rendered)
+    content = local.kops_configs[count.index].rendered
   }
 }
 
@@ -124,26 +122,28 @@ resource "null_resource" "kops_update_cluster" {
   provisioner "local-exec" {
     environment = local.kops_env_config
     command     = <<EOF
-      kops create secret sshpublickey admin -i ${module.ssh_key_pair.public_key_filename};
+      kops create secret sshpublickey admin -i ${self.triggers.key_filename};
       kops update cluster --yes
 EOF
   }
 
-  triggers = local.kops_triggers
+  triggers = merge(local.kops_triggers, {
+    key_filename = module.ssh_key_pair.public_key_filename
+  })
 }
 
 resource "null_resource" "cluster_startup" {
   count      = var.enable_kops_validation ? 1 : 0
-  depends_on = [
-    null_resource.kops_update_cluster,
-    aws_elb.classic_public_api,
-    aws_lb.public_api,
-  ]
+  depends_on = [null_resource.kops_update_cluster]
 
   provisioner "local-exec" {
     # This is only required during the initial setup
     environment = local.kops_env_config
-    command     = "${path.module}/scripts/wait-for-cluster.sh"
+    command     = "${self.triggers.path}/scripts/wait-for-cluster.sh"
+  }
+
+  triggers = {
+    path = path.module
   }
 }
 

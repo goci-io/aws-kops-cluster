@@ -33,12 +33,12 @@ spec:
 %{ if security_group != "" ~}
   securityGroupOverride: ${security_group}
 %{ endif ~}
-%{ if external_lb_name != "-" || external_target_arn != "-" ~}
+%{ if external_lb_name != "" || external_target_arn != "" ~}
   externalLoadBalancers:
-  %{ if external_lb_name != "-" }
+  %{ if external_lb_name != "" }
   - loadBalancerName: ${external_lb_name}
   %{ endif }
-  %{ if external_target_arn != "-" }
+  %{ if external_target_arn != "" }
   - targetGroupArn: ${external_target_arn}
   %{ endif }
 %{ endif ~}
