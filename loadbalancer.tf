@@ -43,10 +43,10 @@ resource "aws_elb" "public_api" {
 }
 
 module "public_api_record" {
-  source      = "git::https://github.com/goci-io/aws-route53-records.git?ref=master"
-  enabled     = var.create_public_api_record
-  hosted_zone = local.cluster_dns
-  records     = [
+  source        = "git::https://github.com/goci-io/aws-route53-records.git?ref=master"
+  enabled       = var.create_public_api_record
+  hosted_zone   = local.cluster_dns
+  alias_records = [
     {
       name       = var.public_record_name
       alias      = join("", aws_elb.public_api.*.dns_name)
