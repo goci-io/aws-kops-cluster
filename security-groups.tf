@@ -31,7 +31,7 @@ resource "aws_security_group_rule" "masters_ingress" {
 
 resource "aws_security_group" "public_loadbalancer" {
   count       = var.create_public_api_record ? 1 : 0
-  name        = "public-api.${local.cluster_dns}"
+  name        = "public-api-elb.${local.cluster_dns}"
   tags        = module.api_loadbalancer_label.tags
   description = "Allows public HTTPS inbound traffic to API Server"
   vpc_id      = local.vpc_id
