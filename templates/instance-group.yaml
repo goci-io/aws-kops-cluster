@@ -7,13 +7,12 @@ metadata:
     kops.k8s.io/instancegroup: ${instance_group_name}
 spec:
   cloudLabels:
-    Cluster: ${cluster_name}
     Namespace: ${namespace}
     Stage: ${stage}
     Region: ${region}
-    Role: ${instance_name}
     InstanceType: ${instance_name}
     InstanceGroup: ${instance_group_name}
+    kops.k8s.io/cluster: ${cluster_dns}
     kubernetes.io/cluster/${cluster_dns}: owned
 %{ if autoscaler ~}
     k8s.io/cluster-autoscaler/enabled: \"\"
@@ -54,13 +53,11 @@ spec:
   %{ endfor ~}
 %{ endif }
   nodeLabels:
-    Cluster: ${cluster_name}
     Namespace: ${namespace}
     Stage: ${stage}
     Region: ${region}
-    Role: ${instance_name}
-    InstanceGroup: ${instance_group_name}
     InstanceType: ${instance_name}
+    InstanceGroup: ${instance_group_name}
     kops.k8s.io/cluster: ${cluster_dns}
     kops.k8s.io/instancegroup: ${instance_group_name}
 %{ if autospotting_enabled ~}

@@ -10,7 +10,7 @@ You need to have the `kops` binary installed to use this module. The [terraform-
 
 ```hcl
 module "kops" {
-  source             = ""
+  source             = "git::https://github.com/goci-io/aws-kops-cluster.git?ref=tags/<latest-version>"
   namespace          = "goci"
   stage              = "staging"
   kubernetes_version = "1.16.8"
@@ -199,13 +199,13 @@ The private cluster is the most secure way to setup a kubernetes cluster. Privat
 ```hcl
 
 module "kops" {
-  source             = ""
+  source             = "git::https://github.com/goci-io/aws-kops-cluster.git?ref=tags/<latest-version>"
   namespace          = "goci"
   stage              = "staging"
   cluster_dns_type   = "Private"
   tf_bucket          = "my-terraform-state-bucket"
   vpc_module_state   = "vpc/terraform.tfstate"
-
+  dns_module_state   = "dns/terraform.tfstate"
   instance_groups = [
     {
       name                   = "worker"
@@ -218,6 +218,55 @@ module "kops" {
 You can still create public Ingress resources to route traffic using a different load balancer (eg by using a `Service` with type `LoadBalancer`) to your applications.
 
 **Note:** You can also pass vpc and subnet details into the module without using remote state references. The above example assumes you habe a vpc with remote state already installed. Kops can also generate a VPC for you. This scenario is currently not covered. Let us know if you run into any issues!
+
+#### Private Cluster with public API
+
+You might want to setup a cluster in your VPC but allow traffic to the API server from the outside world. Be careful when exposing your API server to the public world! 
+When choosing this setup you get a dedicated load balancer for public facing traffic and one, created by kops, managing internal/cluster traffic. If you dont need or have a **Private and Public Hosted Zone* available you can consider using `cluster_dns_type` with `Public` to avoid a separate Load Balancer and Hosted zone. But we recommend the following setup:
+```hcl
+module "kops" {
+  source                   = "git::https://github.com/goci-io/aws-kops-cluster.git?ref=tags/<latest-version>"
+  namespace                = "goci"
+  stage                    = "staging"
+  cluster_dns_type         = "Private"
+  cluster_dns              = "corp.eu1.goci.io"
+  tf_bucket                = "my-terraform-state-bucket"
+  vpc_module_state         = "vpc/terraform.tfstate"
+  create_public_api_record = true
+  public_record_name       = "api"
+  instance_groups = [
+    {
+      name          = "worker"
+      instance_type = "t2.medium"
+    }
+  ]
+}
+```
+
+You will end up with one record in your public hosted zone (`<public_record_name>.<cluster_dns>` pointing to a dedicated load balancer for public traffic) and two records in your private hosted zone pointing a) to internal ELB created by kops (`<cluster_dns>`>) and b) to the IPs of master nodes (`internal.<cluster_dns>`). Additionally there will be a record for the bastion created in the private hosted zone as well. This requires you to either use the bastion ELB dns name to SSH to the nodes or connect first into the VPC and proxy AWS DNS to your local via VPN for example.
+
+#### Public Cluster 
+
+A simple setup for a publicly available kops cluster without using any remote state references looks like the following:
+
+```hcl
+module "kops" {
+  source               = "git::https://github.com/goci-io/aws-kops-cluster.git?ref=tags/<latest-version>"
+  cluster_dns          = "corp.eu1.goci.io"
+  cluster_dns_type     = "Public"
+  vpc_id               = "vpc-12345678"
+  public_subnet_ids    = ["subnet-abc"]
+  public_subnet_cidrs  = ["10.0.0.0/24"]
+  private_subnet_ids   = ["10.0.1.0/24"]
+  private_subnet_cidrs = 
+  instance_groups      = [
+    {
+      name          = "worker"
+      instance_type = "t2.medium"
+    }
+  ]
+}
+```
 
 #### Kops validation
 

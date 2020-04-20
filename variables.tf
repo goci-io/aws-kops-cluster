@@ -177,6 +177,18 @@ variable "api_access_cidrs" {
   description = "Allowed CIDRs to acces kubernetes master API"
 }
 
+variable "create_public_api_record" {
+  type        = bool
+  default     = false
+  description = "Creates a public API record and grants 0.0.0.0/0 on the API LB security group. This is useful in scenarios where you want to use private dns but make the API server accessible using a public hosted zone"
+}
+
+variable "public_record_name" {
+  type        = string
+  default     = ""
+  description = "Subdomain to use for the additional public record pointing to the master API"
+}
+
 variable "cluster_dns" {
   type        = string
   default     = ""
@@ -193,24 +205,6 @@ variable "tf_bucket" {
   type        = string
   default     = ""
   description = "The Bucket name to load remote state from"
-}
-
-variable "loadbalancer_module_state" {
-  type        = string
-  default     = ""
-  description = "The key or path to the state where a LoadBalancer was installed. It must expose a loadbalancer_name OR loadbalancer_target_arn"
-}
-
-variable "master_loadbalancer_name" {
-  type        = string
-  default     = ""
-  description = "The name of an existing load balancer to use for the kubernetes API if loadbalancer_module_state is not set"
-}
-
-variable "master_loadbalancer_target_arn" {
-  type        = string
-  default     = ""
-  description = "The ARN of an existing target group to use for the kubernetes API if loadbalancer_module_state is not set"
 }
 
 variable "additional_master_policies" {

@@ -26,11 +26,9 @@ locals {
     vpc_id                  = local.vpc_id
     vpc_cidr                = local.vpc_cidr
     ssh_access              = length(var.ssh_access_cidrs) > 0 ? var.ssh_access_cidrs : [local.vpc_cidr]
-    api_access              = length(var.api_access_cidrs) > 0 ? var.api_access_cidrs : [var.cluster_dns_type != "Private" ? "0.0.0.0/0" : local.vpc_cidr]
+    api_access              = distinct(concat(var.create_public_api_record ? ["0.0.0.0/0"] : [], length(var.api_access_cidrs) > 0 ? var.api_access_cidrs : [var.cluster_dns_type != "Private" ? "0.0.0.0/0" : local.vpc_cidr]))
     certificate_arn         = local.certificate_arn
     lb_type                 = var.cluster_dns_type == "Private" ? "Internal" : "Public"
-    lb_create               = !local.external_lb_enabled
-    lb_security_groups      = ""
     bastion_public_name     = var.bastion_public_name
     public_subnet_ids       = local.public_subnet_ids
     private_subnet_ids      = local.private_subnet_ids
@@ -134,7 +132,10 @@ EOF
 
 resource "null_resource" "cluster_startup" {
   count      = var.enable_kops_validation ? 1 : 0
-  depends_on = [null_resource.kops_update_cluster]
+  depends_on = [
+    module.public_api_record.fqdn,
+    null_resource.kops_update_cluster,
+  ]
 
   provisioner "local-exec" {
     # This is only required during the initial setup
