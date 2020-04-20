@@ -43,7 +43,7 @@ resource "aws_elb" "public_api" {
 }
 
 module "public_api_record" {
-  source      = "git::https://github.com/goci-io/aws-route53-records.git?ref=tags/0.2.1"
+  source      = "git::https://github.com/goci-io/aws-route53-records.git?ref=master"
   enabled     = var.create_public_api_record
   hosted_zone = local.cluster_dns
   records     = [

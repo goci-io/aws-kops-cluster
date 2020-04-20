@@ -86,7 +86,6 @@ module "ssh_key_pair" {
 resource "null_resource" "replace_cluster" {
   depends_on = [
     null_resource.wait_for_iam,
-
     aws_s3_bucket_public_access_block.block,
   ]
 
@@ -133,7 +132,10 @@ EOF
 
 resource "null_resource" "cluster_startup" {
   count      = var.enable_kops_validation ? 1 : 0
-  depends_on = [null_resource.kops_update_cluster]
+  depends_on = [
+    module.public_api_record.fqdn,
+    null_resource.kops_update_cluster,
+  ]
 
   provisioner "local-exec" {
     # This is only required during the initial setup
