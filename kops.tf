@@ -105,7 +105,7 @@ resource "null_resource" "replace_config" {
 
   provisioner "local-exec" {
     environment = local.kops_env_config
-    command     = "echo -e ${self.triggers.content} | kops replace --force -f -"
+    command     = "echo -e \"${self.triggers.content}\" | kops replace --force -f -"
   }
 
   triggers = {
