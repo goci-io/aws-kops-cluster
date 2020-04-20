@@ -183,10 +183,10 @@ variable "create_public_api_record" {
   description = "Creates a public API record and grants 0.0.0.0/0 on the API LB security group. This is useful in scenarios where you want to use private dns but make the API server accessible using a public hosted zone"
 }
 
-variable "master_ips_for_private_dns" {
-  type        = bool
-  default     = true
-  description = "If set to false will use the internal load balancer created by kops for internal master name. Otherwise masters will sync their IP addresses"
+variable "public_record_name" {
+  type        = string
+  default     = ""
+  description = "Subdomain to use for the additional public record pointing to the master API"
 }
 
 variable "cluster_dns" {

@@ -48,6 +48,7 @@ module "public_api_record" {
   hosted_zone = local.cluster_dns
   records     = [
     {
+      name       = var.public_record_name
       alias      = join("", aws_elb.public_api.*.dns_name)
       alias_zone = join("", aws_elb.public_api.*.zone_id)
     }
