@@ -49,7 +49,7 @@ locals {
 
     has_external_policies      = length(var.external_master_policies) > 0
     external_master_policies   = var.external_master_policies
-    additional_master_policies = var.additional_master_policies == "" ? "" : indent(6, replace(var.additional_master_policies, "/\\\"/", "\\\""))
+    additional_master_policies = var.additional_master_policies == "" ? "" : indent(6, var.additional_master_policies)
 
     openid_connect_enabled = var.openid_connect_enabled
     oidc_issuer_url        = var.oidc_issuer_url
