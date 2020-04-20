@@ -35,7 +35,7 @@ module "kops" {
 
 **Note:** By default `max_availability_zones` is set to 3. If you want to span less AZs or even more in specific regions you will want to overwrite this value or simply set it to a high value to cover all AZs available in the current region, specified via `aws_region`.
 
-**Note:** Masters can also be enabled to use spot instances. Default for `masters_spot_enabled` is `false`. There is currently no support for minimum on demand setting.
+**Note:** Masters can also be enabled to use spot instances. Default for `masters_spot_enabled` is `false`. The default OnDemand instances is set to **2** using `masters_spot_on_demand`.
 
 **Note:** When creating or updating the cluster its completely normal to run into Rate limit errors. Retries will sort this out. 
 
