@@ -8,7 +8,7 @@ spec:
   cloudProvider: aws
   kubernetesVersion: ${k8s_version}
   masterPublicName: ${cluster_dns}
-  masterInternalName: ${cluster_dns}
+  masterInternalName: internal.${cluster_dns}
   networkID: ${vpc_id}
   networkCIDR: ${vpc_cidr}
   awsRegion: ${aws_region}
