@@ -93,7 +93,7 @@ resource "null_resource" "replace_cluster" {
 
   provisioner "local-exec" {
     environment = local.kops_env_config
-    command     = "echo ${self.triggers.cluster} | kops replace --force -f -"
+    command     = "echo -e ${self.triggers.cluster} | kops replace --force -f -"
   }
 
   triggers = local.kops_triggers
@@ -105,7 +105,7 @@ resource "null_resource" "replace_config" {
 
   provisioner "local-exec" {
     environment = local.kops_env_config
-    command     = "echo ${self.triggers.content} | kops replace --force -f -"
+    command     = "echo -e ${self.triggers.content} | kops replace --force -f -"
   }
 
   triggers = {
