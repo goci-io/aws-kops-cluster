@@ -142,7 +142,7 @@ resource "null_resource" "cluster_startup" {
     command     = "${self.triggers.path}/scripts/wait-for-cluster.sh"
   }
 
-  triggers {
+  triggers = {
     path = path.module
   }
 }
