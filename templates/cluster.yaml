@@ -51,15 +51,10 @@ spec:
 %{ endfor ~}
 %{ endif ~}
   api:
-%{ if lb_create ~}
     loadBalancer:
       type: ${lb_type}
 %{ if certificate_arn != "" ~}
       sslCertificate: "${certificate_arn}"
-%{ endif ~}
-      additionalSecurityGroups: [${lb_security_groups}]
-%{ else ~}
-    dns: {}
 %{ endif ~}
   kubeAPIServer:
     maxRequestsInflight: ${max_requests_in_flight}
@@ -91,7 +86,6 @@ spec:
     memoryRequest: 128Mi
   channel: stable
   cloudLabels:
-    Cluster: ${cluster_name}
     Namespace: ${namespace}
     Stage: ${stage}
     Region: ${region}
