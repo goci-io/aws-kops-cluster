@@ -1,6 +1,6 @@
 # aws-kops-cluster
 
-**Maintained by [@goci-io/prp-<team>](https://github.com/orgs/goci-io/teams/prp-terraform) and [@goci-io/prp-kubernetes](https://github.com/orgs/goci-io/teams/prp-kubernetes)**
+**Maintained by [@goci-io/prp-terraform](https://github.com/orgs/goci-io/teams/prp-terraform) and [@goci-io/prp-kubernetes](https://github.com/orgs/goci-io/teams/prp-kubernetes)**
 
 This module uses Terraform `templatefile`s and `null_resource` to provision a kubernetes cluster with [kops](https://github.com/kubernetes/kops) on AWS, including the required kops state store (S3 Bucket). Additionally this module allows you to use public and private hosted zone (or both) to connect to the API server. 
 
@@ -221,7 +221,7 @@ You can still create public Ingress resources to route traffic using a different
 
 #### Kops validation
 
-By default when spinning up the cluster the first time the script [`scripts/wait-for-cluster.sh`] is executed and runs `kops validate cluster`, awaiting a healthy cluster state. Keep in mind once you spin up a cluster we will need for: EC2 instances, Route53 records and the API server and required tools becoming ready and healthy. This may take a while. If you anyway need to disable the initial validation you can set `enable_kops_validation` to `false`. When updating the cluster we assume other machanisms in place when the cluster is put in a bad state after a rollout. Most changes are only rolled out once a new EC2 node comes up. You can also force the update by using `kops rolling-update cluster`. We might offer in the feature to combine the `kops update` with a rolling update if required, but usually this is something requiring some kind of approval/review process before updating.
+By default when spinning up the cluster the first time the script [`scripts/wait-for-cluster.sh`] is executed and runs `kops validate cluster`, awaiting a healthy cluster state. Keep in mind once you spin up a cluster we will need to wait for: EC2 instances, Route53 records and the API server and required tools becoming ready and healthy. This may take a while. If you anyway need to disable the initial validation you can set `enable_kops_validation` to `false`. When updating the cluster we assume other machanisms in place when the cluster is put in a bad state after a rollout. Most changes are only rolled out once a new EC2 node comes up. You can also force the update by using `kops rolling-update cluster`. We might offer in the feature to combine the `kops update` with a rolling update if required, but usually this is something requiring some kind of approval/review process before updating.
 
 #### Instance group configuration
 
