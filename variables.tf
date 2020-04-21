@@ -131,13 +131,13 @@ variable "require_one_node" {
 
 variable "max_mutating_requests_in_flight" {
   type        = number
-  default     = 800
+  default     = 600
   description = "Max requests in flight mutating API objects. Depends on the machine type and count for masters, as well as IOPS of etcd volumes"
 }
 
 variable "max_requests_in_flight" {
   type        = number
-  default     = 2000
+  default     = 1000
   description = "Max requests in flight reading API objects. Depends on the machine type and count for masters, as well as IOPS of etcd volumes"
 }
 
