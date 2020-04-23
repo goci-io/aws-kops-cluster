@@ -123,8 +123,7 @@ Now your cluster is up and running and you can start using it.
 #### Failures
 
 The validation errors can already identify a problem or even `kops create cluster` might fail as well with an approriate error. 
-In case you don't know whats going on we'd love to hear your feedback and what would have helped you. 
-If your cluster does not become healthy you can jump on the nodes and investigate log files (eg `/var/log/kube-apiserver.log` on the masters or `/var/log/kube-proxy.log` on the nodes as well as `/var/log/syslog` (might vary based on your OS)). You can either wait until the pipeline fails and get the SSH private key from the terraform state bucket or maintain your own EC2 SSH access.
+In case you don't know whats going on we'd love to hear your feedback and what would have helped you. In case your cluster is partially running you can connect to the cluster using `kops export kubecfg` and investigate errors with `kubectl` for example. If your cluster does not become healthy you can jump on the nodes and investigate log files (eg `/var/log/kube-apiserver.log` on the masters or `/var/log/kube-proxy.log` on the nodes as well as `/var/log/syslog` (might vary based on your OS)). You can either wait until the pipeline fails and get the SSH private key from the terraform state bucket or maintain your own EC2 SSH access.
 
 </p></details>
 
