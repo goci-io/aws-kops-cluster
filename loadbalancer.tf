@@ -9,15 +9,15 @@ module "api_loadbalancer_label" {
 }
 
 resource "aws_elb" "public_api" {
-  count                       = var.create_public_api_record ? 1 : 0
-  name                        = module.api_loadbalancer_label.id
-  tags                        = module.api_loadbalancer_label.tags
-  subnets                     = local.public_subnet_ids
-  security_groups             = aws_security_group.public_loadbalancer.*.id
-  connection_draining         = true
-  cross_zone_load_balancing   = true
-  internal                    = false
-  idle_timeout                = 900
+  count                     = var.create_public_api_record ? 1 : 0
+  name                      = module.api_loadbalancer_label.id
+  tags                      = module.api_loadbalancer_label.tags
+  subnets                   = local.public_subnet_ids
+  security_groups           = aws_security_group.public_loadbalancer.*.id
+  connection_draining       = true
+  cross_zone_load_balancing = true
+  internal                  = false
+  idle_timeout              = 900
 
   listener {
     lb_port            = 443
@@ -43,9 +43,9 @@ resource "aws_elb" "public_api" {
 }
 
 module "public_api_record" {
-  source        = "git::https://github.com/goci-io/aws-route53-records.git?ref=tags/0.3.0"
-  enabled       = var.create_public_api_record
-  hosted_zone   = local.cluster_dns
+  source      = "git::https://github.com/goci-io/aws-route53-records.git?ref=tags/0.3.0"
+  enabled     = var.create_public_api_record
+  hosted_zone = local.cluster_dns
   alias_records = [
     {
       name       = var.public_record_name

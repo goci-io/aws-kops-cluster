@@ -9,38 +9,38 @@ locals {
   }
 
   kops_cluster_config = templatefile("${path.module}/templates/cluster.yaml", {
-    cluster_name            = local.cluster_name
-    cluster_dns             = local.cluster_dns
-    cluster_zone_id         = local.cluster_zone_id
-    dns_type                = var.cluster_dns_type
-    k8s_version             = var.kubernetes_version
-    etcd_version            = var.etcd_version
-    cluster_cidr            = "100.64.0.0/10"
-    namespace               = var.namespace
-    stage                   = var.stage
-    region                  = var.region
-    addons                  = var.kops_addons
-    aws_region              = local.aws_region
-    aws_zones               = slice(data.aws_availability_zones.available.names, 0, var.max_availability_zones)
-    kops_bucket_name        = aws_s3_bucket.kops_state.id
-    vpc_id                  = local.vpc_id
-    vpc_cidr                = local.vpc_cidr
-    ssh_access              = length(var.ssh_access_cidrs) > 0 ? var.ssh_access_cidrs : [local.vpc_cidr]
-    api_access              = distinct(concat(var.create_public_api_record ? ["0.0.0.0/0"] : [], length(var.api_access_cidrs) > 0 ? var.api_access_cidrs : [var.cluster_dns_type != "Private" ? "0.0.0.0/0" : local.vpc_cidr]))
-    certificate_arn         = local.certificate_arn
-    lb_type                 = var.cluster_dns_type == "Private" ? "Internal" : "Public"
-    bastion_public_name     = var.bastion_public_name
-    public_subnet_ids       = local.public_subnet_ids
-    private_subnet_ids      = local.private_subnet_ids
-    public_subnet_cidrs     = local.public_subnet_cidrs
-    private_subnet_cidrs    = local.private_subnet_cidrs
-    etcd_members            = data.null_data_source.master_info.*.outputs.name
-    etcd_main_volume_type   = var.etcd_main_storage_type
-    etcd_main_volume_iops   = var.etcd_main_storage_iops
-    etcd_main_volume_size   = var.etcd_main_storage_size
-    etcd_event_volume_type  = var.etcd_events_storage_type
-    etcd_event_volume_iops  = var.etcd_events_storage_iops
-    etcd_event_volume_size  = var.etcd_events_storage_size
+    cluster_name           = local.cluster_name
+    cluster_dns            = local.cluster_dns
+    cluster_zone_id        = local.cluster_zone_id
+    dns_type               = var.cluster_dns_type
+    k8s_version            = var.kubernetes_version
+    etcd_version           = var.etcd_version
+    cluster_cidr           = "100.64.0.0/10"
+    namespace              = var.namespace
+    stage                  = var.stage
+    region                 = var.region
+    addons                 = var.kops_addons
+    aws_region             = local.aws_region
+    aws_zones              = slice(data.aws_availability_zones.available.names, 0, var.max_availability_zones)
+    kops_bucket_name       = aws_s3_bucket.kops_state.id
+    vpc_id                 = local.vpc_id
+    vpc_cidr               = local.vpc_cidr
+    ssh_access             = length(var.ssh_access_cidrs) > 0 ? var.ssh_access_cidrs : [local.vpc_cidr]
+    api_access             = distinct(concat(var.create_public_api_record ? ["0.0.0.0/0"] : [], length(var.api_access_cidrs) > 0 ? var.api_access_cidrs : [var.cluster_dns_type != "Private" ? "0.0.0.0/0" : local.vpc_cidr]))
+    certificate_arn        = local.certificate_arn
+    lb_type                = var.cluster_dns_type == "Private" ? "Internal" : "Public"
+    bastion_public_name    = var.bastion_public_name
+    public_subnet_ids      = local.public_subnet_ids
+    private_subnet_ids     = local.private_subnet_ids
+    public_subnet_cidrs    = local.public_subnet_cidrs
+    private_subnet_cidrs   = local.private_subnet_cidrs
+    etcd_members           = data.null_data_source.master_info.*.outputs.name
+    etcd_main_volume_type  = var.etcd_main_storage_type
+    etcd_main_volume_iops  = var.etcd_main_storage_iops
+    etcd_main_volume_size  = var.etcd_main_storage_size
+    etcd_event_volume_type = var.etcd_events_storage_type
+    etcd_event_volume_iops = var.etcd_events_storage_iops
+    etcd_event_volume_size = var.etcd_events_storage_size
 
     max_requests_in_flight          = var.max_requests_in_flight
     max_mutating_requests_in_flight = var.max_mutating_requests_in_flight
@@ -131,7 +131,7 @@ EOF
 }
 
 resource "null_resource" "cluster_startup" {
-  count      = var.enable_kops_validation ? 1 : 0
+  count = var.enable_kops_validation ? 1 : 0
   depends_on = [
     module.public_api_record.fqdn,
     null_resource.kops_update_cluster,
