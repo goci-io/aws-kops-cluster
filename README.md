@@ -2,6 +2,8 @@
 
 **Maintained by [@goci-io/prp-terraform](https://github.com/orgs/goci-io/teams/prp-terraform) and [@goci-io/prp-kubernetes](https://github.com/orgs/goci-io/teams/prp-kubernetes)**
 
+![Terraform Validate](https://github.com/goci-io/aws-kops-cluster/workflows/Terraform%20Validate/badge.svg)
+
 This module uses Terraform `templatefile`s and `null_resource` to provision a kubernetes cluster with [kops](https://github.com/kubernetes/kops) on AWS, including the required kops state store (S3 Bucket). Additionally this module allows you to use public and private hosted zone (or both) to connect to the API server. 
 
 You need to have the `kops` binary installed to use this module. The [terraform-k8s-aws](https://github.com/goci-io/docker-terraform-images/tree/master/aws) image provides a fully functional environment to apply and destroy this module. You can also use our copy of [atlantis](https://github.com/goci-io/aws-atlantis-helm) which contains an extended docker image with additional binaries.
