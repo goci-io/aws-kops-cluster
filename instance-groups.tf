@@ -1,6 +1,6 @@
 locals {
   require_one_worker_node = var.require_one_node && local.worker_node_min_count == 0
-  worker_node_min_count   = length(flatten([
+  worker_node_min_count = length(flatten([
     for e in var.instance_groups.*.count_min : range(e)
   ]))
 }

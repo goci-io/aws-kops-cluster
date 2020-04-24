@@ -5,20 +5,20 @@ module "s3_label" {
 }
 
 locals {
-  default_s3_actions   = ["s3:Get*", "s3:List*"]
+  default_s3_actions = ["s3:Get*", "s3:List*"]
   default_s3_resources = [
     "arn:aws:s3:::${aws_s3_bucket.kops_state.id}",
     "arn:aws:s3:::${aws_s3_bucket.kops_state.id}/${local.cluster_dns}/*",
   ]
 
   lb_access_log_account = {
-    eu-central-1 = "054676820928",
-    eu-west-2 = "652711504416",
-    us-east-1 = "127311923021",
-    us-west-2 = "797873946194",
+    eu-central-1   = "054676820928",
+    eu-west-2      = "652711504416",
+    us-east-1      = "127311923021",
+    us-west-2      = "797873946194",
     ap-northeast-2 = "600734575887",
     ap-southeast-1 = "114774131450",
-    ap-east-1 = "754344448648",
+    ap-east-1      = "754344448648",
     # TODO: complete list
   }
 

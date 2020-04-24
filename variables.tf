@@ -37,7 +37,7 @@ variable "region" {
 variable "kubernetes_version" {
   type        = string
   default     = "1.16.9"
-  description = "The kubernetes version to deploy" 
+  description = "The kubernetes version to deploy"
 }
 
 variable "instance_groups" {
@@ -149,14 +149,14 @@ variable "kops_addons" {
 
 variable "enable_kops_validation" {
   type        = bool
-  default     = true 
+  default     = true
   description = "Useful if you want to wait for cluster to start up, deploy further things and then validate the clusters health. In that case set the validation to false"
 }
 
 variable "custom_s3_policies" {
   type        = list
   default     = []
-  description = "Custom policies to attach to the kops s3 state bucket. You can specify readonly (true, Get* and List*), actions ([*]), resources (bucket) and principals" 
+  description = "Custom policies to attach to the kops s3 state bucket. You can specify readonly (true, Get* and List*), actions ([*]), resources (bucket) and principals"
 }
 
 variable "secrets_path" {
@@ -167,7 +167,7 @@ variable "secrets_path" {
 
 variable "ssh_access_cidrs" {
   type        = list(string)
-  default     = [] 
+  default     = []
   description = "Allowed CIDRs for SSH access"
 }
 
@@ -359,7 +359,7 @@ variable "oidc_ca_file" {
 }
 
 variable "oidc_required_claims" {
-  type        = list(object({ key = string, value = string}))
+  type        = list(object({ key = string, value = string }))
   default     = []
   description = "Required claims which must be set to allow access"
 }
