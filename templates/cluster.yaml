@@ -76,11 +76,13 @@ spec:
 %{ endif ~}
   kubelet:
     anonymousAuth: false
+    featureGates:
+    - HPAScaleToZero
   docker:
     logDriver: json-file
     logOpt:
     - max-size=32m
-    - max-file=12
+    - max-file=20
   kubeProxy:
     cpuRequest: 80m
     memoryRequest: 128Mi
