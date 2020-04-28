@@ -56,7 +56,12 @@ spec:
 %{ if certificate_arn != "" ~}
       sslCertificate: "${certificate_arn}"
 %{ endif ~}
+  kubeControllerManager:
+    featureGates:
+      TTLAfterFinished: "true"
   kubeAPIServer:
+    featureGates:
+      TTLAfterFinished: "true"
     maxRequestsInflight: ${max_requests_in_flight}
     maxMutatingRequestsInflight: ${max_mutating_requests_in_flight}
 %{ if openid_connect_enabled ~}
@@ -77,7 +82,7 @@ spec:
   kubelet:
     anonymousAuth: false
     featureGates:
-    - HPAScaleToZero
+      HPAScaleToZero: "yes"
   docker:
     logDriver: json-file
     logOpt:
