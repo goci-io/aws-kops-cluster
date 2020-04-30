@@ -2,7 +2,7 @@
 
 **Maintained by [@goci-io/prp-terraform](https://github.com/orgs/goci-io/teams/prp-terraform) and [@goci-io/prp-kubernetes](https://github.com/orgs/goci-io/teams/prp-kubernetes)**
 
-![Terraform Validate](https://github.com/goci-io/aws-kops-cluster/workflows/Terraform%20Validate/badge.svg)
+![terraform](https://github.com/goci-io/aws-kops-cluster/workflows/terraform/badge.svg?branch=master)
 
 This module uses Terraform `templatefile`s and `null_resource` to provision a kubernetes cluster with [kops](https://github.com/kubernetes/kops) on AWS, including the required kops state store (S3 Bucket). Additionally this module allows you to use public and private hosted zone (or both) to connect to the API server. 
 
