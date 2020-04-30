@@ -1,11 +1,12 @@
-name: Release Drafter
+name: 'drafter'
 on:
   push:
     branches:
       - master
 
 jobs:
-  update_release_draft:
+  run:
+    name: 'release/update'
     runs-on: ubuntu-latest
     steps:
       - uses: release-drafter/release-drafter@v5
