@@ -7,15 +7,9 @@ on:
     branches:
       - master
 jobs:
-  checkout:
-    runs-on: ubuntu-latest
-    steps:
-      - name: 'Checkout'
-        uses: actions/checkout@master
   validate:
     name: 'terraform/validate'
     runs-on: ubuntu-latest
-    needs: checkout
     strategy:
       fail-fast: false
       matrix:
@@ -26,6 +20,8 @@ jobs:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       AWS_DEFAULT_REGION: 'eu-central-1'
     steps:
+      - name: 'Checkout'
+        uses: actions/checkout@master
       - name: 'Terraform Init'
         uses: hashicorp/terraform-github-actions@v0.8.0
         with:
