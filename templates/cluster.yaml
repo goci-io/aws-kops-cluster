@@ -90,8 +90,9 @@ spec:
     - max-size=32m
     - max-file=20
   kubeProxy:
-    cpuRequest: 80m
-    memoryRequest: 128Mi
+    cpuRequest: 50m
+    cpuLimit: 150m
+    memoryRequest: 84Mi
   channel: stable
   cloudLabels:
     Namespace: ${namespace}
