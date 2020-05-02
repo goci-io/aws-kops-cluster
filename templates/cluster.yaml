@@ -56,7 +56,12 @@ spec:
 %{ if certificate_arn != "" ~}
       sslCertificate: "${certificate_arn}"
 %{ endif ~}
+  kubeControllerManager:
+    featureGates:
+      TTLAfterFinished: "true"
   kubeAPIServer:
+    featureGates:
+      TTLAfterFinished: "true"
     maxRequestsInflight: ${max_requests_in_flight}
     maxMutatingRequestsInflight: ${max_mutating_requests_in_flight}
 %{ if openid_connect_enabled ~}
@@ -76,14 +81,18 @@ spec:
 %{ endif ~}
   kubelet:
     anonymousAuth: false
+    authenticationTokenWebhook: true
+    featureGates:
+      HPAScaleToZero: "yes"
   docker:
     logDriver: json-file
     logOpt:
     - max-size=32m
-    - max-file=12
+    - max-file=20
   kubeProxy:
-    cpuRequest: 80m
-    memoryRequest: 128Mi
+    cpuRequest: 50m
+    cpuLimit: 150m
+    memoryRequest: 84Mi
   channel: stable
   cloudLabels:
     Namespace: ${namespace}
