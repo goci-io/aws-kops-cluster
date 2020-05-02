@@ -81,6 +81,7 @@ spec:
 %{ endif ~}
   kubelet:
     anonymousAuth: false
+    authenticationTokenWebhook: true
     featureGates:
       HPAScaleToZero: "yes"
   docker:
