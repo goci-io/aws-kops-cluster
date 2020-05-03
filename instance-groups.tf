@@ -118,7 +118,7 @@ data "null_data_source" "bastion_instance_group" {
       autospotting_enabled   = true
       autospotting_max_price = 0.008
       autospotting_instances = distinct([var.bastion_machine_type, "t2.small", "t2.medium", "t3.small", "t3.medium"])
-      subnet_ids             = data.aws_availability_zones.available.names
+      subnet_ids             = slice(data.aws_availability_zones.available.names, 0, var.max_availability_zones)
       external_target_arn    = ""
       external_lb_name       = ""
       security_group         = ""
