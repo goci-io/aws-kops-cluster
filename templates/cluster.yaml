@@ -83,7 +83,7 @@ spec:
     anonymousAuth: false
     authenticationTokenWebhook: true
     featureGates:
-      HPAScaleToZero: "yes"
+      HPAScaleToZero: "true"
   docker:
     logDriver: json-file
     logOpt:
