@@ -117,6 +117,12 @@ variable "bastion_machine_type" {
   description = "The AWS instance type to use for the bastions"
 }
 
+variable "bastion_default_instance_count" {
+  type        = number
+  default     = 1
+  description = "Number of default instances for the bastion. Supported are currently 0 or 1"
+}
+
 variable "max_availability_zones" {
   type        = number
   default     = 3

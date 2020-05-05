@@ -128,7 +128,7 @@ data "null_data_source" "bastion_instance_group" {
       instance_name          = "bastion"
       instance_type          = var.bastion_machine_type
       instance_max           = 1
-      instance_min           = 1
+      instance_min           = var.bastion_default_instance_count
 
       # Bastion requires VPN connection to be accessed
       public_ip = false
