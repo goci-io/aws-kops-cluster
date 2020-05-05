@@ -256,10 +256,10 @@ module "kops" {
   cluster_dns          = "corp.eu1.goci.io"
   cluster_dns_type     = "Public"
   vpc_id               = "vpc-12345678"
-  public_subnet_ids    = ["subnet-abc"]
+  public_subnet_ids    = ["subnet-a"]
   public_subnet_cidrs  = ["10.0.0.0/24"]
-  private_subnet_ids   = ["10.0.1.0/24"]
-  private_subnet_cidrs = 
+  private_subnet_ids   = ["subnet-b"]
+  private_subnet_cidrs = ["10.0.1.0/24"]
   instance_groups      = [
     {
       name          = "worker"
@@ -268,6 +268,34 @@ module "kops" {
   ]
 }
 ```
+
+#### Development Cluster
+
+To develop, test or during bootstrapping of your project you may want to run a small cluster if its feasible for you to destroy and recreate or migrate it before going to production. You can achieve this by running a "single node cluster". We will still provision a separate master and worker node.
+
+```hcl
+module "kops" {
+  source                 = "git::https://github.com/goci-io/aws-kops-cluster.git?ref=tags/<latest-version>"
+  cluster_dns            = "corp.eu1.goci.io"
+  vpc_id                 = "vpc-12345678"
+  ...
+  masters_instance_count = 1
+  max_availability_zones = 1
+  masters_spot_on_demand = 0
+  instance_groups        = [
+    {
+      name          = "worker"
+      instance_type = "t2.medium"
+      # autospotting enabled by default
+    }
+  ]
+
+  # Optionally disable bastion node (can be changed in AWS AutoscalingGroup)
+  bastion_default_instance_count = 0
+}
+```
+
+You can find an upgrade path from single to multi node cluster [here](https://github.com/kubernetes/kops/blob/master/docs/single-to-multi-master.md)
 
 #### Kops validation
 
