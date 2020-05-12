@@ -364,6 +364,12 @@ variable "oidc_ca_file" {
   description = "Must be a path on the local file system containing the CA file"
 }
 
+variable "oidc_ca_content" {
+  type        = string
+  default     = ""
+  description = "Full content of the OIDC signing certificate"
+}
+
 variable "oidc_required_claims" {
   type        = list(object({ key = string, value = string }))
   default     = []

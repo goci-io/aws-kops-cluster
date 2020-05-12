@@ -105,7 +105,7 @@ spec:
     path: /etc/ssl/certs/oidc-issuer-ca
     roles: [Master]
     content: |
-      ${indent(6, file(oidc_ca_file))}
+      ${indent(6, oidc_ca_content == "" ? file(oidc_ca_file) : oidc_ca_content)}
 %{ endif ~}
   etcdClusters:
   - etcdMembers:

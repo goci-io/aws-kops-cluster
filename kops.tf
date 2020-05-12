@@ -57,6 +57,7 @@ locals {
     oidc_groups_claim      = var.oidc_groups_claim
     oidc_groups_prefix     = var.oidc_groups_prefix
     oidc_ca_file           = var.oidc_ca_file
+    oidc_ca_content        = var.oidc_ca_content
     oidc_required_claims   = var.oidc_required_claims
   })
 
