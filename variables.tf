@@ -303,12 +303,6 @@ variable "aws_account_id" {
   description = "AWS Account ID. Defaults to current Account ID"
 }
 
-variable "aws_assume_role_arn" {
-  type        = string
-  default     = ""
-  description = "The AWS Role ARN to assume to create resources"
-}
-
 # Workaround for https://github.com/terraform-providers/terraform-provider-aws/issues/8242
 variable "external_account" {
   type        = bool
