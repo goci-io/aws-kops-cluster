@@ -36,7 +36,7 @@ variable "region" {
 
 variable "kubernetes_version" {
   type        = string
-  default     = "1.16.9"
+  default     = "1.18.2"
   description = "The kubernetes version to deploy"
 }
 
@@ -59,7 +59,7 @@ variable "masters_instance_count" {
 
 variable "etcd_version" {
   type        = string
-  default     = "3.2.24"
+  default     = "3.4.7"
   description = "Version of etcd to use for kubernetes backend"
 }
 
