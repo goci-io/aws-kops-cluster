@@ -132,8 +132,8 @@ EOF
 }
 
 resource "local_file" "kops_oidc_auth_config" {
-  count             = var.kops_auth_method != "kubecfg" ? 1 : 0
-  filename          = "${path.module}/oidc-auth.json"
+  count    = var.kops_auth_method != "kubecfg" ? 1 : 0
+  filename = "${path.module}/oidc-auth.json"
   sensitive_content = jsonencode({
     client_id     = var.oidc_client_id
     client_secret = var.oidc_client_secret
@@ -157,13 +157,13 @@ resource "null_resource" "cluster_kops_auth" {
   triggers = {
     path      = path.module
     auth      = var.kops_auth_method
-    oidc_file = local_file.kops_oidc_auth_config.filename
-    auth      = var.kops_auth_oidc_reauth ? uuid() : 1
+    reauth    = var.kops_auth_oidc_reauth ? uuid() : 0
+    oidc_file = join("", local_file.kops_oidc_auth_config.*.filename)
   }
 }
 
 resource "null_resource" "cluster_startup" {
-  count = var.enable_kops_validation ? 1 : 0
+  count      = var.enable_kops_validation ? 1 : 0
   depends_on = [null_resource.cluster_kops_auth]
 
   provisioner "local-exec" {
