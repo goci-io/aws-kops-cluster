@@ -1,8 +1,6 @@
 #!/bin/sh
 set -e
 
-. ./auth.sh $1 $2
-
 echo "Wait for cluster to start up the first time..."
 starting=1
 retries=0

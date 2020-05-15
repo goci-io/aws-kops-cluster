@@ -131,23 +131,49 @@ EOF
   })
 }
 
-resource "null_resource" "cluster_startup" {
-  count = var.enable_kops_validation ? 1 : 0
+resource "local_file" "kops_oidc_auth_config" {
+  count             = var.kops_auth_method != "kubecfg" ? 1 : 0
+  filename          = "${path.module}/oidc-auth.json"
+  sensitive_content = jsonencode({
+    client_id     = var.oidc_client_id
+    client_secret = var.oidc_client_secret
+    audience      = var.oidc_audience
+    issuer        = var.oidc_issuer_url
+    user          = var.kops_auth_oidc_user
+  })
+}
+
+resource "null_resource" "cluster_kops_auth" {
   depends_on = [
     module.public_api_record.fqdn,
     null_resource.kops_update_cluster,
   ]
 
   provisioner "local-exec" {
-    # This is only required during the initial setup
     environment = local.kops_env_config
-    command     = "${self.triggers.path}/scripts/wait-for-cluster.sh ${self.triggers.auth} ${self.triggers.oidc_file}"
+    command     = "${self.triggers.path}/scripts/auth.sh ${self.triggers.auth} ${self.triggers.oidc_file}"
   }
 
   triggers = {
     path      = path.module
     auth      = var.kops_auth_method
-    oidc_file = var.kops_oidc_auth_config_path
+    oidc_file = local_file.kops_oidc_auth_config.filename
+    auth      = var.kops_auth_oidc_reauth ? uuid() : 1
+  }
+}
+
+resource "null_resource" "cluster_startup" {
+  count = var.enable_kops_validation ? 1 : 0
+  depends_on = [null_resource.cluster_kops_auth]
+
+  provisioner "local-exec" {
+    # This is only required during the initial setup
+    environment = local.kops_env_config
+    command     = "${self.triggers.path}/scripts/wait-for-cluster.sh"
+  }
+
+  triggers = {
+    path = path.module
   }
 }
 

@@ -316,10 +316,16 @@ variable "kops_auth_method" {
   description = "Method for kops to use to authenticate. This is to support kops authentication via OIDC Access Token to avoid basic credentials for Kube API Server"
 }
 
-variable "kops_oidc_auth_config_path" {
+variable "kops_auth_oidc_user" {
   type        = string
   default     = ""
-  description = "Path to json formatted config file containing client_id, client_secret, audience, issuer and user properties"
+  description = "Username to use for kubernetes when authenticating via client credentials grant using OIDC provider"
+}
+
+variable "kops_auth_oidc_reauth" {
+  type        = bool
+  default     = true
+  description = "Whether to authenticate again when running apply. When set to false kops wont authenticate and wont be able to validate the cluster health when using OIDC auth for kops itself and creates a diff for the auth script on every run otherwise"
 }
 
 variable "openid_connect_enabled" {
@@ -334,10 +340,22 @@ variable "oidc_issuer_url" {
   description = "The issue URL of the OIDC token issuer"
 }
 
+variable "oidc_audience" {
+  type        = string
+  default     = ""
+  description = "The audience to retrieve tokens for. Only required when using OIDC auth for kops itself!"
+}
+
 variable "oidc_client_id" {
   type        = string
   default     = ""
   description = "The client ID for the API to use"
+}
+
+variable "oidc_client_secret" {
+  type        = string
+  default     = ""
+  description = "The client secret to use to retrieve tokens. Only required when using OIDC auth for kops itself!"
 }
 
 variable "oidc_username_claim" {
