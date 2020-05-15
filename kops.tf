@@ -141,11 +141,13 @@ resource "null_resource" "cluster_startup" {
   provisioner "local-exec" {
     # This is only required during the initial setup
     environment = local.kops_env_config
-    command     = "${self.triggers.path}/scripts/wait-for-cluster.sh"
+    command     = "${self.triggers.path}/scripts/wait-for-cluster.sh ${self.triggers.auth} ${self.triggers.oidc_file}"
   }
 
   triggers = {
-    path = path.module
+    path      = path.module
+    auth      = var.kops_auth_method
+    oidc_file = var.kops_oidc_auth_config_path
   }
 }
 

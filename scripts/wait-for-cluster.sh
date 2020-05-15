@@ -1,7 +1,7 @@
 #!/bin/sh
 set -e
 
-kops export kubecfg
+. ./auth.sh $1 $2
 
 echo "Wait for cluster to start up the first time..."
 starting=1

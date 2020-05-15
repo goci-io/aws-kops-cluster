@@ -310,6 +310,18 @@ variable "external_account" {
   description = "Whether kops is deployed into a different AWS account. Required to provide kops access to this account"
 }
 
+variable "kops_auth_method" {
+  type        = string
+  default     = "kubecfg"
+  description = "Method for kops to use to authenticate. This is to support kops authentication via OIDC Access Token to avoid basic credentials for Kube API Server"
+}
+
+variable "kops_oidc_auth_config_path" {
+  type        = string
+  default     = ""
+  description = "Path to json formatted config file containing client_id, client_secret, audience, issuer and user properties"
+}
+
 variable "openid_connect_enabled" {
   type        = bool
   default     = false
