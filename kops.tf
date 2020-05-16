@@ -146,6 +146,7 @@ resource "null_resource" "cluster_kops_auth" {
     path    = path.module
     cluster = local.cluster_dns
     auth    = var.kops_auth_method
+    reauth  = var.kops_auth_always ? uuid() : 0
   }
 }
 

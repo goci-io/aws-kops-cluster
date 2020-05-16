@@ -316,6 +316,12 @@ variable "kops_auth_method" {
   description = "Method for kops to use to authenticate. This is to support kops authentication via OIDC Access Token to avoid basic credentials for Kube API Server"
 }
 
+variable "kops_auth_always" {
+  type        = bool
+  default     = true
+  description = "Creates a diff for kops auth resources and creates a new kubecgf on each run. If set to false the kubecfg will be generated only once"
+}
+
 variable "openid_connect_enabled" {
   type        = bool
   default     = false
