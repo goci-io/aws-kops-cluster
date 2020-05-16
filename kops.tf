@@ -57,6 +57,7 @@ locals {
     oidc_groups_claim      = var.oidc_groups_claim
     oidc_groups_prefix     = var.oidc_groups_prefix
     oidc_ca_file           = var.oidc_ca_file
+    oidc_ca_content        = var.oidc_ca_content
     oidc_required_claims   = var.oidc_required_claims
   })
 
@@ -130,12 +131,28 @@ EOF
   })
 }
 
-resource "null_resource" "cluster_startup" {
-  count = var.enable_kops_validation ? 1 : 0
+resource "null_resource" "cluster_kops_auth" {
   depends_on = [
     module.public_api_record.fqdn,
     null_resource.kops_update_cluster,
   ]
+
+  provisioner "local-exec" {
+    environment = local.kops_env_config
+    command     = "${self.triggers.path}/scripts/auth.sh ${self.triggers.auth} ${self.triggers.cluster}"
+  }
+
+  triggers = {
+    path    = path.module
+    cluster = local.cluster_dns
+    auth    = var.kops_auth_method
+    reauth  = var.kops_auth_always ? uuid() : 0
+  }
+}
+
+resource "null_resource" "cluster_startup" {
+  count      = var.enable_kops_validation ? 1 : 0
+  depends_on = [null_resource.cluster_kops_auth]
 
   provisioner "local-exec" {
     # This is only required during the initial setup

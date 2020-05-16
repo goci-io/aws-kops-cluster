@@ -338,11 +338,25 @@ If you have for example the CI system running in a dedicated AWS Account but wan
 ```hcl
 external_account    = true # Creates an IAM user in external Account
 aws_account_id      = "123456789012"
-aws_assume_role_arn = "arn:aws:iam::account-id:role/role-name-with-path"
 ```
 
+You will also need to configure an AWS Terraform Provider in your root module (see example below).
 If you want to rotate the credentials simply delete the credential Pair from AWS IAM user created by this module to generate a new pair.
+
+```hcl
+provider "aws" {
+  version = "~> 2.50"
+
+  assume_role {
+    role_arn = "arn:aws:iam::123456789012:role/role-name-with-path"
+  }
+}
+```
 
 #### Permissions
 
 To attach additional permissions to your master nodes you can specify either inline policies by using `additional_master_policies` or attach existing policies using `external_master_policies`.
+
+#### Kops Authentication 
+
+To get access to the cluster kops uses either the generated `kubecfg` or a static Bearer token. From kops starting with 1.18-alpha.3 basic credentials support was dropped. Currently the generated kubecfg config does not grant access to the cluster if your are using 1.18-alpha.3 or above at the momement. In that case you need to switch to token auth.

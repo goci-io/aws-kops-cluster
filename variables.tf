@@ -36,7 +36,7 @@ variable "region" {
 
 variable "kubernetes_version" {
   type        = string
-  default     = "1.16.9"
+  default     = "1.18.2"
   description = "The kubernetes version to deploy"
 }
 
@@ -59,7 +59,7 @@ variable "masters_instance_count" {
 
 variable "etcd_version" {
   type        = string
-  default     = "3.2.24"
+  default     = "3.4.3"
   description = "Version of etcd to use for kubernetes backend"
 }
 
@@ -303,17 +303,23 @@ variable "aws_account_id" {
   description = "AWS Account ID. Defaults to current Account ID"
 }
 
-variable "aws_assume_role_arn" {
-  type        = string
-  default     = ""
-  description = "The AWS Role ARN to assume to create resources"
-}
-
 # Workaround for https://github.com/terraform-providers/terraform-provider-aws/issues/8242
 variable "external_account" {
   type        = bool
   default     = false
   description = "Whether kops is deployed into a different AWS account. Required to provide kops access to this account"
+}
+
+variable "kops_auth_method" {
+  type        = string
+  default     = "kubecfg"
+  description = "Method for kops to use to authenticate. This is to support kops authentication via OIDC Access Token to avoid basic credentials for Kube API Server"
+}
+
+variable "kops_auth_always" {
+  type        = bool
+  default     = true
+  description = "Creates a diff for kops auth resources and creates a new kubecgf on each run. If set to false the kubecfg will be generated only once"
 }
 
 variable "openid_connect_enabled" {
@@ -362,6 +368,12 @@ variable "oidc_ca_file" {
   type        = string
   default     = ""
   description = "Must be a path on the local file system containing the CA file"
+}
+
+variable "oidc_ca_content" {
+  type        = string
+  default     = ""
+  description = "Full content of the OIDC signing certificate"
 }
 
 variable "oidc_required_claims" {
