@@ -131,18 +131,6 @@ EOF
   })
 }
 
-resource "local_file" "kops_oidc_auth_config" {
-  count    = var.kops_auth_method != "kubecfg" ? 1 : 0
-  filename = "${path.module}/oidc-auth.json"
-  sensitive_content = jsonencode({
-    client_id     = var.oidc_client_id
-    client_secret = var.oidc_client_secret
-    audience      = var.oidc_audience
-    issuer        = var.oidc_issuer_url
-    user          = var.kops_auth_oidc_user
-  })
-}
-
 resource "null_resource" "cluster_kops_auth" {
   depends_on = [
     module.public_api_record.fqdn,
@@ -151,14 +139,13 @@ resource "null_resource" "cluster_kops_auth" {
 
   provisioner "local-exec" {
     environment = local.kops_env_config
-    command     = "${self.triggers.path}/scripts/auth.sh ${self.triggers.auth} ${self.triggers.oidc_file}"
+    command     = "${self.triggers.path}/scripts/auth.sh ${self.triggers.auth} ${self.triggers.cluster}"
   }
 
   triggers = {
-    path      = path.module
-    auth      = var.kops_auth_method
-    reauth    = var.kops_auth_oidc_reauth ? uuid() : 0
-    oidc_file = join("", local_file.kops_oidc_auth_config.*.filename)
+    path    = path.module
+    cluster = local.cluster_dns
+    auth    = var.kops_auth_method
   }
 }
 

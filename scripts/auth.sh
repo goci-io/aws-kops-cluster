@@ -1,27 +1,14 @@
 #!/bin/sh
 set -e
 method=$1
+cluster=$2
 
 if [[ "$method" == "kubecfg" ]]; then
     kops export kubecfg
 else
-    client_id=$(jq -r '.client_id' ${2})
-    client_secret=$(jq -r '.client_secret' ${2})
-    audience=$(jq -r '.audience' ${2})
-    issuer=$(jq -r '.issuer' ${2})
-    user=$(jq -r '.user' ${2})
-    token=$(curl -X POST ${issuer}/oauth/token \
-        -H "Accept: application/json" \
-        -H "Content-Type: application/x-www-form-urlencoded" \
-        -d "grant_type=client_credentials&client_id=$client_id&client_secret=$client_secret&audience=$audience" \
-        | jq -r '.access_token')
-
-    kubectl config set-credentials $user \
-        --auth-provider=oidc \
-        --auth-provider-arg=idp-issuer-url=$issuer \
-        --auth-provider-arg=client-id=$client_id \
-        --auth-provider-arg=client-secret=$client_secret \
-        --auth-provider-arg=id-token=$token
-
-    kubectl config set-context ${KOPS_CLUSTER_NAME} --cluster=${KOPS_CLUSTER_NAME} --user=$user --server=https://${KOPS_CLUSTER_NAME} 
+    token=$(kops get secrets --type secret admin -oplaintext)
+    kubectl config set-credentials admin --token=${token}
+    kubectl config set-cluster ${cluster} --server=https://${cluster}
+    kubectl config set-context ${cluster} --cluster=${cluster} --user=admin
+    kubectl config use-context ${cluster}
 fi
