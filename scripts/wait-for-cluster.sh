@@ -1,8 +1,6 @@
 #!/bin/sh
 set -e
 
-kops export kubecfg
-
 echo "Wait for cluster to start up the first time..."
 starting=1
 retries=0

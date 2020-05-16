@@ -71,7 +71,9 @@ spec:
     oidcUsernamePrefix: "${oidc_username_prefix}"
     oidcGroupsClaim: ${oidc_groups_claim}
     oidcGroupsPrefix: "${oidc_groups_prefix}"
+%{ if oidc_ca_file != "" || oidc_ca_content != "" ~}
     oidcCAFile: /etc/ssl/certs/oidc-issuer-ca
+%{ endif ~}
 %{ if length(oidc_required_claims) > 0 ~}
     oidcRequiredClaim:
 %{ for claim in oidc_required_claims ~}
@@ -99,7 +101,7 @@ spec:
     Stage: ${stage}
     Region: ${region}
     kops.k8s.io/cluster: ${cluster_dns}
-%{ if oidc_ca_file != "" ~}
+%{ if oidc_ca_file != "" || oidc_ca_content != "" ~}
   fileAssets:
   - name: oidc-issuer-ca
     path: /etc/ssl/certs/oidc-issuer-ca

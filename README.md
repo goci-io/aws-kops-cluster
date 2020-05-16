@@ -356,3 +356,7 @@ provider "aws" {
 #### Permissions
 
 To attach additional permissions to your master nodes you can specify either inline policies by using `additional_master_policies` or attach existing policies using `external_master_policies`.
+
+#### Kops Authentication 
+
+To get access to the cluster kops uses either the generated `kubecfg` or a static Bearer token. From kops starting with 1.18-alpha.3 basic credentials support was dropped. Currently the generated kubecfg config does not grant access to the cluster if your are using 1.18-alpha.3 or above at the momement. In that case you need to switch to token auth.
