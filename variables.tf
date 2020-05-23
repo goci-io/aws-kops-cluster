@@ -111,6 +111,12 @@ variable "masters_spot_on_demand" {
   description = "Minimum on demand instances for masters to avoid service interruption when multiple spot instances go away at the same time"
 }
 
+variable "enable_pod_security_policies" {
+  type        = bool
+  default     = false
+  description = "Enables the PodSecurityPolicy admission controller. Kops will deploy kube-system PSP and Binding"
+}
+
 variable "bastion_machine_type" {
   type        = string
   default     = "t2.micro"

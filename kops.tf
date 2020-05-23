@@ -29,6 +29,7 @@ locals {
     api_access             = distinct(concat(var.create_public_api_record ? ["0.0.0.0/0"] : [], length(var.api_access_cidrs) > 0 ? var.api_access_cidrs : [var.cluster_dns_type != "Private" ? "0.0.0.0/0" : local.vpc_cidr]))
     certificate_arn        = local.certificate_arn
     lb_type                = var.cluster_dns_type == "Private" ? "Internal" : "Public"
+    enable_psp             = var.enable_pod_security_policies
     bastion_public_name    = var.bastion_public_name
     public_subnet_ids      = local.public_subnet_ids
     private_subnet_ids     = local.private_subnet_ids
