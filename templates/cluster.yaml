@@ -17,6 +17,8 @@ spec:
   configBase: s3://${kops_bucket_name}/${cluster_dns}
   authorization:
     rbac: {}
+  iam:
+    legacy: false
 %{ if length(api_access) > 0 ~}
   kubernetesApiAccess:
 %{ for cidr in api_access ~}

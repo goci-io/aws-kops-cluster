@@ -18,7 +18,6 @@ data "null_data_source" "instance_groups" {
     )
 
     rendered = templatefile("${path.module}/templates/instance-group.yaml", {
-      cluster_name           = local.cluster_name
       cluster_dns            = local.cluster_dns
       namespace              = var.namespace
       stage                  = var.stage
@@ -42,7 +41,7 @@ data "null_data_source" "instance_groups" {
       autospotting_enabled   = lookup(var.instance_groups[floor(count.index / 3)], "autospotting_enabled", true)
       autospotting_on_demand = lookup(var.instance_groups[floor(count.index / 3)], "autospotting_on_demand", 0)
       autospotting_max_price = lookup(var.instance_groups[floor(count.index / 3)], "autospotting_max_price", 0.03)
-      autospotting_instances = lookup(var.instance_groups[floor(count.index / 3)], "autospotting_instances", [lookup(var.instance_groups[floor(count.index / 3)], "instance_type")])
+      autospotting_instances = distinct(lookup(var.instance_groups[floor(count.index / 3)], "autospotting_instances", [lookup(var.instance_groups[floor(count.index / 3)], "instance_type")]))
 
       instance_group_name = format(
         "%s-%s",
@@ -69,7 +68,6 @@ data "null_data_source" "master_instance_groups" {
   inputs = {
     name = "masters"
     rendered = templatefile("${path.module}/templates/instance-group.yaml", {
-      cluster_name           = local.cluster_name
       cluster_dns            = local.cluster_dns
       namespace              = var.namespace
       stage                  = var.stage
@@ -103,7 +101,6 @@ data "null_data_source" "bastion_instance_group" {
   inputs = {
     name = "bastions"
     rendered = templatefile("${path.module}/templates/instance-group.yaml", {
-      cluster_name           = local.cluster_name
       cluster_dns            = local.cluster_dns
       namespace              = var.namespace
       stage                  = var.stage
